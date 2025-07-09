@@ -1,6 +1,6 @@
 import { FcGoogle } from 'react-icons/fc';
 
-const Cadastro = () => {
+const Login = () => {
   return (
    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
   <img
@@ -51,4 +51,4 @@ const Cadastro = () => {
   );
 };
 
-export default Cadastro;
+export default Login;
