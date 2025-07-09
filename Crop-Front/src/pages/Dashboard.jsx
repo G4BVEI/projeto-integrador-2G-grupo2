@@ -1,5 +1,4 @@
-// Dashboard.jsx
-import React, { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import L from 'leaflet';
 import { Chart, registerables } from 'chart.js';
@@ -95,22 +94,23 @@ const Card = styled.div`
 `;
 
 function Dashboard() {
-  useEffect(() => {
-    const mapContainer = document.getElementById('map');
-    const precipitationCanvas = document.getElementById('precipitationChart');
-    const temperatureCanvas = document.getElementById('temperatureChart');
+  const mapRef = useRef(null);
 
-    if (mapContainer) {
-      const map = L.map('map').setView([-15.7942, -47.8822], 14);
+  useEffect(() => {
+    if (!mapRef.current) {
+      mapRef.current = L.map('map').setView([-15.7942, -47.8822], 14);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
+      }).addTo(mapRef.current);
 
-      L.marker([-15.7942, -47.8822]).addTo(map)
+      L.marker([-15.7942, -47.8822]).addTo(mapRef.current)
         .bindPopup('Fazenda Modelo<br>Área cultivada: 142 ha')
         .openPopup();
     }
+
+    const precipitationCanvas = document.getElementById('precipitationChart');
+    const temperatureCanvas = document.getElementById('temperatureChart');
 
     if (precipitationCanvas) {
       new Chart(precipitationCanvas.getContext('2d'), {
@@ -159,6 +159,14 @@ function Dashboard() {
         }
       });
     }
+
+    // Limpa o mapa se o componente for desmontado
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
   }, []);
 
   return (

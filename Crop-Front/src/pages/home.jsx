@@ -1,3 +1,4 @@
+import Layout from "../layout"
 function Home(){
     <Layout>
         
