@@ -1,5 +1,10 @@
+import { Link } from "react-router-dom";
 
-function Header(){
-    return <header>a</header>
+export default function Header() {
+  return (
+    <header className="p-4 bg-gray-200 flex gap-4">
+      <Link to="/">Home</Link>
+      <Link to="/Login">Login</Link>
+    </header>
+  );
 }
-export default Header

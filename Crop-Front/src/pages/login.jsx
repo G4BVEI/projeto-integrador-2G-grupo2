@@ -1,6 +1,6 @@
 import React from "react";
 
-const Cadastro = () => {
+const Login = () => {
   return (
     <div className="relative w-screen h-screen overflow-hidden">
       {/* Imagem de fundo */}
@@ -70,4 +70,4 @@ const Cadastro = () => {
   );
 };
 
-export default Cadastro;
+export default Login;
