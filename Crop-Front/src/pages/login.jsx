@@ -1,3 +1,5 @@
+import { FcGoogle } from 'react-icons/fc';
+
 const Login = () => {
   return (
    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
