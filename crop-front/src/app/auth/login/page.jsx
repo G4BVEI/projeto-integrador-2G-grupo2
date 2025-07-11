@@ -3,7 +3,7 @@ import LoginForm from "@/components/LoginForm";
 
 const Login = () => {
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div className="relative w-screen h-screen ">
       <ImagemFundo />
       <LoginForm />
     </div>

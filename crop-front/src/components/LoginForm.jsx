@@ -1,4 +1,7 @@
 "use client";
+
+import Link from "next/link";
+
 export default function LoginForm() {
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)] px-4">
@@ -32,19 +35,17 @@ export default function LoginForm() {
 
         <p className="text-center text-sm mt-2 text-gray-500">
           Não possui uma conta?{" "}
-          <a href="#" className="text-green-600 hover:underline ">
+          <Link href="/auth/cadastro" className="text-green-600 hover:underline ">
             Clique aqui
-          </a>
+          </Link>
         </p>
       </div>
-
       {/* Divider */}
       <div className="flex items-center w-full max-w-md my-4">
         <hr className="flex-grow border-gray-300 border " />
         <span className="mx-2 text-gray-175 text-sm">Ou</span>
         <hr className="flex-grow border-gray-300 b border" />
       </div>
-
       {/* Botão Google */}
       <button className="flex items-center gap-2 border px-6 py-2 rounded-full bg-white shadow hover:shadow-md transition text-sm text-gray-500">
         <img

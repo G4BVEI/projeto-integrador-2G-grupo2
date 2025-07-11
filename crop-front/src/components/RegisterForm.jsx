@@ -1,4 +1,7 @@
 "use client"
+
+import Link from "next/link";
+
 export default function RegisterForm() {
     return (
   <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)] px-4">
@@ -27,9 +30,9 @@ export default function RegisterForm() {
 
       <p className="text-center text-sm mt-2 text-gray-500">
         Já possui uma conta?{" "}
-        <a href="#" className="text-green-600 hover:underline ">
+        <Link href="/auth/login" className="text-green-600 hover:underline ">
           Clique aqui
-        </a>
+        </Link>
       </p>
     </div>
 
