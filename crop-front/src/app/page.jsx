@@ -13,6 +13,8 @@ export default function Home() {
         <Link href="/auth/cadastro" className="text-blue-500 underline">cadastro</Link>
         <br></br>
         <Link href="/logged/dashboard" className="text-blue-500 underline">mathias fazer</Link>
+        <br></br>
+        <Link href="/noaccess/semacesso" className="text-blue-500 underline">não entraras</Link>
       </div>
     </div>
   );
