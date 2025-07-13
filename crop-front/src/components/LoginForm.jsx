@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function LoginForm() {
-  var error = "potato"
-  var isError = false
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("")
-  const [loading,setLoading] = useState(false)
+  var error = "potato";
+  var isError = false;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   async function handleLogin() {
-    console.log("trid to login")}
+    console.log("trid to login");
+  }
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)] px-4">
       <div className="bg-white bg-opacity-90 p-6 rounded-xl shadow-md w-full max-w-md border border-gray-300">
@@ -41,7 +42,7 @@ export default function LoginForm() {
               Esqueceu sua senha?
             </a>
           </p>
-          {error && (
+          {isError && (
             <p className="text-red-600 text-sm text-center mb-2">{error}</p>
           )}
           <button
@@ -54,10 +55,12 @@ export default function LoginForm() {
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
-
         <p className="text-center text-sm mt-2 text-gray-500">
           Não possui uma conta?{" "}
-          <Link href="/auth/cadastro" className="text-green-600 hover:underline ">
+          <Link
+            href="/auth/cadastro"
+            className="text-green-600 hover:underline "
+          >
             Clique aqui
           </Link>
         </p>

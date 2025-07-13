@@ -9,7 +9,7 @@ export default function RegisterForm() {
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
   const [loading,setLoading] = useState(false)
-    
+  var isError = false
   var error = "potato"
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)] px-4">
@@ -37,7 +37,7 @@ export default function RegisterForm() {
             minLength={6}
             className="w-full px-4 py-2 border rounded-md bg-gray-100 outline-none text-gray-700"
           />
-          {error && (
+          {isError && (
             <p className="text-red-600 text-sm text-center mb-2">{error}</p>
           )}
           <button
