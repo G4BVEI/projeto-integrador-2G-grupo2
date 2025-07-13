@@ -1,16 +1,38 @@
 "use client";
 
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  var error = "potato"
-  var isError = false
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("")
-  const [loading,setLoading] = useState(false)
-  async function handleLogin() {
-    console.log("trid to login")}
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    setLoading(false);
+
+    if (res?.ok) {
+      router.push("/noaccess/semacesso"); // ou outra rota que quiser
+    } else {
+      setError("Email ou senha incorretos");
+      console.error("Erro ao logar", res);
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)] px-4">
       <div className="bg-white bg-opacity-90 p-6 rounded-xl shadow-md w-full max-w-md border border-gray-300">

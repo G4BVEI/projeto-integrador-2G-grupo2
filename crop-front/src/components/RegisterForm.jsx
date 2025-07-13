@@ -2,35 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const router = useRouter();
-
-  async function handleRegister(e) {
-    e.preventDefault();
-    setError(null);
-
-    const res = await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (res.ok) {
-      router.push("/auth/login"); // ou auto-login
-    } else {
-      const errorText = await res.text();
-      setError(errorText);
-      console.error("Erro ao cadastrar:", errorText);
-    }
-  }
-
+  async function handleRegister() {
+  console.log("trid to login")}
+  const [email,setEmail] = useState("")
+  const [password,setPassword] = useState("")
+  const [loading,setLoading] = useState(false)
+    
+  var error = "potato"
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)] px-4">
       <div className="bg-white bg-opacity-90 p-6 rounded-xl shadow-md w-full max-w-md border border-gray-300">
