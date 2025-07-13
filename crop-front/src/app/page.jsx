@@ -14,7 +14,7 @@ export default function Home() {
         <br></br>
         <Link href="/logged/dashboard" className="text-blue-500 underline">mathias fazer</Link>
         <br></br>
-        <Link href="/noaccess/semacesso" className="text-blue-500 underline">não entraras</Link>
+        <p>atualizado</p>
       </div>
     </div>
   );
