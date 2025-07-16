@@ -69,7 +69,7 @@ export default function LoginForm() {
       {/* Divider */}
       <div className="flex items-center w-full max-w-md my-4">
         <hr className="flex-grow border-white-300" />
-        <span className="mx-2 text-white-175 text-sm, color:white">OU</span>
+        <span className="mx-2 text-white-175 text-sm">Ou</span>
         <hr className="flex-grow border-white-300" />
       </div>
 
