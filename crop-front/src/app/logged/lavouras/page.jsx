@@ -1,17 +1,33 @@
 import talhoes from "../lavouras/talhoes.json";
 
 function ListaTalhoes() {
-  return (
+
+    return (
     <div>
-      <h2>Lista de Talhões</h2>
-      <ul>
-        {talhoes.map((talhao, index) => (
-          <li key={index}>
-            <strong>{talhao.nome_do_talhao}</strong> - {talhao.tipo_de_cultura} - Umidade: {talhao.umidade_do_solo} - Última atividade: {talhao.ultima_atividade}
-          </li>
-        ))}
-      </ul>
+      {talhoes.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th>Talhão</th>
+              <th>Tipo de Cultura</th>
+              <th>Umidade do Solo</th>
+              <th>Última Atividade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {talhoes.map((talhao, index) => (
+              <tr key={index}>
+                <td>{talhao.nome_do_talhao}</td>
+                <td>{talhao.tipo_de_cultura}</td>
+                <td>{talhao.umidade_do_solo}</td>
+                <td>{talhao.ultima_atividade}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
+
 }
 export default ListaTalhoes
