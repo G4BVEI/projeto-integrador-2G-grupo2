@@ -66,9 +66,9 @@ export default function RegisterForm() {
       {/* Botão Google */}
       <button className="flex items-center gap-2 border px-6 py-2 rounded-full bg-white shadow hover:shadow-md transition text-sm text-gray-500">
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+          src="/images/LogoGoogle.png"
           alt="Google"
-          className="w-5 h-5"
+          className="w-7 h-5"
         />
         Continue com o Google
       </button>
