@@ -12,7 +12,7 @@ export default function Home() {
         <br></br>
         <Link href="/auth/cadastro" className="text-blue-500 underline">cadastro</Link>
         <br></br>
-        <Link href="/logged/dashboard" className="text-pink-500 underline">mathias fazer</Link>
+        <Link href="/logged/dashboard" className="text-blue-500 underline">mathias fazer</Link>
         <br></br>
         <p>atualizado</p>
       </div>
