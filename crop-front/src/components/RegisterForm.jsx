@@ -58,9 +58,9 @@ export default function RegisterForm() {
 
       {/* Divider */}
       <div className="flex items-center w-full max-w-md my-4">
-        <hr className="flex-grow border-gray-300" />
+        <hr className="flex-grow border-white" />
         <span className="mx-2 text-sm text-white">Ou</span>
-        <hr className="flex-grow border-gray-300" />
+        <hr className="flex-grow border-white" />
       </div>
 
       {/* Botão Google */}
