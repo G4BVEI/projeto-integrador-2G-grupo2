@@ -14,5 +14,3 @@ function ListaTalhoes() {
     </div>
   );
 }
-
-export default ListaTalhoes;
