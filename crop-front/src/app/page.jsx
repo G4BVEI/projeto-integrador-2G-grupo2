@@ -14,6 +14,10 @@ export default function Home() {
         <br></br>
         <Link href="/logged/dashboard" className="text-blue-500 underline">mathias fazer</Link>
         <br></br>
+        <Link href="/logged/lavouras" className="text-blue-500 underline">Martini</Link>
+        <br></br>
+        
+
         <p>atualizado</p>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import talhoes from "../data/talhoes.json";
+import talhoes from "../lavouras/talhoes.json";
 
 function ListaTalhoes() {
   return (
@@ -14,3 +14,4 @@ function ListaTalhoes() {
     </div>
   );
 }
+export default ListaTalhoes
