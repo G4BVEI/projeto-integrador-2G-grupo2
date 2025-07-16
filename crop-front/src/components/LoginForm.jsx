@@ -68,17 +68,17 @@ export default function LoginForm() {
 
       {/* Divider */}
       <div className="flex items-center w-full max-w-md my-4">
-        <hr className="flex-grow border-gray-300" />
-        <span className="mx-2 text-gray-175 text-sm">Ou</span>
-        <hr className="flex-grow border-gray-300" />
+        <hr className="flex-grow border-white-300" />
+        <span className="mx-2 text-white-175 text-sm">Ou</span>
+        <hr className="flex-grow border-white-300" />
       </div>
 
       {/* Botão Google */}
       <button className="flex items-center gap-2 border px-6 py-2 rounded-full bg-white shadow hover:shadow-md transition text-sm text-gray-500">
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+          src="/images/LogoGoogle.png"
           alt="Google"
-          className="w-5 h-5"
+          className="w-7 h-5"
         />
         Continue com o Google
       </button>
