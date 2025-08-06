@@ -4,7 +4,7 @@ import talhoes from "@/data/talhoes.json";
 function ListaTalhoes() {
 
     return (
-  <div className="mt-10 px-6">
+  <div className="-mt-4 -ml-5">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
