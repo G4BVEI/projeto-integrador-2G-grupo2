@@ -4,11 +4,9 @@ import { Home, Leaf, Wrench, Cloud, Info, User } from "lucide-react";
 
 export default function Sidebar() {
   return (
-    <aside className="fixed top-0 left-0 h-full w-64 bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between">
+    <aside className="fixed top-1 left-0 h-full w-64 bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between">
       {/* Logo */}
-      <div className="pt-8 px-6">
-        <h1 className="text-2xl font-bold text-green-500">CropSense</h1>
-      </div>
+    
 
       {/* Navigation */}
       <nav className="mt-6 px-4 flex-1 space-y-2">
