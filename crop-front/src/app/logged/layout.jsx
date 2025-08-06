@@ -1,12 +1,10 @@
-import LoggedHeader from "@/components/LoggedHeader";
-import Sidebar from "@/components/Sidebar";
-
-export default function LoggedLayout({ children }) {
+import LoggedLayout from "@/components/LoggedLayout";
+export default function Loggedlayout({ children }) {
   return (
     <>
-      <LoggedHeader></LoggedHeader>
-      <Sidebar></Sidebar>
-      {children}
+      <LoggedLayout>
+          {children}
+      </LoggedLayout>
     </>
   );
 }

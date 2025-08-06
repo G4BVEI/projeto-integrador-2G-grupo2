@@ -5,7 +5,7 @@ import { Menu, Bell, User } from "lucide-react";
 
 export default function LoggedHeader() {
   return (
-    <header className="w-full bg-white shadow-sm top-0">
+    <header className="w-full bg-white shadow-sm top-0 z-[100] fixed">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           

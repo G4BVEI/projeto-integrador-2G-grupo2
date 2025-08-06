@@ -4,11 +4,9 @@ import { Home, Leaf, Wrench, Cloud, Info, User } from "lucide-react";
 
 export default function Sidebar() {
   return (
-    <aside className="fixed top-1 left-0 h-full w-64 bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between">
-      {/* Logo */}
-    
-
+    <aside className="fixed top-0 left-0 h-full w-64 bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between z-40">
       {/* Navigation */}
+      <p className="m-5">slaalallsalsalsalsalsalsalsalsalsalsalsalsalsalsalsalsalsal</p>
       <nav className="mt-6 px-4 flex-1 space-y-2">
         <Link
           href="/"
