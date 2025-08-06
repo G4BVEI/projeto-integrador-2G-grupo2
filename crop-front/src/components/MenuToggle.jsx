@@ -1,16 +1,18 @@
-'use client';
-import { Menu } from 'lucide-react';
+'use client'
 
-export default function MenuToggle({ menuOpen, setMenuOpen }) {
+import { Menu } from 'lucide-react'
+
+export default function MenuToggle({ isOpen, onToggle }) {
   return (
-    <div className="absolute left-64 top-4 z-10" style={{ left: menuOpen ? '16rem' : '5rem' }}>
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="p-2 rounded-full bg-white shadow-md border text-gray-600 hover:bg-gray-50"
+    <div className="relative">
+      <div
+        className="absolute top-4 left-4 z-10 p-2 bg-white rounded-lg shadow-md cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={onToggle}
         aria-label="Toggle sidebar"
       >
-        <Menu size={24} />
-      </button>
+        <Menu size={24} className="text-gray-600" />
+      </div>
     </div>
-  );
+  )
 }
+
