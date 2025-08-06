@@ -1,4 +1,4 @@
-import talhoes from "../lavouras/talhoes.json";
+import talhoes from "@/data/talhoes.json";
 
 
 function ListaTalhoes() {
