@@ -25,8 +25,7 @@ export default function LoggedHeader() {
                 placeholder="Buscar..."
                 className="w-full h-10 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
               />
-              {/* Se quiser colocar um ícone dentro do input */}
-              {/* <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} /> */}
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             </div>
           </div>
           
