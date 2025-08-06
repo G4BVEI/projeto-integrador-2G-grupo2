@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 
 export default function DashboardPage() {
     return(
-        <p>falta fazer</p>
-        <Dashboard></Dashboard>
+        <div>
+            
+        </div>
     )}
