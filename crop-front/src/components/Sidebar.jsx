@@ -1,4 +1,4 @@
-import { Home, Leaf, Wrench, Cloud, Info, User } from "lucide-react";
+import { Home, Leaf, Wrench, Cloud, Info, User, Link } from "lucide-react";
 
 export default function Sidebar() {
   return (
@@ -10,41 +10,41 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="mt-6 px-4 flex-1">
-        <a
-          href="#"
+        <Link
+          href="\"
           className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <Home size={20} />
           <span>Dashboard</span>
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          href="\"
           className="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg bg-green-100 text-green-700 transition-colors"
         >
           <Leaf size={20} />
           <span>Lavouras</span>
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          href="\"
           className="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <Wrench size={20} />
           <span>Monitoramento</span>
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          href="\"
           className="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <Cloud size={20} />
           <span>Clima</span>
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          href="\"
           className="flex items-center gap-3 px-3 py-2 mt-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
           <Info size={20} />
           <span>Sobre</span>
-        </a>
+        </Link>
       </nav>
 
       {/* User Profile */}
