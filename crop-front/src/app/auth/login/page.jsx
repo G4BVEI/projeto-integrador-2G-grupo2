@@ -1,5 +1,5 @@
-import ImagemFundo from "@/components/ImagemFundo";
-import LoginForm from "@/components/LoginForm";
+import ImagemFundo from "@/components/auth/ImagemFundo";
+import LoginForm from "@/components/auth/LoginForm";
 
 const Login = () => {
   return (

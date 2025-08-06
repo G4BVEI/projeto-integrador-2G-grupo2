@@ -1,5 +1,5 @@
-import ImagemFundo from "@/components/ImagemFundo";
-import RegisterForm from "@/components/RegisterForm";
+import ImagemFundo from "@/components/auth/ImagemFundo";
+import RegisterForm from "@/components/auth/RegisterForm";
 
 const Register = () => {
   return (
