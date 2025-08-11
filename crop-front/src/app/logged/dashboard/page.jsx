@@ -1,8 +1,8 @@
-import MapWrapper from '@/components/MapWrapper'
-import RecentActions from '@/components/RecentActions'
-import PrecipitationChart from '@/components/PrecipitationChart'
-import TemperatureChart from '@/components/TemperatureChart'
-import AlertsCard from '@/components/AlertsCard'
+import MapWrapper from '@/components/dashboard/MapWrapper'
+import RecentActions from '@/components/dashboard/RecentActions'
+import PrecipitationChart from '@/components/dashboard/PrecipitationChart'
+import TemperatureChart from '@/components/dashboard/TemperatureChart'
+import AlertsCard from '@/components/dashboard/AlertsCard'
 import { getMapData, getChartData, getRecentActions, getAlerts } from '@/lib/fetchData'
 
 export default async function HomePage() {
