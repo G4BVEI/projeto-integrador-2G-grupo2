@@ -74,8 +74,6 @@ export default function LoggedLayout({ children }) {
     </div>
   </div>
 </header>
-
-
       {/* SIDEBAR */}
       <aside
         className={`fixed top-16 left-0 h-[calc(100%-4rem)] bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between z-40 transition-all duration-300 ${
