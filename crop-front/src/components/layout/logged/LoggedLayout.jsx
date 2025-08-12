@@ -39,41 +39,41 @@ export default function LoggedLayout({ children }) {
   return (
     <div>
       {/* HEADER */}
-<header className="fixed top-0 left-0 w-full h-16 bg-white shadow-sm z-[100] px-8">
-  <div className="flex items-center justify-between h-16 px-2">
-    {/* Logo + Menu */}
-    <div className="flex items-center space-x-4 flex-shrink-0">
-      <span className="text-xl font-bold text-green-500">CropSense</span>
-      <button
-        className="p-2 rounded-md hover:bg-gray-100"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        <Menu size={24} />
-      </button>
-    </div>
+      <header className="fixed top-0 left-0 w-full h-16 bg-white shadow-sm z-[100] px-8">
+        <div className="flex items-center justify-between h-16 px-2">
+          {/* Logo + Menu */}
+          <div className="flex items-center space-x-4 flex-shrink-0">
+            <span className="text-xl font-bold text-green-500">CropSense</span>
+            <button
+              className="p-2 rounded-md hover:bg-gray-100"
+              onClick={() => setCollapsed(!collapsed)}
+            >
+              <Menu size={24} />
+            </button>
+          </div>
 
-    {/* Search */}
-    <div className="flex-1 max-w-xl mx-auto">
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="w-full h-10 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-        />
-      </div>
-    </div>
+          {/* Search */}
+          <div className="flex-1 max-w-xl mx-auto">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Buscar..."
+                className="w-full h-10 pl-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+              />
+            </div>
+          </div>
 
-    {/* Actions */}
-    <div className="flex items-center space-x-4 flex-shrink-0">
-      <button className="p-2 rounded-md hover:bg-gray-100">
-        <Bell size={24} />
-      </button>
-      <button className="p-2 rounded-full hover:bg-gray-100">
-        <User size={24} />
-      </button>
-    </div>
-  </div>
-</header>
+          {/* Actions */}
+          <div className="flex items-center space-x-4 flex-shrink-0">
+            <button className="p-2 rounded-md hover:bg-gray-100">
+              <Bell size={24} />
+            </button>
+            <button className="p-2 rounded-full hover:bg-gray-100">
+              <User size={24} />
+            </button>
+          </div>
+        </div>
+      </header>
       {/* SIDEBAR */}
       <aside
         className={`fixed top-16 left-0 h-[calc(100%-4rem)] bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between z-40 transition-all duration-300 ${
@@ -124,6 +124,10 @@ export default function LoggedLayout({ children }) {
         className={`mt-16 p-6 transition-all duration-300 ${
           collapsed ? "ml-16" : "ml-64"
         }`}
+        style={{
+          height: "calc(100vh - 4rem)", // altura total menos o header
+          overflowY: "auto",
+        }}
       >
         {children}
       </main>
