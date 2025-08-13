@@ -18,6 +18,8 @@ export default function Home() {
         <br></br>
         <Link href="/logged/monitoramento" className="text-blue-500 underline">Monitoramento</Link>
         <br></br>
+        <Link href="/logged/clima" className="text-blue-500 underline">Clima</Link>
+        <br></br>
         
 
         <p>atualizado</p>
