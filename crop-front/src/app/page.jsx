@@ -16,6 +16,8 @@ export default function Home() {
         <br></br>
         <Link href="/logged/lavouras" className="text-blue-500 underline">Martini</Link>
         <br></br>
+        <Link href="/logged/monitoramento" className="text-blue-500 underline">Monitoramento</Link>
+        <br></br>
         
 
         <p>atualizado</p>
