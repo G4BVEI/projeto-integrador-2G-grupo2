@@ -1,5 +1,5 @@
 // Simulação de fetch de dados - em produção seria uma API real
-import { mapMarkers } from '@/data/mapData'
+import { mapMarkers } from '@/data/map'
 import { precipitationData, temperatureData, weatherInfo } from '@/data/chartData'
 import { recentActions } from '@/data/actionsData'
 import { alerts } from '@/data/alertsData'

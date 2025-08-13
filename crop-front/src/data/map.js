@@ -1,3 +1,4 @@
+// data/map.js
 export const mapMarkers = [
   { pos: [-27.21, -52.00], label: 'Encosta Alta' },
   { pos: [-27.25, -52.05], label: 'Vale Verde' },
@@ -7,4 +8,3 @@ export const mapMarkers = [
 
 export const mapCenter = [-27.23, -52.02]
 export const mapZoom = 10
-
