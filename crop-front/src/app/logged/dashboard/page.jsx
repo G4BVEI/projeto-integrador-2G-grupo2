@@ -1,4 +1,3 @@
-import MapWrapper from "@/components/dashboard/MapWrapper";
 import RecentActions from "@/components/dashboard/RecentActions";
 import PrecipitationChart from "@/components/dashboard/PrecipitationChart";
 import TemperatureChart from "@/components/dashboard/TemperatureChart";
