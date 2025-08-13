@@ -1,10 +1,26 @@
-import talhoes from "@/data/talhoes.json";
+"use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import talhoesData from "@/data/talhoes.json";
 
 function ListaTalhoes() {
+  const [talhoes] = useState(talhoesData);
+  const router = useRouter();
 
-    return (
-  <div className="-mt-4 -ml-5">
+  return (
+    <div className="-mt-4 -ml-5">
+      {/* Botão de Adicionar */}
+      <div className="mb-4">
+        <button
+          onClick={() => router.push("/logged/lavouras/adicionar")}
+          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
+        >
+          <span className="text-lg">+</span> Adicionar Lavoura
+        </button>
+      </div>
+
+      {/* Tabela */}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
@@ -24,10 +40,7 @@ function ListaTalhoes() {
                 <td className="px-4 py-3">{talhao.umidade_do_solo}</td>
                 <td className="px-4 py-3">{talhao.ultima_atividade}</td>
                 <td className="px-4 py-3">
-                  <a
-                    href="#"
-                    className="text-green-600 hover:underline"
-                  >
+                  <a href="#" className="text-green-600 hover:underline">
                     Ver Detalhes
                   </a>
                 </td>
@@ -37,8 +50,7 @@ function ListaTalhoes() {
         </table>
       </div>
     </div>
-
   );
-
 }
-export default ListaTalhoes
+
+export default ListaTalhoes;
