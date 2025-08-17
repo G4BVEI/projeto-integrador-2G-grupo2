@@ -2,16 +2,17 @@ import RecentActions from "@/components/dashboard/RecentActions";
 import PrecipitationChart from "@/components/dashboard/PrecipitationChart";
 import TemperatureChart from "@/components/dashboard/TemperatureChart";
 import AlertsCard from "@/components/dashboard/AlertsCard";
-import MapSquare from "@/components/dashboard/MapSquare";
+import MapSquare from "@/components/dashboard/MapSquare"
+import { mapFields } from "@/data/map"
+import { useState } from "react"
 import {
-  getMapData,
   getChartData,
   getRecentActions,
   getAlerts,
 } from "@/lib/fetchData";
 import { mapMarkers, mapCenter, mapZoom } from "@/data/map";
 
-export default async function HomePage() {
+export default async function DashboardPage() {
   // Fetch de dados no servidor para melhor SEO
   const [mapData, chartData, actionsData, alertsData] = await Promise.all([
     getMapData(),

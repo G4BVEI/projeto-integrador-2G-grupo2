@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import 'leaflet/dist/leaflet.css'
 
-function MapCore({ markers, center, zoom }) {
+const MapCore = ({ fields, selectedIds, viewMode }) => {
   const mapRef = useRef(null)
 
   useEffect(() => {
@@ -15,26 +15,46 @@ function MapCore({ markers, center, zoom }) {
 
       if (mapRef.current) return
 
-      const map = L.map('map').setView(center, zoom)
+      const map = L.map('map', { zoomControl: true }).setView([0, 0], 2)
       mapRef.current = map
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-      }).addTo(map)
+      // Base layer padrão (OSM)
+      const baseLayer = L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { maxZoom: 19 }
+      ).addTo(map)
 
-      const side = 0.001 // ~100m
-      const rectangles = []
+      // LayerGroup para poligonos
+      const polygonGroup = L.layerGroup().addTo(map)
 
-      markers.forEach(({ pos, label }) => {
-        const bounds = [
-          [pos[0] - side / 2, pos[1] - side / 2],
-          [pos[0] + side / 2, pos[1] + side / 2],
-        ]
-        const rect = L.rectangle(bounds, { color: 'blue', weight: 1, fillOpacity: 0.4 })
-          .addTo(map)
-          .bindPopup(label)
-        rectangles.push(rect)
+      // Filtra lavouras selecionadas
+      const toDisplay = fields.filter(f => selectedIds.includes(f.id))
+
+      if (toDisplay.length === 0) return
+
+      const allBounds = []
+
+      toDisplay.forEach(({ coords, name, description, type }) => {
+        // Cor por tipo
+        let color = 'gray'
+        if (type === 'lavoura') color = 'green'
+        if (type === 'pastagem') color = 'yellow'
+        if (type === 'sensor') color = 'blue'
+
+        const polygon = L.polygon(coords, {
+          color,
+          weight: 2,
+          fillOpacity: viewMode === 'sensor' ? 0.1 : 0.3,
+        }).addTo(polygonGroup)
+
+        polygon.bindPopup(`<b>${name}</b><br>${description}`)
+
+        allBounds.push(polygon.getBounds())
       })
+
+      // Ajusta view para caber todas as lavouras selecionadas
+      const combined = allBounds.reduce((acc, b) => acc.extend(b), L.latLngBounds(allBounds[0]))
+      map.fitBounds(combined, { padding: [20, 20] })
     })()
 
     return () => {
@@ -43,7 +63,7 @@ function MapCore({ markers, center, zoom }) {
         mapRef.current = null
       }
     }
-  }, [markers, center, zoom])
+  }, [fields, selectedIds, viewMode])
 
   return <div id="map" className="flex-1 rounded-lg overflow-hidden h-96" />
 }
