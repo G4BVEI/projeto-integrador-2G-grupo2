@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import ImagemFundo from './ImagemFundo';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -34,6 +35,7 @@ export default function LoginForm() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
+      <ImagemFundo></ImagemFundo>
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-green-600 mb-6">Login</h1>
         
@@ -80,7 +82,7 @@ export default function LoginForm() {
 
         <div className="mt-4 text-center text-sm">
           <span className="text-gray-600">Não tem conta? </span>
-          <Link href="/auth/register" className="text-green-600 hover:underline font-medium">
+          <Link href="/auth/cadastro" className="text-green-600 hover:underline font-medium">
             Cadastre-se
           </Link>
         </div>

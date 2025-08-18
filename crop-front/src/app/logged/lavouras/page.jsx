@@ -1,12 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import talhoesData from "@/data/talhoes.json";
+import { createClient } from "@/lib/supabase/client";
 
 function ListaTalhoes() {
-  const [talhoes] = useState(talhoesData);
+  const [talhoes, setTalhoes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchTalhoes() {
+      try {
+        setLoading(true);
+        
+        // Get current user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError || !user) {
+          throw userError || new Error("Usuário não autenticado");
+        }
+
+        // Fetch talhoes only for this user
+        const { data, error } = await supabase
+          .from('talhoes')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('criado_em', { ascending: false });
+
+        if (error) throw error;
+
+        setTalhoes(data || []);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching talhoes:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTalhoes();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Carregando seus talhões...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">Erro: {error}</div>;
+  }
 
   return (
     <div className="-mt-4 -ml-5">
@@ -25,27 +69,48 @@ function ListaTalhoes() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
-              <th className="px-4 py-3">Nome do Talhão</th>
+              <th className="px-4 py-3">Nome</th>
               <th className="px-4 py-3">Tipo de Cultura</th>
-              <th className="px-4 py-3">Umidade do Solo</th>
-              <th className="px-4 py-3">Última Atividade</th>
+              <th className="px-4 py-3">Sistema de Irrigação</th>
+              <th className="px-4 py-3">Data de Plantio</th>
+              <th className="px-4 py-3">Área (ha)</th>
               <th className="px-4 py-3">Ações</th>
             </tr>
           </thead>
           <tbody className="text-gray-800">
-            {talhoes.map((talhao, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium">{talhao.nome_do_talhao}</td>
-                <td className="px-4 py-3">{talhao.tipo_de_cultura}</td>
-                <td className="px-4 py-3">{talhao.umidade_do_solo}</td>
-                <td className="px-4 py-3">{talhao.ultima_atividade}</td>
-                <td className="px-4 py-3">
-                  <a href="#" className="text-green-600 hover:underline">
-                    Ver Detalhes
-                  </a>
+            {talhoes.length > 0 ? (
+              talhoes.map((talhao) => (
+                <tr key={talhao.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 font-medium">{talhao.nome}</td>
+                  <td className="px-4 py-3">{talhao.tipo_cultura}</td>
+                  <td className="px-4 py-3">{talhao.sistema_irrigacao}</td>
+                  <td className="px-4 py-3">
+                    {talhao.data_plantio ? new Date(talhao.data_plantio).toLocaleDateString() : '-'}
+                  </td>
+                  <td className="px-4 py-3">{talhao.area ? `${talhao.area} ha` : '-'}</td>
+                  <td className="px-4 py-3">
+                    <button 
+                      onClick={() => router.push(`/logged/lavouras/${talhao.id}`)}
+                      className="text-green-600 hover:underline mr-3"
+                    >
+                      Detalhes
+                    </button>
+                    <button 
+                      onClick={() => router.push(`/logged/lavouras/editar/${talhao.id}`)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Editar
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-4 py-3 text-center text-gray-500">
+                  Nenhum talhão cadastrado ainda
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
