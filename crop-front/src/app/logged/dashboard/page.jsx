@@ -4,18 +4,25 @@ import TemperatureChart from "@/components/dashboard/TemperatureChart";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import MapSquare from "@/components/dashboard/MapSquare"
 import { mapFields } from "@/data/map"
-import { useState } from "react"
 import {
   getChartData,
   getRecentActions,
   getAlerts,
 } from "@/lib/fetchData";
 import { mapMarkers, mapCenter, mapZoom } from "@/data/map";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import LogoutButton from "@/components/auth/LogoutButton";
 
-export default async function DashboardPage() {
-  // Fetch de dados no servidor para melhor SEO
-  const [mapData, chartData, actionsData, alertsData] = await Promise.all([
-    getMapData(),
+  export default async function DashboardPage() {
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+  
+    if (!session) {
+      redirect("/auth/login");
+    }
+    // Fetch de dados no servidor para melhor SEO
+  const [ chartData, actionsData, alertsData] = await Promise.all([
     getChartData(),
     getRecentActions(),
     getAlerts(),
@@ -40,6 +47,8 @@ export default async function DashboardPage() {
 
         <AlertsCard alerts={alertsData} />
       </section>
+      <p>Bem-vindo, {session.user.email}!</p>
+      <LogoutButton></LogoutButton>
     </>
   );
 }

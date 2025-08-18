@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu,
   Bell,
@@ -12,12 +12,13 @@ import {
   Info,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
-function NavLink({ href, icon: Icon, children, collapsed }) {
+function NavLink({ href, icon: Icon, children, collapsed, session }) {
   const pathname = usePathname();
   const isActive = pathname === href;
-
+  
   return (
     <Link
       href={href}
@@ -35,6 +36,33 @@ function NavLink({ href, icon: Icon, children, collapsed }) {
 
 export default function LoggedLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [session, setSession] = useState(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push("/auth/login");
+      } else {
+        setSession(session);
+      }
+    };
+
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (!session) router.push("/auth/login");
+    });
+
+    return () => subscription?.unsubscribe();
+  }, [router, supabase.auth]);
+
+  if (!session) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div>
@@ -74,6 +102,7 @@ export default function LoggedLayout({ children }) {
           </div>
         </div>
       </header>
+      
       {/* SIDEBAR */}
       <aside
         className={`fixed top-16 left-0 h-[calc(100%-4rem)] bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between z-40 transition-all duration-300 ${
@@ -82,23 +111,19 @@ export default function LoggedLayout({ children }) {
       >
         {/* Navigation */}
         <nav className="mt-6 px-2 flex-1 space-y-2">
-          <NavLink href="/logged/dashboard" icon={Home} collapsed={collapsed}>
+          <NavLink href="/logged/dashboard" icon={Home} collapsed={collapsed} session={session}>
             Dashboard
           </NavLink>
-          <NavLink href="/logged/lavouras" icon={Leaf} collapsed={collapsed}>
+          <NavLink href="/logged/lavouras" icon={Leaf} collapsed={collapsed} session={session}>
             Lavouras
           </NavLink>
-          <NavLink
-            href="/logged/monitoramento"
-            icon={Wrench}
-            collapsed={collapsed}
-          >
+          <NavLink href="/logged/monitoramento" icon={Wrench} collapsed={collapsed} session={session}>
             Monitoramento
           </NavLink>
-          <NavLink href="/logged/clima" icon={Cloud} collapsed={collapsed}>
+          <NavLink href="/logged/clima" icon={Cloud} collapsed={collapsed} session={session}>
             Clima
           </NavLink>
-          <NavLink href="/sobre" icon={Info} collapsed={collapsed}>
+          <NavLink href="/sobre" icon={Info} collapsed={collapsed} session={session}>
             Sobre
           </NavLink>
         </nav>
@@ -111,7 +136,7 @@ export default function LoggedLayout({ children }) {
             </div>
             {!collapsed && (
               <div>
-                <p className="text-sm font-medium">Usuário Agro</p>
+                <p className="text-sm font-medium">{session.user.email}!</p>
                 <p className="text-xs text-gray-500">Produtor Rural</p>
               </div>
             )}
@@ -125,7 +150,7 @@ export default function LoggedLayout({ children }) {
           collapsed ? "ml-16" : "ml-64"
         }`}
         style={{
-          height: "calc(100vh - 4rem)", // altura total menos o header
+          height: "calc(100vh - 4rem)",
           overflowY: "auto",
         }}
       >
