@@ -13,14 +13,18 @@ import {
 export default function CropSenseLanding() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
+      {/* Menu */}
       <header className="border-b border-green-200 bg-green-50/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
-            <a href="#"><span className="text-xl font-bold text-green-800">CropSense</span></a>
+            <a href="#">
+              <span className="text-xl font-bold text-green-800">
+                CropSense
+              </span>
+            </a>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             <a
@@ -51,7 +55,7 @@ export default function CropSenseLanding() {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Início */}
       <section className="relative py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-green-100 via-white to-green-50"></div>
         <div className="container mx-auto px-4 relative z-10">
@@ -69,9 +73,12 @@ export default function CropSenseLanding() {
               produtividade com decisões baseadas em dados.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium text-lg transition-colors">
+              <Link
+                href="auth/cadastro"
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium text-lg transition-colors inline-block text-center"
+              >
                 Começar Gratuitamente
-              </button>
+              </Link>
               <button className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-8 py-3 rounded-lg font-medium text-lg transition-colors">
                 Ver Demonstração
               </button>
@@ -80,7 +87,7 @@ export default function CropSenseLanding() {
         </div>
       </section>
 
-      {/* Problem Section */}
+      {/* Problemas */}
       <section className="py-16 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-12">
@@ -133,7 +140,7 @@ export default function CropSenseLanding() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Funcionalidades */}
       <section id="funcionalidades" className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
@@ -221,7 +228,7 @@ export default function CropSenseLanding() {
         </div>
       </section>
 
-      {/* How it Works Section */}
+      {/* Como funciona */}
       <section id="como-funciona" className="py-20 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
@@ -281,7 +288,7 @@ export default function CropSenseLanding() {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Resultados */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -336,7 +343,7 @@ export default function CropSenseLanding() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Botão de cadastro */}
       <section className="py-20 bg-green-600">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
@@ -348,9 +355,12 @@ export default function CropSenseLanding() {
               plantações com o CropSense
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-green-600 hover:bg-green-50 px-8 py-3 rounded-lg font-medium text-lg transition-colors">
+              <Link
+                href="auth/cadastro"
+                className="bg-white text-green-600 hover:bg-green-50 px-8 py-3 rounded-lg font-medium text-lg transition-colors inline-block text-center"
+              >
                 Começar Gratuitamente
-              </button>
+              </Link>
             </div>
           </div>
         </div>
