@@ -20,7 +20,7 @@ export default function CropSenseLanding() {
             <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-green-800">CropSense</span>
+            <a href="#"><span className="text-xl font-bold text-green-800">CropSense</span></a>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             <a
@@ -325,7 +325,7 @@ export default function CropSenseLanding() {
               <div className="relative">
                 <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-2xl p-8">
                   <img
-                    src="public/images/landing-page.png"
+                    src="/images/landing-page.png"
                     alt="Monitoramento agrícola inteligente"
                     className="w-full h-auto rounded-lg"
                   />
