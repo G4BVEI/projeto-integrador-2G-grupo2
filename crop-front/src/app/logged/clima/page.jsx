@@ -126,21 +126,18 @@ export default function WeatherSection({ lat = -27.25, lon = -52.02, apiKey = ''
           </div>
         </div>
       </div>
-
-      <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-        <div className="h-80 md:h-[500px] rounded-lg overflow-hidden">
-          <iframe
-            title="Windy Map"
-            width="100%"
-            height="100%"
-            src={`https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh`}
+        {/* Bloco do mapa Windy */}
+        <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+        <iframe
+            title="Mapa do Windy"
+            src={`https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&width=650&height=450&zoom=5&level=surface&overlay=temperature&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`}
             frameBorder="0"
-            allowFullScreen
-            className="w-full h-full"
-          />
+            width="100%"
+            height="400"
+            className="rounded-xl"
+        ></iframe>
         </div>
-      </div>
-
+      {/* Bloco de detalhes apenas, sem mapa */}
       <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
         <h4 className="font-semibold mb-2">Detalhes - {dayLabel(selectedDay)}</h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
