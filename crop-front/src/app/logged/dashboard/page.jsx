@@ -1,41 +1,54 @@
+// app/dashboard/page.js
 import RecentActions from "@/components/dashboard/RecentActions";
 import PrecipitationChart from "@/components/dashboard/PrecipitationChart";
 import TemperatureChart from "@/components/dashboard/TemperatureChart";
 import AlertsCard from "@/components/dashboard/AlertsCard";
-import MapSquare from "@/components/dashboard/MapSquare"
-import { mapFields } from "@/data/map"
+import AllTalhoesMap from "@/components/dashboard/AllTalhoesMap";
 import {
   getChartData,
   getRecentActions,
   getAlerts,
 } from "@/lib/fetchData";
-import { mapMarkers, mapCenter, mapZoom } from "@/data/map";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
 
-  export default async function DashboardPage() {
-    const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
+export default async function DashboardPage() {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    redirect("/auth/login");
+  }
   
-    if (!session) {
-      redirect("/auth/login");
-    }
-    // Fetch de dados no servidor para melhor SEO
-  const [ chartData, actionsData, alertsData] = await Promise.all([
+  // Buscar os talhões do usuário na tabela CORRETA (talhoes)
+  const { data: talhoes } = await supabase
+    .from('talhoes') // ← CORRIGIDO: usar 'talhoes'
+    .select('*')
+    .eq('user_id', session.user.id)
+    .order('criado_em', { ascending: false }); // ← CORRIGIDO: usar 'criado_em'
+
+  // Fetch de dados no servidor para melhor SEO
+  const [chartData, actionsData, alertsData] = await Promise.all([
     getChartData(),
     getRecentActions(),
     getAlerts(),
   ]);
 
   return (
-    <>
-      <section className="flex gap-4 p-4 flex-1">
-        <MapSquare markers={mapMarkers} center={mapCenter} zoom={mapZoom} />
-        <RecentActions actions={actionsData} />
-      </section>
+    <div className="p-4 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div className="flex items-center gap-4">
+          <p className="text-gray-600">Bem-vindo, {session.user.email}!</p>
+          <LogoutButton />
+        </div>
+      </div>
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+      {/* Mapa com todos os talhões */}
+      <AllTalhoesMap talhoes={talhoes || []} />
+
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <PrecipitationChart data={chartData.precipitation} />
 
         <TemperatureChart
@@ -47,8 +60,8 @@ import LogoutButton from "@/components/auth/LogoutButton";
 
         <AlertsCard alerts={alertsData} />
       </section>
-      <p>Bem-vindo, {session.user.email}!</p>
-      <LogoutButton></LogoutButton>
-    </>
+
+      <RecentActions actions={actionsData} />
+    </div>
   );
 }

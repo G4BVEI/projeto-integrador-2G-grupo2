@@ -92,7 +92,7 @@ export default function VisualizarTalhao() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Visualizar Talhão</h1>
         <button
-          onClick={() => router.push('/talhoes')}
+          onClick={() => router.push('/logged/lavouras')}
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
         >
           Voltar para Lista

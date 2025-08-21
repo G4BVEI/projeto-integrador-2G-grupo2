@@ -41,3 +41,41 @@ html {
   font-weight: bold;
   font-size: 12px;
 }
+/* Adicione isso ao seu arquivo global.css */
+.map-tooltip {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+/* Adicione ao seu arquivo global.css */
+.map-tooltip {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.leaflet-popup-content {
+  margin: 12px;
+}
+
+.detalhes-btn {
+  transition: background-color 0.2s;
+}
+
+.detalhes-btn:hover {
+  background-color: #059669 !important; /* Equivalente a bg-green-700 */
+}
