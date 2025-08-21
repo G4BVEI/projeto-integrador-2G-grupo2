@@ -1,0 +1,55 @@
+## Core Requirements
+
+1. **Next.js 13+ with App Router**
+2. **Tailwind CSS for styling**
+3. **Leaflet for interactive maps**
+4. **Dynamic heatmap visualizations with cloth-like interactions**
+
+## Detailed Specifications
+
+### 1. Data Structure
+- Farm plots (talhões) stored with geography data (polygons)
+- Support for multiple data types: humidity, temperature, fertility
+- User-specific data filtering
+
+### 2. Map Visualization
+- Interactive Leaflet map displaying plot boundaries
+- Dynamic heatmap overlays with smooth gradients
+- Real-time data simulation capabilities
+- "Cloth-like" interaction between data points where values influence neighboring points
+
+### 3. UI Components
+- Responsive sidebar with plot list and filters
+- Statistics dashboard showing current values
+- Toggle for data simulation
+- Heatmap type selector (humidity/temperature/fertility)
+
+### 4. Advanced Heatmap Features
+- **Dynamic Gradients**: Smooth color transitions based on values
+- **Cloth-like Interactions**: Data points that influence neighboring values creating organic patterns
+- **Real-time Updates**: Values that change and propagate through the visualization
+- **Multiple Data Layers**: Switch between different data types with appropriate color schemes
+
+### 5. Technical Implementation
+- Client-side rendering for dynamic visualizations
+- Custom algorithms for data point interaction simulation
+- Efficient rendering of large datasets
+- Responsive design for all screen sizes
+
+## Challenges with Current Approach
+
+The main difficulty is implementing the "cloth-like interaction" between data points in a heatmap. This requires:
+
+1. A physics-based simulation where each data point influences its neighbors
+2. Efficient computation that doesn't bog down the browser
+3. Smooth visualization of the resulting patterns
+
+## Alternative Approach
+
+Since implementing true cloth-like physics in a heatmap is complex, I'd recommend:
+
+1. Using a specialized visualization library like Deck.gl or WebGL-based solutions
+2. Implementing a simplified version with:
+   - Grid-based data points
+   - Neighborhood influence algorithms
+   - GPU-accelerated rendering where possible

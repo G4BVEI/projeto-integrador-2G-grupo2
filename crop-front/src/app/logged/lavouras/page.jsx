@@ -90,7 +90,7 @@ function ListaTalhoes() {
                   <td className="px-4 py-3">{talhao.area ? `${talhao.area} ha` : '-'}</td>
                   <td className="px-4 py-3">
                     <button 
-                      onClick={() => router.push(`/logged/lavouras/${talhao.id}`)}
+                      onClick={() => router.push(`/logged/monitoramento/${talhao.id}`)}
                       className="text-green-600 hover:underline mr-3"
                     >
                       Detalhes

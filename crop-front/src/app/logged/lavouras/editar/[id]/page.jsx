@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import 'leaflet/dist/leaflet.css'
 import { toast } from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
 
-const MapEditor = dynamic(
-  () => import('@/components/lavouras/MapEditor'),
+const MapCore = dynamic(
+  () => import('@/components/lavouras/MapCore'),
   {
     ssr: false,
     loading: () => (
@@ -18,7 +19,11 @@ const MapEditor = dynamic(
   }
 )
 
-export default function AdicionarTalhao() {
+export default function EditarTalhao() {
+  const params = useParams()
+  const router = useRouter()
+  const id = params.id
+  
   const [points, setPoints] = useState([])
   const [formData, setFormData] = useState({
     nome: '',
@@ -28,8 +33,62 @@ export default function AdicionarTalhao() {
     descricao: '',
     area: 0
   })
+  const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const supabase = createClient()
+
+  useEffect(() => {
+    if (id) {
+      fetchTalhao()
+    }
+  }, [id])
+
+  const fetchTalhao = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch(`/api/lavouras/${id}`)
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erro ao carregar talhão')
+      }
+      
+      const data = await response.json()
+      
+      // Preencher formulário com dados existentes
+      setFormData({
+        nome: data.nome || '',
+        tipo_cultura: data.tipo_cultura || '',
+        sistema_irrigacao: data.sistema_irrigacao || '',
+        data_plantio: data.data_plantio || '',
+        descricao: data.descricao || '',
+        area: data.area || 0
+      })
+      
+      // Converter GeoJSON para pontos no mapa
+      if (data.localizacao_json && data.localizacao_json.coordinates) {
+        const coords = data.localizacao_json.coordinates[0]
+        const formattedPoints = coords.map(coord => ({
+          lat: coord[1], // GeoJSON é [lng, lat], nosso mapa usa [lat, lng]
+          lng: coord[0]
+        }))
+        
+        // Remover último ponto se for igual ao primeiro (polígono fechado)
+        if (formattedPoints.length > 1 && 
+            formattedPoints[0].lat === formattedPoints[formattedPoints.length-1].lat &&
+            formattedPoints[0].lng === formattedPoints[formattedPoints.length-1].lng) {
+          formattedPoints.pop()
+        }
+        
+        setPoints(formattedPoints)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar talhão:', error)
+      toast.error(error.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const addPoint = () => {
     setPoints([...points, { lat: "", lng: "" }]);
@@ -104,57 +163,44 @@ export default function AdicionarTalhao() {
     setIsSubmitting(true)
 
     try {
-      // 2. Obter usuário autenticado
-      const { data: { user }, error: userError } = await supabase.auth.getUser()
-      if (userError || !user) throw new Error('Faça login para continuar')
-
-      // 3. Preparar geometria no formato GeoJSON para a nova estrutura
+      // 2. Preparar geometria no formato GeoJSON
       const coordenadas = pontosValidos.map(p => [Number(p.lng), Number(p.lat)])
       
-      // Fechar o polígono se necessário (primeiro e último ponto devem ser iguais)
+      // Fechar o polígono (primeiro e último ponto devem ser iguais)
       if (!coordenadas[0].every((val, i) => val === coordenadas[coordenadas.length-1][i])) {
         coordenadas.push([...coordenadas[0]])
       }
 
-      // 4. Criar objeto GeoJSON no formato esperado pela nova tabela
+      // 3. Criar objeto GeoJSON
       const localizacaoJson = {
         type: 'Polygon',
-        coordinates: [coordenadas] // Array de arrays de coordenadas
+        coordinates: [coordenadas]
       }
 
-      // 5. Chamar API atualizada
-      const response = await fetch('/api/lavouras', {
-        method: 'POST',
+      // 4. Chamar API para atualizar
+      const response = await fetch(`/api/lavouras/${id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          localizacao_json: localizacaoJson,
-          user_id: user.id
+          localizacao_json: localizacaoJson
         })
       })
 
-      // 6. Tratar resposta
+      // 5. Tratar resposta
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || 'Erro ao cadastrar talhão')
+        throw new Error(errorData.error || 'Erro ao atualizar talhão')
       }
 
       const data = await response.json()
-      toast.success(`Talhão "${data.nome}" cadastrado com sucesso!`)
+      toast.success(`Talhão "${data.nome}" atualizado com sucesso!`)
       
-      // 7. Resetar formulário
-      setFormData({
-        nome: '',
-        tipo_cultura: '',
-        sistema_irrigacao: '',
-        data_plantio: '',
-        descricao: '',
-        area: 0
-      })
-      setPoints([])
+      // 6. Redirecionar para lista de talhões
+      router.push('/talhoes')
 
     } catch (error) {
-      console.error('Erro no cadastro:', error)
+      console.error('Erro na atualização:', error)
       toast.error(error.message.includes('geometry') 
         ? 'Formato inválido dos pontos no mapa. Certifique-se de que são coordenadas válidas.' 
         : error.message)
@@ -163,9 +209,25 @@ export default function AdicionarTalhao() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="p-6 flex items-center justify-center h-64">
+        <div className="text-lg">Carregando talhão...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Adicionar Talhão</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Editar Talhão</h1>
+        <button
+          onClick={() => router.push('/talhoes')}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Voltar
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Section */}
@@ -339,37 +401,45 @@ export default function AdicionarTalhao() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full mt-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
-              disabled={
-                isSubmitting || points.filter((p) => p.lat && p.lng).length < 3
-              }
-            >
-              {isSubmitting ? "Salvando..." : "Salvar Talhão"}
-            </button>
+            <div className="flex space-x-3 mt-4">
+              <button
+                type="button"
+                onClick={() => router.push('/talhoes')}
+                className="flex-1 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex-1 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
+                disabled={
+                  isSubmitting || points.filter((p) => p.lat && p.lng).length < 3
+                }
+              >
+                {isSubmitting ? "Salvando..." : "Salvar Alterações"}
+              </button>
+            </div>
           </form>
         </div>
 
         {/* Seção do Mapa */}
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="h-96 rounded overflow-hidden">
-            <MapEditor
-            fields={[
-              {
-                id: "new-field",
-                name: formData.nome,
-                description: formData.descricao,
-                type: "talhao",
-                coords: points
-                  .filter((p) => p.lat && p.lng)
-                  .map((p) => [p.lat, p.lng]),
-              },
-            ]}
-            selectedIds={["new-field"]}
-            onPolygonUpdate={handlePolygonUpdate}
-            // interactive=true é o padrão, não precisa especificar
-          />
+            <MapCore
+              fields={[
+                {
+                  id: "edit-field",
+                  name: formData.nome,
+                  description: formData.descricao,
+                  type: "talhao",
+                  coords: points
+                    .filter((p) => p.lat && p.lng)
+                    .map((p) => [p.lat, p.lng]),
+                },
+              ]}
+              selectedIds={["edit-field"]}
+              onPolygonUpdate={handlePolygonUpdate}
+            />
           </div>
           <div className="mt-3 text-sm text-gray-500">
             {points.filter((p) => p.lat && p.lng).length >= 3 ? (

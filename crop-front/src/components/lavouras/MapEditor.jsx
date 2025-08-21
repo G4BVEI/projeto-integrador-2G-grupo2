@@ -6,7 +6,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-editable'
 
-export default function MapCore({ fields = [], selectedIds = [], onPolygonUpdate }) {
+export default function MapEditor({ fields = [], selectedIds = [], onPolygonUpdate }) {
   const mapRef = useRef(null)
   const layerRef = useRef(null)
   const markersRef = useRef([])

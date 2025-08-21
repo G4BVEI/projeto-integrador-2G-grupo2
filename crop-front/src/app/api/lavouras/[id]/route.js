@@ -1,30 +1,41 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 
 export async function GET(request, { params }) {
-  const cookieStore = cookies()
+  const cookieStore = request.cookies
   const supabase = createClient(cookieStore)
-  
+  const { id } = params
+
   try {
-    const { id } = params
-
-    const { data, error } = await supabase
-      .from('public.talhoes')
-      .select('*')
-      .eq('id', id)
-      .single()
-
-    if (error) throw error
-
-    if (!data) {
+    // 1. Autenticação
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
       return NextResponse.json(
-        { error: 'Lavoura não encontrada' },
-        { status: 404 }
+        { error: 'Não autorizado' },
+        { status: 401 }
       )
     }
 
+    // 2. Buscar talhão específico
+    const { data, error } = await supabase
+      .from('talhoes')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json(
+          { error: 'Talhão não encontrado' },
+          { status: 404 }
+        )
+      }
+      throw error
+    }
+
     return NextResponse.json(data)
+
   } catch (error) {
     return NextResponse.json(
       { error: error.message },
@@ -34,51 +45,71 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
-  const cookieStore = cookies()
+  const cookieStore = request.cookies
   const supabase = createClient(cookieStore)
-  
-  try {
-    const { id } = params
-    const body = await request.json()
+  const { id } = params
 
+  try {
+    // 1. Autenticação
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      )
+    }
+
+    // 2. Validar corpo da requisição
+    const body = await request.json()
+    
+    // Verificar se a geometria está no formato correto
+    if (body.localizacao_json && 
+        (!body.localizacao_json.type || 
+         body.localizacao_json.type !== 'Polygon' ||
+         !body.localizacao_json.coordinates || 
+         body.localizacao_json.coordinates[0].length < 3)) {
+      return NextResponse.json(
+        { error: 'Geometria inválida. São necessários pelo menos 3 pontos para formar um polígono.' },
+        { status: 400 }
+      )
+    }
+
+    // 3. Verificar se o talhão pertence ao usuário
+    const { data: existingTalhao, error: checkError } = await supabase
+      .from('talhoes')
+      .select('id')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (checkError || !existingTalhao) {
+      return NextResponse.json(
+        { error: 'Talhão não encontrado ou não pertence ao usuário' },
+        { status: 404 }
+      )
+    }
+
+    // 4. Atualizar o talhão
     const { data, error } = await supabase
-      .from('public.talhoes')
+      .from('talhoes')
       .update({
-        ...body,
+        nome: body.nome,
+        descricao: body.descricao,
+        tipo_cultura: body.tipo_cultura,
+        sistema_irrigacao: body.sistema_irrigacao,
+        data_plantio: body.data_plantio,
+        area: body.area,
+        localizacao_json: body.localizacao_json,
         atualizado_em: new Date().toISOString()
       })
       .eq('id', id)
       .select()
+      .single()
 
     if (error) throw error
 
-    return NextResponse.json(data[0])
-  } catch (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    )
-  }
-}
+    return NextResponse.json(data)
 
-export async function DELETE(request, { params }) {
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
-  
-  try {
-    const { id } = params
-
-    const { error } = await supabase
-      .from('public.talhoes')
-      .delete()
-      .eq('id', id)
-
-    if (error) throw error
-
-    return NextResponse.json(
-      { message: 'Lavoura excluída com sucesso' },
-      { status: 200 }
-    )
   } catch (error) {
     return NextResponse.json(
       { error: error.message },

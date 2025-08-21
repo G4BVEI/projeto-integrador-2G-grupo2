@@ -19,35 +19,32 @@ export async function POST(request) {
     const body = await request.json()
     
     // Verificar se a geometria está no formato correto
-    if (!body.localizacao || 
-        !body.localizacao.type || 
-        body.localizacao.type !== 'Polygon' ||
-        !body.localizacao.coordinates || 
-        body.localizacao.coordinates[0].length < 3) {
+    if (!body.localizacao_json || 
+        !body.localizacao_json.type || 
+        body.localizacao_json.type !== 'Polygon' ||
+        !body.localizacao_json.coordinates || 
+        body.localizacao_json.coordinates[0].length < 3) {
       return NextResponse.json(
         { error: 'Geometria inválida. São necessários pelo menos 3 pontos para formar um polígono.' },
         { status: 400 }
       )
     }
 
-    // 3. Converter para o formato WKT (Well-Known Text) que o PostGIS entende
-    const coordenadasWKT = `POLYGON((${
-      body.localizacao.coordinates[0]
-        .map(coord => `${coord[0]} ${coord[1]}`)
-        .join(',')
-    }))`
-
-    // 4. Inserir no banco usando a função PostGIS st_geomfromtext
-    const { data, error } = await supabase.rpc('create_lavoura', {
-      nome: body.nome,
-      tipo_cultura: body.tipo_cultura,
-      sistema_irrigacao: body.sistema_irrigacao,
-      data_plantio: body.data_plantio,
-      descricao: body.descricao,
-      area: body.area,
-      geometria: coordenadasWKT,
-      user_id: user.id
-    })
+    // 3. Inserir no banco usando a nova estrutura talhoes
+    const { data, error } = await supabase
+      .from('talhoes')
+      .insert({
+        user_id: user.id,
+        nome: body.nome,
+        descricao: body.descricao,
+        tipo_cultura: body.tipo_cultura,
+        sistema_irrigacao: body.sistema_irrigacao,
+        data_plantio: body.data_plantio,
+        area: body.area,
+        localizacao_json: body.localizacao_json
+      })
+      .select()
+      .single()
 
     if (error) throw error
 
