@@ -125,7 +125,7 @@ export default function ClimaPage() {
 
         <div className="mt-6 grid grid-cols-5 gap-4 text-center">
           {dailyForecast.map((day, idx) => (
-            <div key={idx} className="bg-green-300 text-black-800 rounded-xl p-2">
+            <div key={idx} className="bg-green-200 text-black-800 rounded-xl p-2">
               <p className="font-bold">{new Date(day.dt * 1000).toLocaleDateString("pt-BR", { weekday: "short" })}</p>
               <img src={`https://openweathermap.org/img/wn/${day.weather?.[0]?.icon}@2x.png`} alt={day.weather?.[0]?.description || ""} className="mx-auto" />
               <p className="text-red-500 font-bold">{Math.round(day.main.temp_max)}°</p>
