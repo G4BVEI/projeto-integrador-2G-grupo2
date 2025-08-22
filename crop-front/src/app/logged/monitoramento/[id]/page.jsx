@@ -167,6 +167,16 @@ export default function VisualizarTalhao() {
             />
           </div>
         </div>
+        <div className="col-span-1 lg:col-span-2">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <form>
+              <input type="text" />
+              <input type="text" />
+              <input type="text" />
+              <input type="text" />
+            </form>
+          </div>
+        </div>    
       </div>
     </div>
   );

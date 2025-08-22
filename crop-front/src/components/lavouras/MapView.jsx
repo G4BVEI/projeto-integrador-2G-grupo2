@@ -1,4 +1,3 @@
-// components/lavouras/MapView.jsx
 'use client'
 
 import { useEffect, useRef } from 'react'
@@ -13,7 +12,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-export default function MapView({ fields = [], selectedIds = [] }) {
+export default function MapView({ fields = [], selectedIds = [], sensorPoints = [] }) {
   const mapRef = useRef(null)
   const layerRef = useRef(null)
 
@@ -45,13 +44,46 @@ export default function MapView({ fields = [], selectedIds = [] }) {
     // Clear previous layers
     layerRef.current.clearLayers()
 
+    // Add sensor points if provided
+    if (sensorPoints && sensorPoints.length > 0) {
+      sensorPoints.forEach((sensor, index) => {
+        if (sensor.localizacao_json && sensor.localizacao_json.coordinates) {
+          // Inverter coordenadas (GeoJSON é [lng, lat], Leaflet quer [lat, lng])
+          const coords = [
+            sensor.localizacao_json.coordinates[1],
+            sensor.localizacao_json.coordinates[0]
+          ];
+          
+          const marker = L.marker(coords, {
+            draggable: false,
+            icon: L.divIcon({
+              className: 'sensor-marker',
+              html: `<div class="sensor-pin"></div><span>${sensor.nome || 'Sensor'}</span>`,
+              iconSize: [30, 42],
+              iconAnchor: [15, 42]
+            })
+          }).addTo(layerRef.current);
+          
+          // Add popup with sensor info
+          marker.bindPopup(`
+            <div class="map-tooltip">
+              <strong>${sensor.nome}</strong><br/>
+              Tipo: ${sensor.tipo}<br/>
+              Unidade: ${sensor.unidade}
+            </div>
+          `);
+        }
+      })
+    }
+
+    // Add fields (talhões)
     const selectedField = fields.find(field => selectedIds.includes(field.id))
     if (!selectedField || !selectedField.coords) return
 
     // Add static markers for each point
     selectedField.coords.forEach((coord, index) => {
       L.marker(coord, {
-        draggable: false, // Sempre estático
+        draggable: false,
         icon: L.divIcon({
           className: 'map-marker',
           html: `<div class="marker-pin"></div><span>${index + 1}</span>`,
@@ -70,13 +102,33 @@ export default function MapView({ fields = [], selectedIds = [] }) {
       }).addTo(layerRef.current)
     }
 
-    // Fit bounds to all points
-    if (selectedField.coords.length > 0) {
-      const bounds = L.latLngBounds(selectedField.coords)
+    // Fit bounds to all points (fields + sensors)
+    const allPoints = [];
+    
+    // Add field points
+    if (selectedField.coords && selectedField.coords.length > 0) {
+      allPoints.push(...selectedField.coords);
+    }
+    
+    // Add sensor points
+    if (sensorPoints && sensorPoints.length > 0) {
+      sensorPoints.forEach(sensor => {
+        if (sensor.localizacao_json && sensor.localizacao_json.coordinates) {
+          // Inverter coordenadas
+          allPoints.push([
+            sensor.localizacao_json.coordinates[1],
+            sensor.localizacao_json.coordinates[0]
+          ]);
+        }
+      });
+    }
+    
+    if (allPoints.length > 0) {
+      const bounds = L.latLngBounds(allPoints)
       mapRef.current.fitBounds(bounds, { padding: [20, 20] })
     }
 
-  }, [fields, selectedIds])
+  }, [fields, selectedIds, sensorPoints])
 
   return <div id="map-view-container" className="w-full h-full" />
 }

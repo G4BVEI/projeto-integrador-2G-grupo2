@@ -17,53 +17,80 @@ html {
   scroll-behavior: smooth;
 }
 /* Custom marker styles */
-.map-marker {
-  position: relative;
-  text-align: center;
-}
-
-.map-marker .marker-pin {
+/* Estilos para os marcadores */
+.marker-pin {
   width: 30px;
   height: 30px;
   border-radius: 50% 50% 50% 0;
   background: #16a34a;
   position: absolute;
   transform: rotate(-45deg);
-  left: 0;
-  top: 0;
+  left: 50%;
+  top: 50%;
   margin: -15px 0 0 -15px;
 }
 
-.map-marker span {
-  position: relative;
-  top: 3px;
-  color: white;
-  font-weight: bold;
+.marker-pin::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 3px 0 0 3px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.sensor-pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  background: #3b82f6;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -15px 0 0 -15px;
+}
+
+.sensor-pin::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 3px 0 0 3px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.map-marker, .sensor-marker {
+  text-align: center;
+}
+
+.map-marker span, .sensor-marker span {
   font-size: 12px;
+  font-weight: bold;
+  position: relative;
+  top: -40px;
+  left: -5px;
+  color: #000;
+  text-shadow: 0 0 2px #fff;
 }
-/* Adicione isso ao seu arquivo global.css */
+
+/* Tooltip styles */
 .map-tooltip {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 4px 8px;
-  font-weight: bold;
+  padding: 8px 12px;
   font-size: 14px;
+  line-height: 1.4;
 }
 
-.leaflet-popup-content-wrapper {
-  border-radius: 8px;
+.map-tooltip strong {
+  color: #16a34a;
+  display: block;
+  margin-bottom: 4px;
 }
-/* Adicione ao seu arquivo global.css */
-.map-tooltip {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-weight: bold;
-  font-size: 14px;
-}
-
 .leaflet-popup-content-wrapper {
   border-radius: 8px;
 }
@@ -78,4 +105,9 @@ html {
 
 .detalhes-btn:hover {
   background-color: #059669 !important; /* Equivalente a bg-green-700 */
+}
+
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
 }

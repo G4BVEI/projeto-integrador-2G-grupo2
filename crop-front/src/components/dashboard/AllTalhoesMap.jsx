@@ -36,9 +36,9 @@ const AllTalhoesMap = ({ talhoes = [] }) => {
         const map = L.map('all-talhoes-map').setView([-15.788, -47.879], 4)
         
         // Adicionar camada base
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '© OpenStreetMap'
+        L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+          attribution: '© Google',
+          maxZoom: 20
         }).addTo(map)
 
         // Adicionar cada talhão ao mapa
