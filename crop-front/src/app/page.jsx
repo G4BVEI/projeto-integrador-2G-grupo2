@@ -17,30 +17,32 @@ export default function CropSenseLanding() {
       <header className="border-b border-green-200 bg-green-50/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <a href="#">
-              <span className="text-xl font-bold text-green-500">
-                CropSense
-              </span>
-            </a>
+            <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-white" />
+            </div>
+            <a href="#"><span className="text-xl font-bold text-green-800">CropSense</span></a>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
             <a
               href="#funcionalidades"
-              className="text-green-600 hover:text-green-800 transition-colors"
+              className="relative text-green-600 hover:text-green-800 transition-all duration-300 px-3 py-2 rounded-lg group"
             >
-              Funcionalidades
+              <span className="relative z-10">Funcionalidades</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-green-100 to-green-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100 transform shadow-sm group-hover:shadow-md"></div>
             </a>
             <a
               href="#como-funciona"
-              className="text-green-600 hover:text-green-800 transition-colors"
+              className="relative text-green-600 hover:text-green-800 transition-all duration-300 px-3 py-2 rounded-lg group"
             >
-              Como Funciona
+              <span className="relative z-10">Como Funciona</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-green-100 to-green-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100 transform shadow-sm group-hover:shadow-md"></div>
             </a>
             <a
               href="#contato"
-              className="text-green-600 hover:text-green-800 transition-colors"
+              className="relative text-green-600 hover:text-green-800 transition-all duration-300 px-3 py-2 rounded-lg group"
             >
-              Contato
+              <span className="relative z-10">Contato</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-green-100 to-green-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100 transform shadow-sm group-hover:shadow-md"></div>
             </a>
           </nav>
           <Link
