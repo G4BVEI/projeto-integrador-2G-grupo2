@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function ClimaPage() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [debug, setDebug] = useState(null);
 
   const lat = -27.25;
   const lon = -52.02;
@@ -12,20 +13,64 @@ export default function ClimaPage() {
 
   useEffect(() => {
     async function fetchWeather() {
+      setLoading(true);
+      setDebug(null);
+
+      // pegar a chave (garanta .env.local com NEXT_PUBLIC_OPENWEATHER_API_KEY)
+      const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+
+      // DEBUG: verificação da chave (mascarada)
+      if (!apiKey) {
+        console.error("API key não encontrada: verifique .env.local e reinicie o dev server.");
+        setDebug({ error: "API key missing" });
+        setWeather(null);
+        setLoading(false);
+        return;
+      }
+
+      const maskedKey = apiKey.slice(0, 4) + "...";
+      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${apiKey}`;
+
       try {
-        const apiKey = "c1a01ddb4d54bf9903e1cefe8c0a35f3";
-        const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${apiKey}`
-        );
-        const data = await response.json();
+        // logs úteis para debug (remova depois)
+        console.log("Fetch URL (sem chave visível):", url.replace(apiKey, "SUA_CHAVE_AQUI"));
+        console.log("API key (mascarada):", maskedKey);
+
+        const response = await fetch(url);
+
+        // infos do response para debugar
+        const status = response.status;
+        const statusText = response.statusText;
+        const contentType = response.headers.get("content-type");
+
+        // Tentar ler como JSON (pode falhar / retornar vazio)
+        let data = null;
+        try {
+          // clonar para possibilitar leitura limpa em caso de erro
+          data = await response.clone().json();
+        } catch (jsonErr) {
+          // se não for JSON, pega o texto cru
+          try {
+            const txt = await response.text();
+            data = txt || null;
+          } catch (txtErr) {
+            data = null;
+          }
+        }
+
+        // salvar debug para UI também
+        setDebug({ status, statusText, contentType, data });
+
         if (!response.ok) {
-          console.error("Erro da API:", data);
+          console.error("Erro da API (detalhes):", { status, statusText, contentType, data });
           setWeather(null);
         } else {
+          console.log("Dados recebidos:", data);
           setWeather(data);
         }
-      } catch (error) {
-        console.error("Erro ao buscar clima:", error);
+      } catch (fetchError) {
+        console.error("Erro de fetch (network/CORS?):", fetchError);
+        setDebug({ error: String(fetchError) });
         setWeather(null);
       } finally {
         setLoading(false);
@@ -35,18 +80,27 @@ export default function ClimaPage() {
     fetchWeather();
   }, [lat, lon]);
 
+  // UI simples com debug
   if (loading) return <p className="text-gray-500 text-center mt-10">Carregando clima...</p>;
-  if (!weather) return <p className="text-red-500 text-center mt-10">Não foi possível obter o clima.</p>;
 
-  // Pegando os próximos 5 dias da previsão (OpenWeatherMap retorna a cada 3h, simplificamos para 5 dias)
-  const dailyForecast = weather.list.filter((_, i) => i % 8 === 0).slice(0, 5);
+  if (!weather)
+    return (
+      <div className="text-center mt-10">
+        <p className="text-red-500">Não foi possível obter o clima.</p>
+        <pre className="text-sm text-left max-w-2xl mx-auto mt-4 p-3 bg-gray-100 rounded">
+          {JSON.stringify(debug, null, 2)}
+        </pre>
+        <p className="text-gray-500 mt-2">Cheque o DevTools → Network para ver a requisição. Veja instruções no terminal abaixo.</p>
+      </div>
+    );
+
+  const dailyForecast = weather.list?.filter((_, i) => i % 8 === 0).slice(0, 5) || [];
 
   return (
     <main className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Clima em tempo real</h1>
 
-      {/* Card clima atual */}
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6">
+      <div className="max-w-4xl mx-auto bg-green-500 text-white rounded-2xl shadow-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold">{locationName}</h2>
@@ -56,29 +110,24 @@ export default function ClimaPage() {
           <div className="grid grid-cols-3 gap-4 mt-4 md:mt-0 text-center">
             <div>
               <p className="font-bold">{weather.list[0].main.humidity}%</p>
-              <p className="text-sm text-gray-500">Umidade</p>
+              <p className="text-sm">Umidade</p>
             </div>
             <div>
               <p className="font-bold">{weather.list[0].wind.speed} m/s</p>
-              <p className="text-sm text-gray-500">Vento</p>
+              <p className="text-sm">Vento</p>
             </div>
             <div>
-              <p className="font-bold">{weather.list[0].main.temp_max}° / {weather.list[0].main.temp_min}°</p>
-              <p className="text-sm text-gray-500">Máx/Min</p>
+              <p className="font-bold">{Math.round(weather.list[0].main.temp_max)}° / {Math.round(weather.list[0].main.temp_min)}°</p>
+              <p className="text-sm">Máx/Min</p>
             </div>
           </div>
         </div>
 
-        {/* Previsão 5 dias */}
         <div className="mt-6 grid grid-cols-5 gap-4 text-center">
           {dailyForecast.map((day, idx) => (
-            <div key={idx} className="bg-gray-100 rounded-xl p-2">
-              <p className="font-bold">{new Date(day.dt * 1000).toLocaleDateString('pt-BR', { weekday: 'short' })}</p>
-              <img
-                src={`https://openweathermap.org/img/wn/${day.weather?.[0]?.icon}@2x.png`}
-                alt={day.weather?.[0]?.description || ""}
-                className="mx-auto"
-              />
+            <div key={idx} className="bg-green-100 text-green-900 rounded-xl p-2">
+              <p className="font-bold">{new Date(day.dt * 1000).toLocaleDateString("pt-BR", { weekday: "short" })}</p>
+              <img src={`https://openweathermap.org/img/wn/${day.weather?.[0]?.icon}@2x.png`} alt={day.weather?.[0]?.description || ""} className="mx-auto" />
               <p className="text-red-500 font-bold">{Math.round(day.main.temp_max)}°</p>
               <p className="text-blue-500 font-bold">{Math.round(day.main.temp_min)}°</p>
               <p className="text-gray-500 text-sm">Umidade: {day.main.humidity}%</p>
@@ -87,11 +136,10 @@ export default function ClimaPage() {
         </div>
       </div>
 
-      {/* Iframe Windy */}
       <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-lg">
         <iframe
           title="Windy Map"
-          src="https://embed.windy.com/embed2.html?lat=-27.25&lon=-52.02&detailLat=-27.25&detailLon=-52.02&width=650&height=450&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
+          src="https://embed.windy.com/embed2.html?lat=-27.25&lon=-52.02&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=false&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=false&metricWind=km%2Fh"
           frameBorder="0"
           className="w-full h-96"
         ></iframe>
