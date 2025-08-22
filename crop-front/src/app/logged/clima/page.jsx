@@ -98,12 +98,12 @@ export default function ClimaPage() {
 
   return (
     <main className="p-6 bg-white min-h-screen">
-      <h1 className="text-3xl font-bold text-green-500 mb-6 text-center">Clima em tempo real</h1>
+      <h1 className="text-2xl font-bold text-black-500 mb-6 text-left">Clima em tempo real</h1>
 
-      <div className="max-w-4xl mx-auto bg-green-50 text-green-500 rounded-2xl shadow-lg p-6 mb-6">
+      <div className="max-w-4xl mx-auto bg-green-50 text-black rounded-2xl shadow-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-center md:text-left">
-            <h2 className="text-2xl font-bold">{locationName}</h2>
+            <h2 className="text-2xl font-bold text-green-500">{locationName}</h2>
             <p className="capitalize text-lg">{weather.list[0].weather?.[0]?.description || "Sem descrição"}</p>
             <p className="text-4xl font-bold mt-2">{Math.round(weather.list[0].main.temp)}°C</p>
           </div>
@@ -125,7 +125,7 @@ export default function ClimaPage() {
 
         <div className="mt-6 grid grid-cols-5 gap-4 text-center">
           {dailyForecast.map((day, idx) => (
-            <div key={idx} className="bg-green-100 text-green-800 rounded-xl p-2">
+            <div key={idx} className="bg-green-200 text-black-800 rounded-xl p-2">
               <p className="font-bold">{new Date(day.dt * 1000).toLocaleDateString("pt-BR", { weekday: "short" })}</p>
               <img src={`https://openweathermap.org/img/wn/${day.weather?.[0]?.icon}@2x.png`} alt={day.weather?.[0]?.description || ""} className="mx-auto" />
               <p className="text-red-500 font-bold">{Math.round(day.main.temp_max)}°</p>
