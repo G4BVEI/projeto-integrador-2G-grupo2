@@ -14,7 +14,7 @@ export default function CropSenseLanding() {
   return (
     <div className="min-h-screen bg-white">
       {/* Menu */}
-      <header className="border-b border-green-200 bg-green-50/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-green-200 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <a href="#">
@@ -53,11 +53,11 @@ export default function CropSenseLanding() {
       </header>
 
       {/* Início */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
+      <section className="relative py-20 lg:py-32 overflow-hidden bg-green-50">
         <div className="absolute inset-0"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-700 border border-green-200 mb-6">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-green-200 text-green-700 border border-green-200 mb-6">
               Agricultura de Precisão Acessível
             </div>
             <h1 className="text-4xl lg:text-6xl font-bold text-green-900 mb-6 leading-tight">
@@ -76,7 +76,7 @@ export default function CropSenseLanding() {
               >
                 Começar Gratuitamente
               </Link>
-              <button className="border-2 border-green-600 text-green-600 hover:bg-green-50 px-8 py-3 rounded-lg font-medium text-lg transition-colors">
+              <button className="border-2 border-green-600 text-green-600 hover:bg-green-300 hover:text-green-800 px-8 py-3 rounded-lg font-medium text-lg transition-colors">
                 Ver Demonstração
               </button>
             </div>
@@ -85,7 +85,7 @@ export default function CropSenseLanding() {
       </section>
 
       {/* Problemas */}
-      <section className="py-16 bg-green-50">
+      <section className="py-16 bg-white-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-green-900 mb-6">
@@ -98,8 +98,8 @@ export default function CropSenseLanding() {
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white border border-green-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <BarChart3 className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <BarChart3 className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold text-green-900 mb-3">
                 Desperdício de Recursos
@@ -110,8 +110,8 @@ export default function CropSenseLanding() {
               </p>
             </div>
             <div className="bg-white border border-green-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <Bell className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <Bell className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold text-green-900 mb-3">
                 Decisões por Intuição
@@ -122,8 +122,8 @@ export default function CropSenseLanding() {
               </p>
             </div>
             <div className="bg-white border border-green-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <MapPin className="w-6 h-6 text-red-600" />
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                <MapPin className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold text-green-900 mb-3">
                 Reações Tardias
@@ -138,7 +138,7 @@ export default function CropSenseLanding() {
       </section>
 
       {/* Funcionalidades */}
-      <section id="funcionalidades" className="py-20">
+      <section id="funcionalidades" className="py-20 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-green-900 mb-6">
@@ -226,7 +226,7 @@ export default function CropSenseLanding() {
       </section>
 
       {/* Como funciona */}
-      <section id="como-funciona" className="py-20 bg-green-50">
+      <section id="como-funciona" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-green-900 mb-6">
@@ -286,7 +286,7 @@ export default function CropSenseLanding() {
       </section>
 
       {/* Resultados */}
-      <section className="py-20">
+      <section className="py-20 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -327,7 +327,7 @@ export default function CropSenseLanding() {
                 </div>
               </div>
               <div className="relative">
-                <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-2xl p-8">
+                <div className="bg-white rounded-2xl p-8">
                   <img
                     src="/images/landing-page.png"
                     alt="Monitoramento agrícola inteligente"
@@ -366,15 +366,12 @@ export default function CropSenseLanding() {
       {/* Footer */}
       <footer
         id="contato"
-        className="py-12 bg-green-50 border-t border-green-200"
+        className="py-12 bg-white-50 border-t border-green-200"
       >
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-5 h-5 text-white" />
-                </div>
                 <span className="text-xl font-bold text-green-800">
                   CropSense
                 </span>

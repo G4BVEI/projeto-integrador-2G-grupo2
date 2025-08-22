@@ -97,10 +97,10 @@ export default function ClimaPage() {
   const dailyForecast = weather.list?.filter((_, i) => i % 8 === 0).slice(0, 5) || [];
 
   return (
-    <main className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Clima em tempo real</h1>
+    <main className="p-6 bg-white min-h-screen">
+      <h1 className="text-3xl font-bold text-green-500 mb-6 text-center">Clima em tempo real</h1>
 
-      <div className="max-w-4xl mx-auto bg-green-500 text-white rounded-2xl shadow-lg p-6 mb-6">
+      <div className="max-w-4xl mx-auto bg-green-50 text-green-500 rounded-2xl shadow-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold">{locationName}</h2>
@@ -125,12 +125,12 @@ export default function ClimaPage() {
 
         <div className="mt-6 grid grid-cols-5 gap-4 text-center">
           {dailyForecast.map((day, idx) => (
-            <div key={idx} className="bg-green-100 text-green-900 rounded-xl p-2">
+            <div key={idx} className="bg-green-100 text-green-800 rounded-xl p-2">
               <p className="font-bold">{new Date(day.dt * 1000).toLocaleDateString("pt-BR", { weekday: "short" })}</p>
               <img src={`https://openweathermap.org/img/wn/${day.weather?.[0]?.icon}@2x.png`} alt={day.weather?.[0]?.description || ""} className="mx-auto" />
               <p className="text-red-500 font-bold">{Math.round(day.main.temp_max)}°</p>
               <p className="text-blue-500 font-bold">{Math.round(day.main.temp_min)}°</p>
-              <p className="text-gray-500 text-sm">Umidade: {day.main.humidity}%</p>
+              <p className="text-black-500 text-sm">Umidade {day.main.humidity}%</p>
             </div>
           ))}
         </div>
