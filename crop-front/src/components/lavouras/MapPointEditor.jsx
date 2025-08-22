@@ -15,29 +15,40 @@ L.Icon.Default.mergeOptions({
 export default function MapPointEditor({ 
   fields = [], 
   selectedIds = [], 
-  initialPoint = null,
-  onPointUpdate 
+  sensorPoints = [],
+  onPointUpdate,
+  tileLayer = 'openstreetmap'
 }) {
   const mapRef = useRef(null)
   const layerRef = useRef(null)
   const markerRef = useRef(null)
-  const [currentPoint, setCurrentPoint] = useState(initialPoint || null)
+  const [currentPoint, setCurrentPoint] = useState(null)
 
   useEffect(() => {
     // Initialize map only once
     if (!mapRef.current) {
       const map = L.map('map-point-editor-container').setView([-15.788, -47.879], 13)
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(map)
+      // Adicionar camada base baseada na preferência
+      if (tileLayer === 'google') {
+        L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+          attribution: '© Google',
+          maxZoom: 20
+        }).addTo(map)
+      } else {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap'
+        }).addTo(map)
+      }
 
       // Add click event to place/move point
       map.on('click', (e) => {
         const newPoint = [e.latlng.lat, e.latlng.lng];
         setCurrentPoint(newPoint);
-        onPointUpdate(newPoint);
+        if (onPointUpdate) {
+          onPointUpdate(newPoint);
+        }
         
         // Update or create marker
         if (markerRef.current) {
@@ -57,7 +68,19 @@ export default function MapPointEditor({
           markerRef.current.on('dragend', (e) => {
             const draggedPoint = [e.target.getLatLng().lat, e.target.getLatLng().lng];
             setCurrentPoint(draggedPoint);
-            onPointUpdate(draggedPoint);
+            if (onPointUpdate) {
+              onPointUpdate(draggedPoint);
+            }
+          });
+
+          // Add double click to remove
+          markerRef.current.on('dblclick', () => {
+            layerRef.current.removeLayer(markerRef.current);
+            markerRef.current = null;
+            setCurrentPoint(null);
+            if (onPointUpdate) {
+              onPointUpdate(null);
+            }
           });
         }
       });
@@ -87,58 +110,60 @@ export default function MapPointEditor({
 
     // Add fields (talhões) for reference
     const selectedField = fields.find(field => selectedIds.includes(field.id))
-    if (!selectedField || !selectedField.coords) return
-
-    // Add static markers for each point of the field
-    selectedField.coords.forEach((coord, index) => {
-      L.marker(coord, {
-        draggable: false, // Sempre estático
-        icon: L.divIcon({
-          className: 'map-marker',
-          html: `<div class="marker-pin"></div><span>${index + 1}</span>`,
-          iconSize: [30, 42],
-          iconAnchor: [15, 42]
-        })
-      }).addTo(layerRef.current)
-    })
-
-    // Draw polygon when there are 3+ points
-    if (selectedField.coords.length >= 3) {
-      L.polygon(selectedField.coords, {
-        color: '#16a34a',
-        weight: 2,
-        fillOpacity: 0.2
-      }).addTo(layerRef.current)
-    }
-
-    // Add or update the editable sensor point
-    if (currentPoint) {
-      if (markerRef.current) {
-        markerRef.current.setLatLng(currentPoint);
-      } else {
-        markerRef.current = L.marker(currentPoint, {
-          draggable: true,
+    if (selectedField && selectedField.coords) {
+      // Add static markers for each point of the field
+      selectedField.coords.forEach((coord, index) => {
+        L.marker(coord, {
+          draggable: false,
           icon: L.divIcon({
-            className: 'sensor-marker-editable',
-            html: `<div class="sensor-pin" style="background-color: #3b82f6;"></div><span>Sensor</span>`,
+            className: 'map-marker',
+            html: `<div class="marker-pin"></div><span>${index + 1}</span>`,
             iconSize: [30, 42],
             iconAnchor: [15, 42]
           })
-        }).addTo(layerRef.current);
-        
-        // Add drag event
-        markerRef.current.on('dragend', (e) => {
-          const draggedPoint = [e.target.getLatLng().lat, e.target.getLatLng().lng];
-          setCurrentPoint(draggedPoint);
-          onPointUpdate(draggedPoint);
-        });
+        }).addTo(layerRef.current)
+      })
+
+      // Draw polygon when there are 3+ points
+      if (selectedField.coords.length >= 3) {
+        L.polygon(selectedField.coords, {
+          color: '#16a34a',
+          weight: 2,
+          fillOpacity: 0.2
+        }).addTo(layerRef.current)
       }
     }
 
-    // Fit bounds to all points (field + sensor point)
-    const allPoints = [...selectedField.coords];
-    if (currentPoint) {
-      allPoints.push(currentPoint);
+    // Add sensor points
+    if (sensorPoints && sensorPoints.length > 0) {
+      sensorPoints.forEach((sensor, index) => {
+        if (sensor.localizacao) {
+          L.marker(sensor.localizacao, {
+            draggable: false,
+            icon: L.divIcon({
+              className: 'sensor-marker',
+              html: `<div class="sensor-pin"></div><span>${sensor.nome || 'Sensor'}</span>`,
+              iconSize: [30, 42],
+              iconAnchor: [15, 42]
+            })
+          }).addTo(layerRef.current);
+        }
+      })
+    }
+
+    // Fit bounds to all points (field + sensor points)
+    const allPoints = [];
+    
+    if (selectedField && selectedField.coords) {
+      allPoints.push(...selectedField.coords);
+    }
+    
+    if (sensorPoints && sensorPoints.length > 0) {
+      sensorPoints.forEach(sensor => {
+        if (sensor.localizacao) {
+          allPoints.push(sensor.localizacao);
+        }
+      });
     }
     
     if (allPoints.length > 0) {
@@ -146,14 +171,7 @@ export default function MapPointEditor({
       mapRef.current.fitBounds(bounds, { padding: [20, 20] })
     }
 
-  }, [fields, selectedIds, currentPoint])
-
-  // Initialize with initial point
-  useEffect(() => {
-    if (initialPoint) {
-      setCurrentPoint(initialPoint);
-    }
-  }, [initialPoint]);
+  }, [fields, selectedIds, sensorPoints])
 
   return <div id="map-point-editor-container" className="w-full h-full" />
 }

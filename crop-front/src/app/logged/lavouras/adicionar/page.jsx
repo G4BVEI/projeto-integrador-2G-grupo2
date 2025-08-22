@@ -1,10 +1,11 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
-import 'leaflet/dist/leaflet.css'
-import { toast } from 'react-hot-toast'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
+import { toast } from 'react-hot-toast';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
 const MapEditor = dynamic(
   () => import('@/components/lavouras/MapEditor'),
@@ -16,10 +17,10 @@ const MapEditor = dynamic(
       </div>
     )
   }
-)
+);
 
 export default function AdicionarTalhao() {
-  const [points, setPoints] = useState([])
+  const [points, setPoints] = useState([]);
   const [formData, setFormData] = useState({
     nome: '',
     tipo_cultura: '',
@@ -27,9 +28,10 @@ export default function AdicionarTalhao() {
     data_plantio: '',
     descricao: '',
     area: 0
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const supabase = createClient()
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const supabase = createClient();
+  const router = useRouter();
 
   const addPoint = () => {
     setPoints([...points, { lat: "", lng: "" }]);
@@ -39,6 +41,14 @@ export default function AdicionarTalhao() {
     const newPoints = [...points];
     newPoints[index][field] = value;
     setPoints(newPoints);
+    
+    // Atualizar o mapa se as coordenadas são válidas
+    if (field === 'lat' || field === 'lng') {
+      const validPoints = newPoints.filter(p => p.lat && p.lng).map(p => [Number(p.lat), Number(p.lng)]);
+      if (validPoints.length >= 3) {
+        calculateArea(validPoints);
+      }
+    }
   };
 
   const removePoint = (index) => {
@@ -67,7 +77,9 @@ export default function AdicionarTalhao() {
   };
 
   const handlePolygonUpdate = (newCoords) => {
-    setPoints(newCoords.map((coord) => ({ lat: coord[0], lng: coord[1] })));
+    // Atualizar os pontos com as novas coordenadas
+    const updatedPoints = newCoords.map(coord => ({ lat: coord[0].toString(), lng: coord[1].toString() }));
+    setPoints(updatedPoints);
     calculateArea(newCoords);
   };
 
@@ -92,7 +104,7 @@ export default function AdicionarTalhao() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     
     // 1. Validar pontos mínimos
     const pontosValidos = points.filter(p => !isNaN(Number(p.lat)) && !isNaN(Number(p.lng)))
@@ -142,16 +154,8 @@ export default function AdicionarTalhao() {
       const data = await response.json()
       toast.success(`Talhão "${data.nome}" cadastrado com sucesso!`)
       
-      // 7. Resetar formulário
-      setFormData({
-        nome: '',
-        tipo_cultura: '',
-        sistema_irrigacao: '',
-        data_plantio: '',
-        descricao: '',
-        area: 0
-      })
-      setPoints([])
+      // Redirecionar para a página de adicionar sensores
+      router.push(`/logged/lavouras/adicionar/${data.id}/sensores`);
 
     } catch (error) {
       console.error('Erro no cadastro:', error)
@@ -346,7 +350,7 @@ export default function AdicionarTalhao() {
                 isSubmitting || points.filter((p) => p.lat && p.lng).length < 3
               }
             >
-              {isSubmitting ? "Salvando..." : "Salvar Talhão"}
+              {isSubmitting ? "Salvando..." : "Salvar Talhão e Adicionar Sensores"}
             </button>
           </form>
         </div>
@@ -363,12 +367,11 @@ export default function AdicionarTalhao() {
                 type: "talhao",
                 coords: points
                   .filter((p) => p.lat && p.lng)
-                  .map((p) => [p.lat, p.lng]),
+                  .map((p) => [Number(p.lat), Number(p.lng)]),
               },
             ]}
             selectedIds={["new-field"]}
             onPolygonUpdate={handlePolygonUpdate}
-            // interactive=true é o padrão, não precisa especificar
           />
           </div>
           <div className="mt-3 text-sm text-gray-500">

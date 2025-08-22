@@ -19,12 +19,11 @@ export async function POST(request, { params }) {
     // 2. Validar se o talhão pertence ao usuário
     const { data: talhao, error: talhaoError } = await supabase
       .from('talhoes')
-      .select('id')
+      .select('id, user_id')
       .eq('id', id)
-      .eq('user_id', user.id)
       .single();
 
-    if (talhaoError || !talhao) {
+    if (talhaoError || !talhao || talhao.user_id !== user.id) {
       return NextResponse.json(
         { error: 'Talhão não encontrado ou não pertence ao usuário' },
         { status: 404 }
@@ -58,56 +57,6 @@ export async function POST(request, { params }) {
     if (error) throw error;
 
     return NextResponse.json(data, { status: 201 });
-
-  } catch (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-// GET para listar sensores do talhão
-export async function GET(request, { params }) {
-  const { id } = params;
-  const cookieStore = request.cookies;
-  const supabase = createClient(cookieStore);
-
-  try {
-    // 1. Autenticação
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Não autorizado' },
-        { status: 401 }
-      );
-    }
-
-    // 2. Validar se o talhão pertence ao usuário
-    const { data: talhao, error: talhaoError } = await supabase
-      .from('talhoes')
-      .select('id')
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .single();
-
-    if (talhaoError || !talhao) {
-      return NextResponse.json(
-        { error: 'Talhão não encontrado ou não pertence ao usuário' },
-        { status: 404 }
-      );
-    }
-
-    // 3. Buscar sensores do talhão
-    const { data, error } = await supabase
-      .from('sensores')
-      .select('*')
-      .eq('talhao_id', id)
-      .order('criado_em', { ascending: false });
-
-    if (error) throw error;
-
-    return NextResponse.json(data, { status: 200 });
 
   } catch (error) {
     return NextResponse.json(

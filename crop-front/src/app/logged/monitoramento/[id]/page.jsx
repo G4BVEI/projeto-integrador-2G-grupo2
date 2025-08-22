@@ -1,6 +1,6 @@
 // VisualizarTalhao.jsx atualizado
 'use client'
-
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
@@ -169,12 +169,9 @@ export default function VisualizarTalhao() {
         </div>
         <div className="col-span-1 lg:col-span-2">
           <div className="bg-white p-6 rounded-lg shadow">
-            <form>
-              <input type="text" />
-              <input type="text" />
-              <input type="text" />
-              <input type="text" />
-            </form>
+            <Link href={`/logged/monitoramento/${id}/sensores`}>
+            <button className='bg-green-500 text-white'> Adicionar sensor</button>
+            </Link>
           </div>
         </div>    
       </div>
