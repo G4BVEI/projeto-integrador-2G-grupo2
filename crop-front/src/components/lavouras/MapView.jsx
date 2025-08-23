@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-// Fix para ícones padrão do Leaflet em Next.js
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -17,15 +16,12 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
   const layerRef = useRef(null)
 
   useEffect(() => {
-    // Initialize map only once
     if (!mapRef.current) {
       const map = L.map('map-view-container').setView([-15.788, -47.879], 13)
-
-        L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-          attribution: '© Google',
-          maxZoom: 20
-        }).addTo(map)
-
+      L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+        attribution: '© Google',
+        maxZoom: 20
+      }).addTo(map)
       mapRef.current = map
       layerRef.current = L.layerGroup().addTo(map)
     }
@@ -41,46 +37,59 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
   useEffect(() => {
     if (!mapRef.current || !layerRef.current) return
 
-    // Clear previous layers
     layerRef.current.clearLayers()
 
-    // Add sensor points if provided
-    if (sensorPoints && sensorPoints.length > 0) {
-      sensorPoints.forEach((sensor, index) => {
-        if (sensor.localizacao_json && sensor.localizacao_json.coordinates) {
-          // Inverter coordenadas (GeoJSON é [lng, lat], Leaflet quer [lat, lng])
-          const coords = [
-            sensor.localizacao_json.coordinates[0],
-            sensor.localizacao_json.coordinates[1]
-          ];
-          
-          const marker = L.marker(coords, {
-            draggable: false,
-            icon: L.divIcon({
-              className: 'sensor-marker',
-              html: `<div class="sensor-pin"></div><span>${sensor.nome || 'Sensor'}</span>`,
-              iconSize: [30, 42],
-              iconAnchor: [15, 42]
-            })
-          }).addTo(layerRef.current);
-          
-          // Add popup with sensor info
-          marker.bindPopup(`
-            <div class="map-tooltip">
-              <strong>${sensor.nome}</strong><br/>
-              Tipo: ${sensor.tipo}<br/>
-              Unidade: ${sensor.unidade}
-            </div>
-          `);
-        }
-      })
+    // Adicionar polígono do talhão
+    const field = fields.find(f => selectedIds.includes(f.id))
+    if (field && field.coords && field.coords.length >= 3) {
+      L.polygon(field.coords, { color: '#16a34a', weight: 2, fillOpacity: 0.3 }).addTo(layerRef.current)
     }
 
-    // Add fields (talhões)
-    const selectedField = fields.find(field => selectedIds.includes(field.id))
-    if (!selectedField || !selectedField.coords) return
+    // Adicionar sensores
+    sensorPoints.forEach(sensor => {
+      if (sensor.localizacao_json?.coordinates) {
+        const [lng, lat] = sensor.localizacao_json.coordinates
+        const marker = L.marker([lat, lng], {
+          draggable: false,
+          icon: L.divIcon({
+            className: 'sensor-marker',
+            html: `<div class="sensor-pin"></div>`,
+            iconSize: [40, 52],
+            iconAnchor: [ ]
+          })
+        }).addTo(layerRef.current)
 
-    // Add static markers for each point
+        marker.bindPopup(`
+        <div class="map-tooltip">
+          <strong>${sensor.nome || 'Sensor'}</strong><br/>
+          Tipo: ${sensor.tipo || '-'}<br/>
+          Unidade: ${sensor.unidade || '-'}
+        </div>
+      `);
+          marker.on('mouseover', function() {
+      this.openPopup();
+    });
+    marker.on('mouseout', function() {
+      this.closePopup();
+    });
+    }
+  });
+
+    // Ajustar bounds
+    const allPoints = []
+    if (field?.coords) allPoints.push(...field.coords)
+    sensorPoints.forEach(s => {
+      if (s.localizacao_json?.coordinates) {
+        allPoints.push([s.localizacao_json.coordinates[1], s.localizacao_json.coordinates[0]])
+      }
+    })
+    if (allPoints.length > 0) mapRef.current.fitBounds(allPoints, { padding: [20, 20] })
+
+  }, [fields, selectedIds, sensorPoints])
+
+  return <div id="map-view-container" className="w-full h-full" />
+}
+// The above code is a React component that renders a Leaflet map with polygons and markers based on provided field and sensor data.
 /*
     selectedField.coords.forEach((coord, index) => {
       L.marker(coord, {
@@ -94,42 +103,3 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
       }).addTo(layerRef.current)
     })
 */
-    // Draw polygon when there are 3+ points
-    if (selectedField.coords.length >= 3) {
-      L.polygon(selectedField.coords, {
-        color: '#16a34a',
-        weight: 2,
-        fillOpacity: 0.3
-      }).addTo(layerRef.current)
-    }
-
-    // Fit bounds to all points (fields + sensors)
-    const allPoints = [];
-    
-    // Add field points
-    if (selectedField.coords && selectedField.coords.length > 0) {
-      allPoints.push(...selectedField.coords);
-    }
-    
-    // Add sensor points
-    if (sensorPoints && sensorPoints.length > 0) {
-      sensorPoints.forEach(sensor => {
-        if (sensor.localizacao_json && sensor.localizacao_json.coordinates) {
-          // Inverter coordenadas
-          allPoints.push([
-            sensor.localizacao_json.coordinates[1],
-            sensor.localizacao_json.coordinates[0]
-          ]);
-        }
-      });
-    }
-    
-    if (allPoints.length > 0) {
-      const bounds = L.latLngBounds(allPoints)
-      mapRef.current.fitBounds(bounds, { padding: [20, 20] })
-    }
-
-  }, [fields, selectedIds, sensorPoints])
-
-  return <div id="map-view-container" className="w-full h-full" />
-}

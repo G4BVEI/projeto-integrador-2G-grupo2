@@ -18,56 +18,40 @@ function SensoresTalhao() {
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
-        const talhaoId = params.id;
+        setLoading(true)
+        const talhaoId = params.id
 
-        // Fetch talhão
         const { data: talhaoData, error: talhaoError } = await supabase
-          .from('talhoes')
-          .select('*')
-          .eq('id', talhaoId)
-          .single();
-        if (talhaoError) throw talhaoError;
-        setTalhao(talhaoData);
+          .from('talhoes').select('*').eq('id', talhaoId).single()
+        if (talhaoError) throw talhaoError
+        setTalhao(talhaoData)
 
-        // Fetch sensores
         const { data: sensoresData, error: sensoresError } = await supabase
-          .from('sensores')
-          .select('*')
-          .eq('talhao_id', talhaoId)
-          .order('criado_em', { ascending: false });
-        if (sensoresError) throw sensoresError;
-        setSensores(sensoresData || []);
+          .from('sensores').select('*').eq('talhao_id', talhaoId)
+          .order('criado_em', { ascending: false })
+        if (sensoresError) throw sensoresError
+        setSensores(sensoresData || [])
       } catch (err) {
-        setError(err.message);
-        console.error('Error fetching data:', err);
+        setError(err.message)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchData();
-  }, [params.id]);
+    fetchData()
+  }, [params.id])
 
-  if (loading) {
-    return <div className="p-4">Carregando sensores...</div>;
-  }
+  if (loading) return <div className="p-4">Carregando sensores...</div>;
+  if (error) return <div className="p-4 text-red-500">Erro: {error}</div>;
 
-  if (error) {
-    return <div className="p-4 text-red-500">Erro: {error}</div>;
-  }
+  const sensoresComLocalizacao = sensores.filter(s => s.localizacao_json?.coordinates);
 
   return (
     <div className="p-6">
-      {/* Cabeçalho */}
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold">Sensores do Talhão</h1>
-          {talhao && (
-            <p className="text-gray-600">
-              {talhao.nome} - {talhao.tipo_cultura}
-            </p>
-          )}
+          {talhao && <p className="text-gray-600">{talhao.nome} - {talhao.tipo_cultura || '-'}</p>}
         </div>
         <button
           onClick={() => router.push(`/logged/monitoramento/${params.id}/sensores/adicionar`)}
@@ -78,7 +62,7 @@ function SensoresTalhao() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Tabela de Sensores */}
+        {/* Tabela */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -91,45 +75,32 @@ function SensoresTalhao() {
                 </tr>
               </thead>
               <tbody className="text-gray-800">
-                {sensores.length > 0 ? (
-                  sensores.map((sensor) => (
-                    <tr key={sensor.id} className="hover:bg-gray-50 border-b">
-                      <td className="px-4 py-3 font-medium">{sensor.nome}</td>
-                      <td className="px-4 py-3">{sensor.tipo}</td>
-                      <td className="px-4 py-3">{sensor.unidade}</td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => router.push(`/logged/monitoramento/${params.id}/sensores/editar/${sensor.id}`)}
-                          className="text-blue-600 hover:underline mr-3"
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={async () => {
-                            if (confirm('Tem certeza que deseja excluir este sensor?')) {
-                              try {
-                                const { error } = await supabase
-                                  .from('sensores')
-                                  .delete()
-                                  .eq('id', sensor.id);
-                                if (error) throw error;
-                                setSensores(sensores.filter(s => s.id !== sensor.id));
-                              } catch (err) {
-                                console.error('Erro ao excluir sensor:', err);
-                                alert('Erro ao excluir sensor');
-                              }
-                            }
-                          }}
-                          className="text-red-600 hover:underline"
-                        >
-                          Excluir
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
+                {sensores.length > 0 ? sensores.map(sensor => (
+                  <tr key={sensor.id} className="hover:bg-gray-50 border-b">
+                    <td className="px-4 py-3 font-medium">{sensor.nome}</td>
+                    <td className="px-4 py-3">{sensor.tipo}</td>
+                    <td className="px-4 py-3">{sensor.unidade}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => router.push(`/logged/monitoramento/${params.id}/sensores/editar/${sensor.id}`)}
+                        className="text-blue-600 hover:underline mr-3"
+                      >Editar</button>
+                      <button
+                        onClick={async () => {
+                          if (confirm('Excluir sensor?')) {
+                            const { error } = await supabase.from('sensores').delete().eq('id', sensor.id)
+                            if (error) return alert('Erro ao excluir')
+                            setSensores(sensores.filter(s => s.id !== sensor.id))
+                          }
+                        }}
+                        className="text-red-600 hover:underline"
+                      >Excluir</button>
+                    </td>
+                  </tr>
+                )) : (
                   <tr>
-                    <td colSpan="4" className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan="4" className="px-4 py-8 text-center
+                    text-gray-500">
                       Nenhum sensor cadastrado ainda
                     </td>
                   </tr>
@@ -153,14 +124,14 @@ function SensoresTalhao() {
                   }
                 ]}
                 selectedIds={[talhao.id]}
-                sensorPoints={sensores.filter(s => s.localizacao_json)}
+                sensorPoints={sensoresComLocalizacao}
               />
             )}
           </div>
           <div className="mt-3 text-sm text-gray-500">
-            {sensores.filter(s => s.localizacao_json).length > 0 ? (
+            {sensoresComLocalizacao.length > 0 ? (
               <span className="text-green-600">
-                {sensores.filter(s => s.localizacao_json).length} sensor(es) com localização definida
+                {sensoresComLocalizacao.length} sensor(es) com localização definida
               </span>
             ) : (
               <span>Nenhum sensor com localização definida</span>

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -12,14 +12,16 @@ export default function AdicionarSensor() {
     tipo: '',
     unidade: '',
     parametros: '',
+    latitude: '',
+    longitude: ''
   });
   const [talhao, setTalhao] = useState(null);
-  const [point, setPoint] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const params = useParams();
   const router = useRouter();
   const supabase = createClient();
 
+  // Buscar dados do talhão
   useEffect(() => {
     async function fetchTalhao() {
       try {
@@ -36,17 +38,20 @@ export default function AdicionarSensor() {
         toast.error('Erro ao carregar dados do talhão');
       }
     }
-
     fetchTalhao();
   }, [params.id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handlePointUpdate = (newPoint) => {
-    setPoint(newPoint);
+    setFormData(prev => ({
+      ...prev,
+      latitude: newPoint[0].toFixed(6),
+      longitude: newPoint[1].toFixed(6)
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -54,22 +59,22 @@ export default function AdicionarSensor() {
     setIsSubmitting(true);
 
     try {
-      // Preparar parâmetros como objeto JSON
+      // Parse parâmetros JSON
       let parametrosObj = {};
       if (formData.parametros) {
         try {
           parametrosObj = JSON.parse(formData.parametros);
-        } catch (err) {
+        } catch {
           throw new Error('Parâmetros devem estar em formato JSON válido');
         }
       }
 
-      // Preparar localização se houver ponto
+      // Preparar localização do sensor
       let localizacaoJson = null;
-      if (point) {
+      if (formData.latitude && formData.longitude) {
         localizacaoJson = {
           type: 'Point',
-          coordinates: point
+          coordinates: [Number(formData.longitude), Number(formData.latitude)]
         };
       }
 
@@ -77,7 +82,9 @@ export default function AdicionarSensor() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          nome: formData.nome,
+          tipo: formData.tipo,
+          unidade: formData.unidade,
           parametros: parametrosObj,
           localizacao_json: localizacaoJson,
           talhao_id: params.id
@@ -93,17 +100,15 @@ export default function AdicionarSensor() {
       toast.success(`Sensor "${data.nome}" cadastrado com sucesso!`);
       router.push(`/logged/monitoramento/${params.id}/sensores`);
 
-    } catch (error) {
-      console.error('Erro no cadastro:', error);
-      toast.error(error.message);
+    } catch (err) {
+      console.error('Erro no cadastro:', err);
+      toast.error(err.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!talhao) {
-    return <div className="p-6">Carregando...</div>;
-  }
+  if (!talhao) return <div className="p-6">Carregando...</div>;
 
   return (
     <div className="p-6">
@@ -113,14 +118,12 @@ export default function AdicionarSensor() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Form Section */}
+        {/* Formulário */}
         <div className="bg-white p-6 rounded-lg shadow">
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Nome do Sensor*
-                </label>
+                <label className="block text-sm font-medium mb-1">Nome do Sensor*</label>
                 <input
                   type="text"
                   name="nome"
@@ -132,9 +135,7 @@ export default function AdicionarSensor() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Tipo de Sensor*
-                </label>
+                <label className="block text-sm font-medium mb-1">Tipo de Sensor*</label>
                 <select
                   name="tipo"
                   className="w-full p-2 border rounded"
@@ -153,9 +154,7 @@ export default function AdicionarSensor() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Unidade de Medida*
-                </label>
+                <label className="block text-sm font-medium mb-1">Unidade de Medida*</label>
                 <input
                   type="text"
                   name="unidade"
@@ -168,9 +167,7 @@ export default function AdicionarSensor() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Parâmetros (JSON)
-                </label>
+                <label className="block text-sm font-medium mb-1">Parâmetros (JSON)</label>
                 <textarea
                   name="parametros"
                   className="w-full p-2 border rounded font-mono text-sm"
@@ -179,9 +176,29 @@ export default function AdicionarSensor() {
                   onChange={handleInputChange}
                   placeholder='Ex: {"frequencia_leituras": 5, "limite_min": 0, "limite_max": 100}'
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Informações adicionais em formato JSON (opcional)
-                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Latitude</label>
+                  <input
+                    type="number"
+                    step="0.000001"
+                    className="w-full p-2 border rounded"
+                    value={formData.latitude}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Longitude</label>
+                  <input
+                    type="number"
+                    step="0.000001"
+                    className="w-full p-2 border rounded"
+                    value={formData.longitude}
+                    onChange={handleInputChange}
+                  />
+                </div>
               </div>
             </div>
 
@@ -190,36 +207,33 @@ export default function AdicionarSensor() {
               className="w-full mt-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Salvando..." : "Salvar Sensor"}
+              {isSubmitting ? 'Salvando...' : 'Salvar Sensor'}
             </button>
           </form>
         </div>
 
-        {/* Seção do Mapa para posicionamento do sensor */}
+        {/* Mapa */}
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-lg font-medium mb-4">Localização do Sensor (Opcional)</h2>
           <div className="h-96 rounded overflow-hidden mb-4">
-            <MapPointEditor 
-              fields={[
-                {
-                  id: talhao.id,
-                  nome: talhao.nome,
-                  coords: talhao.localizacao_json?.coordinates?.[0]?.map(coord => [coord[1], coord[0]]) || []
-                }
-              ]}
+            <MapPointEditor
+              fields={[{
+                id: talhao.id,
+                nome: talhao.nome,
+                coords: talhao.localizacao_json?.coordinates?.[0]?.map(c => [c[1], c[0]]) || []
+              }]}
               selectedIds={[talhao.id]}
-              initialPoint={point}
+              initialPoint={formData.latitude && formData.longitude
+                ? [Number(formData.latitude), Number(formData.longitude)]
+                : null}
               onPointUpdate={handlePointUpdate}
             />
           </div>
-          <div className="text-sm text-gray-500">
-            <p>Clique no mapa para definir a localização do sensor (opcional).</p>
-            {point && (
-              <p className="text-green-600 mt-2">
-                Localização definida: {point[0].toFixed(6)}, {point[1].toFixed(6)}
-              </p>
-            )}
-          </div>
+          {formData.latitude && formData.longitude && (
+            <p className="text-sm text-green-600">
+              Localização definida: {formData.latitude}, {formData.longitude}
+            </p>
+          )}
         </div>
       </div>
     </div>
