@@ -10,7 +10,7 @@ export default function Breadcrumb({ items }) {
           {item.href ? (
             <Link
               href={item.href}
-              className={`hover:text-blue-600 ${index === items.length - 1 ? 'font-semibold text-gray-900' : ''}`}
+              className={`hover:text-green-600 ${index === items.length - 1 ? 'font-semibold text-gray-900' : ''}`}
             >
               {item.label}
             </Link>
