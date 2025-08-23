@@ -60,7 +60,7 @@ export default function CropSenseLanding() {
               Agricultura de Precisão Acessível
             </div>
             <h1 className="text-4xl lg:text-6xl font-bold text-green-900 mb-6 leading-tight">
-              Monitore seus talhões com
+              Monitore suas lavouras com
               <span className="text-green-600"> inteligência</span>
             </h1>
             <p className="text-xl text-green-700 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -75,9 +75,6 @@ export default function CropSenseLanding() {
               >
                 Começar Gratuitamente
               </Link>
-              <button className="border-2 border-green-600 text-green-600 hover:bg-green-300 hover:text-green-800 px-8 py-3 rounded-lg font-medium text-lg transition-colors">
-                Ver Demonstração
-              </button>
             </div>
           </div>
         </div>
