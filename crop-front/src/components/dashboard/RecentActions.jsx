@@ -10,7 +10,7 @@ export default function RecentActions({ actions }) {
       <h2 className="flex justify-between items-center mb-4 text-lg font-semibold text-gray-800">
         Ações Recentes
         <button
-          onClick={() => router.push("/logged/lavouras")}
+          onClick={() => router.push("/logged/dashboard/atividades")}
           className="text-sm text-green-500 hover:underline"
         >
           Ver todos
