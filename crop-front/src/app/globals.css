@@ -18,7 +18,8 @@ html {
 }
 /* Custom marker styles */
 /* Estilos para os marcadores */
-.marker-pin {
+/* Estilos para os marcadores */
+.field-pin {
   width: 30px;
   height: 30px;
   border-radius: 50% 50% 50% 0;
@@ -30,7 +31,7 @@ html {
   margin: -15px 0 0 -15px;
 }
 
-.marker-pin::after {
+.field-pin::after {
   content: '';
   width: 24px;
   height: 24px;
@@ -62,52 +63,168 @@ html {
   border-radius: 50%;
 }
 
-.map-marker, .sensor-marker {
-  text-align: center;
+.sensor-pin-editable {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  background: #ef4444;
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -15px 0 0 -15px;
+  animation: pulse 2s infinite;
 }
 
-.map-marker span, .sensor-marker span {
+.sensor-pin-editable::after {
+  content: '';
+  width: 24px;
+  height: 24px;
+  margin: 3px 0 0 3px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+
+@keyframes pulse {
+  0% { transform: rotate(-45deg) scale(1); }
+  50% { transform: rotate(-45deg) scale(1.1); }
+  100% { transform: rotate(-45deg) scale(1); }
+}
+
+/* Estilos para marcador do ponto mais alto */
+.highest-point-pin {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  animation: pulse-glow 2s infinite;
+}
+
+.highest-point-label {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+@keyframes pulse-glow {
+  0% { 
+    transform: scale(1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  50% { 
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+  }
+  100% { 
+    transform: scale(1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+}
+
+.highest-point-marker {
+  text-align: center;
+  z-index: 1000;
+}
+
+.highest-point-tooltip {
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+}
+
+.field-marker, .sensor-marker, .sensor-marker-editable {
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.field-marker:hover, .sensor-marker:hover, .sensor-marker-editable:hover {
+  transform: scale(1.05);
+}
+
+.field-marker span, .sensor-marker span, .sensor-marker-editable span {
   font-size: 12px;
   font-weight: bold;
   position: relative;
   top: -40px;
   left: -5px;
   color: #000;
-  text-shadow: 0 0 2px #fff;
-}
-
-/* Tooltip styles */
-.map-tooltip {
+  text-shadow: 0 0 3px #fff, 0 0 6px #fff;
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 14px;
-  line-height: 1.4;
+  padding: 2px 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.map-tooltip strong {
-  color: #16a34a;
-  display: block;
-  margin-bottom: 4px;
-}
-.leaflet-popup-content-wrapper {
-  border-radius: 8px;
+/* Melhorias nos pins dos marcadores */
+.field-pin, .sensor-pin, .sensor-pin-editable {
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.leaflet-popup-content {
-  margin: 12px;
+.field-pin:hover, .sensor-pin:hover {
+  transform: rotate(-45deg) scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.detalhes-btn {
-  transition: background-color 0.2s;
+/* Estilos para tooltips dos mapas */
+.map-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+  backdrop-filter: blur(10px);
+}
+/* Make handles larger + easier to click */
+/* Make editable handles bigger & easier to click */
+.leaflet-editable-handle {
+  width: 20px !important;
+  height: 20px !important;
+  margin-left: -10px !important; /* keep centered */
+  margin-top: -10px !important;
+  background: #2563eb !important; /* Tailwind blue-600 */
+  border: 2px solid white !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+  z-index: 10000 !important;
 }
 
-.detalhes-btn:hover {
-  background-color: #059669 !important; /* Equivalente a bg-green-700 */
+.custom-marker .marker-container {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
 }
 
+.custom-marker .marker-pin {
+  width: 28px;
+  height: 28px;
+  background-color: #16a34a;
+  border-radius: 50%;
+  border: 2px solid white;
+}
 
-.leaflet-popup-content-wrapper {
-  border-radius: 8px;
+.custom-marker .marker-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  pointer-events: none; /* permite clicar no marker sem problemas */
 }

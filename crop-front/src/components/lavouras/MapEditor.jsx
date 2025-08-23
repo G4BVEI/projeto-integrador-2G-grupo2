@@ -190,11 +190,6 @@ export default function MapEditor({ fields = [], selectedIds = [], onPolygonUpda
           <option value="google">Google Maps</option>
         </select>
       </div>
-      <div className="absolute top-2 left-2 z-1000 bg-white p-2 rounded shadow text-sm">
-        <p>• Clique no mapa para adicionar pontos</p>
-        <p>• Arraste os pontos para mover</p>
-        <p>• Clique direito para remover pontos</p>
-      </div>
     </div>
   )
 }

@@ -1,13 +1,14 @@
-// components/dashboard/AllTalhoesMap.jsx
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const AllTalhoesMap = ({ talhoes = [] }) => {
   const mapRef = useRef(null)
   const router = useRouter()
   const mapInitialized = useRef(false)
+  const [currentTileLayer, setCurrentTileLayer] = useState('google')
+  const tileLayersRef = useRef({})
 
   useEffect(() => {
     // Configurar a função global de redirecionamento
@@ -35,11 +36,19 @@ const AllTalhoesMap = ({ talhoes = [] }) => {
         // Inicializar mapa
         const map = L.map('all-talhoes-map').setView([-15.788, -47.879], 4)
         
-        // Adicionar camada base
-        L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+        // Criar camadas de tiles
+        tileLayersRef.current.openstreetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap'
+        })
+        
+        tileLayersRef.current.google = L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
           attribution: '© Google',
           maxZoom: 20
-        }).addTo(map)
+        })
+
+        // Adicionar camada inicial
+        tileLayersRef.current[currentTileLayer].addTo(map)
 
         // Adicionar cada talhão ao mapa
         const bounds = L.latLngBounds()
@@ -98,6 +107,38 @@ const AllTalhoesMap = ({ talhoes = [] }) => {
             // Expandir bounds para incluir este talhão
             bounds.extend(polygon.getBounds())
             hasVisibleTalhoes = true
+
+            // Adicionar marcador no ponto mais alto
+            const highestPoint = findHighestPoint(coords)
+            if (highestPoint) {
+              const highestMarker = L.marker(highestPoint, {
+                icon: L.divIcon({
+                  className: 'highest-point-marker',
+                  html: `
+                    <div class="highest-point-pin"></div>
+                    <span class="highest-point-label">⛰️</span>
+                  `,
+                  iconSize: [20, 20],
+                  iconAnchor: [10, 10]
+                }),
+                zIndexOffset: 1000 // Garantir que fique acima do polígono mas abaixo dos popups
+              }).addTo(map)
+
+              // Tooltip discreto para o marcador do ponto mais alto
+              highestMarker.bindTooltip('Ponto mais alto', { 
+                permanent: false, 
+                direction: 'top',
+                className: 'highest-point-tooltip',
+                offset: [0, -10]
+              })
+
+              // Não interferir com cliques - o evento será capturado pelo polígono
+              highestMarker.on('click', (e) => {
+                // Propagar o evento para o polígono subjacente
+                L.DomEvent.stopPropagation(e)
+                polygon.fire('click', e)
+              })
+            }
           } catch (error) {
             console.error('Erro ao renderizar talhão:', talhao.id, error)
           }
@@ -126,6 +167,42 @@ const AllTalhoesMap = ({ talhoes = [] }) => {
     }
   }, [talhoes, router])
 
+  // Effect para mudança de camada de tiles
+  useEffect(() => {
+    if (!mapRef.current || !tileLayersRef.current.openstreetmap || !tileLayersRef.current.google) return
+    
+    // Remover camada atual
+    Object.values(tileLayersRef.current).forEach(layer => {
+      if (mapRef.current.hasLayer(layer)) {
+        mapRef.current.removeLayer(layer)
+      }
+    })
+    
+    // Adicionar nova camada
+    tileLayersRef.current[currentTileLayer].addTo(mapRef.current)
+  }, [currentTileLayer])
+
+  const handleTileLayerChange = (e) => {
+    setCurrentTileLayer(e.target.value)
+  }
+
+  // Função para encontrar o ponto mais alto (mais ao norte) de um polígono
+  const findHighestPoint = (coords) => {
+    if (!coords || coords.length === 0) return null
+    
+    let highestPoint = coords[0]
+    let maxLat = coords[0][0]
+    
+    coords.forEach(coord => {
+      if (coord[0] > maxLat) {
+        maxLat = coord[0]
+        highestPoint = coord
+      }
+    })
+    
+    return highestPoint
+  }
+
   if (talhoes.length === 0) {
     return (
       <div className="bg-white p-6 rounded-lg shadow">
@@ -140,7 +217,19 @@ const AllTalhoesMap = ({ talhoes = [] }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">Meus Talhões</h2>
-      <div id="all-talhoes-map" className="h-96 rounded"></div>
+      <div className="relative">
+        <div id="all-talhoes-map" className="h-96 rounded"></div>
+        <div className="absolute top-2 right-2 z-[1000] bg-white p-2 rounded shadow">
+          <select 
+            value={currentTileLayer} 
+            onChange={handleTileLayerChange}
+            className="text-sm p-1 border rounded"
+          >
+            <option value="openstreetmap">OpenStreetMap</option>
+            <option value="google">Google Maps</option>
+          </select>
+        </div>
+      </div>
       <p className="text-sm text-gray-500 mt-2">
         Passe o mouse sobre um talhão para ver o nome. Clique para ver detalhes.
       </p>

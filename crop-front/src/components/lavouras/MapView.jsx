@@ -21,10 +21,10 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
     if (!mapRef.current) {
       const map = L.map('map-view-container').setView([-15.788, -47.879], 13)
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-      }).addTo(map)
+        L.tileLayer('http://mt1.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+          attribution: '© Google',
+          maxZoom: 20
+        }).addTo(map)
 
       mapRef.current = map
       layerRef.current = L.layerGroup().addTo(map)
@@ -50,8 +50,8 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
         if (sensor.localizacao_json && sensor.localizacao_json.coordinates) {
           // Inverter coordenadas (GeoJSON é [lng, lat], Leaflet quer [lat, lng])
           const coords = [
-            sensor.localizacao_json.coordinates[1],
-            sensor.localizacao_json.coordinates[0]
+            sensor.localizacao_json.coordinates[0],
+            sensor.localizacao_json.coordinates[1]
           ];
           
           const marker = L.marker(coords, {
@@ -81,6 +81,7 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
     if (!selectedField || !selectedField.coords) return
 
     // Add static markers for each point
+/*
     selectedField.coords.forEach((coord, index) => {
       L.marker(coord, {
         draggable: false,
@@ -92,7 +93,7 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
         })
       }).addTo(layerRef.current)
     })
-
+*/
     // Draw polygon when there are 3+ points
     if (selectedField.coords.length >= 3) {
       L.polygon(selectedField.coords, {

@@ -155,7 +155,7 @@ export default function AdicionarTalhao() {
       toast.success(`Talhão "${data.nome}" cadastrado com sucesso!`)
       
       // Redirecionar para a página de adicionar sensores
-      router.push(`/logged/lavouras/adicionar/${data.id}/sensores`);
+      router.push(`/logged/monitoramento/${data.id}/sensores`);
 
     } catch (error) {
       console.error('Erro no cadastro:', error)
@@ -350,7 +350,7 @@ export default function AdicionarTalhao() {
                 isSubmitting || points.filter((p) => p.lat && p.lng).length < 3
               }
             >
-              {isSubmitting ? "Salvando..." : "Salvar Talhão e Adicionar Sensores"}
+              {isSubmitting ? "Salvando..." : "Salvar Talhão"}
             </button>
           </form>
         </div>
@@ -375,12 +375,15 @@ export default function AdicionarTalhao() {
           />
           </div>
           <div className="mt-3 text-sm text-gray-500">
+            <p>Clique no mapa para adicionar pontos</p>
+            <p>Arraste os pontos para mover</p>
+            <p>Clique direito para remover pontos</p>
             {points.filter((p) => p.lat && p.lng).length >= 3 ? (
               <span className="text-green-600">
                 Área criada! Arraste os pontos ou bordas para ajustar.
               </span>
             ) : (
-              <span>Adicione pelo menos 3 pontos para formar uma área</span>
+              <span className="text-red-400">Adicione pelo menos 3 pontos para formar uma área</span>
             )}
           </div>
         </div>

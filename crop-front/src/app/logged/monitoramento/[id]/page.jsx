@@ -170,7 +170,7 @@ export default function VisualizarTalhao() {
         <div className="col-span-1 lg:col-span-2">
           <div className="bg-white p-6 rounded-lg shadow">
             <Link href={`/logged/monitoramento/${id}/sensores`}>
-            <button className='bg-green-500 text-white'> Adicionar sensor</button>
+            <button className='bg-green-500 text-white'>Editar sensores</button>
             </Link>
           </div>
         </div>    
