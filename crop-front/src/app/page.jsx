@@ -9,6 +9,7 @@ import {
   FileText,
   Smartphone,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function CropSenseLanding() {
   return (
@@ -327,11 +328,7 @@ export default function CropSenseLanding() {
               </div>
               <div className="relative">
                 <div className="bg-white rounded-2xl p-8">
-                  <img
-                    src="/images/landing-page.png"
-                    alt="Monitoramento agrícola inteligente"
-                    className="w-full h-auto rounded-lg"
-                  />
+                  <img src="/landing-page.png" alt="Monitoramento agrícola inteligente" className="w-full h-auto rounded-lg" />
                 </div>
               </div>
             </div>
