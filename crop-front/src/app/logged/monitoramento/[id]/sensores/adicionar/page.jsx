@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { createClient } from '@/lib/supabase/client';
-import MapPointEditor from '@/components/lavouras/MapPointEditor';
+import MapPointEditor from '@/components/maps/MapPointEditor';
 
 export default function AdicionarSensor() {
   const [formData, setFormData] = useState({

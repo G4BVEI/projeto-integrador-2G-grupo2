@@ -1,7 +1,7 @@
 // app/dashboard/page.js
 import RecentActions from "@/components/dashboard/RecentActions";
-import PrecipitationChart from "@/components/dashboard/PrecipitationChart";
-import TemperatureChart from "@/components/dashboard/TemperatureChart";
+import PrecipitationChart from "@/components/graphs/PrecipitationChart";
+import TemperatureChart from "@/components/graphs/TemperatureChart";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import AllTalhoesMap from "@/components/dashboard/AllTalhoesMap";
 import {
@@ -12,6 +12,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
+import DashboardGraphs from "@/components/graphs/DashboardGraphs";
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -62,6 +63,7 @@ export default async function DashboardPage() {
       </section>
 
       <RecentActions actions={actionsData} />
+      <DashboardGraphs />
     </div>
   );
 }

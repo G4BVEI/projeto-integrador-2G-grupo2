@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import MapView from "@/components/lavouras/MapView";
+import MapView from "@/components/maps/MapView";
 
 function SensoresTalhao() {
   const [sensores, setSensores] = useState([]);

@@ -6,9 +6,10 @@ import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import 'leaflet/dist/leaflet.css'
 import { toast } from 'react-hot-toast'
+import MyChart from '@/components/graphs/MyChart'
 
 const MapView = dynamic(
-  () => import('@/components/lavouras/MapView'),
+  () => import('@/components/maps/MapView'),
   {
     ssr: false,
     loading: () => (
@@ -166,6 +167,9 @@ export default function VisualizarTalhao() {
               selectedIds={["view-field"]}
             />
           </div>
+        </div>
+        <div>
+          <MyChart />
         </div>
         <div className="col-span-1 lg:col-span-2">
           <div className="bg-white p-6 rounded-lg shadow">
