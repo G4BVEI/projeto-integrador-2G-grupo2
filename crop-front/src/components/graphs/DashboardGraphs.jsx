@@ -1,285 +1,318 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  Tooltip,
-  Legend,
-} from "recharts"
-import { Thermometer, Droplets, Sprout, TrendingUp, MapPin, Calendar } from "lucide-react"
+import { useEffect, useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend, BarChart, Bar } from 'recharts'
+import { Thermometer, Droplets, CloudRain, Filter, CheckSquare, Square } from 'lucide-react'
 
-// Sample data for different agricultural plots
-const temperatureData = [
-  { time: "00:00", plotA: 18, plotB: 16, plotC: 20, plotD: 17 },
-  { time: "04:00", plotA: 15, plotB: 14, plotC: 17, plotD: 15 },
-  { time: "08:00", plotA: 22, plotB: 20, plotC: 24, plotD: 21 },
-  { time: "12:00", plotA: 28, plotB: 26, plotC: 30, plotD: 27 },
-  { time: "16:00", plotA: 32, plotB: 30, plotC: 34, plotD: 31 },
-  { time: "20:00", plotA: 26, plotB: 24, plotC: 28, plotD: 25 },
-]
+const API_KEY = 'c1a01ddb4d54bf9903e1cefe8c0a35f3'
+const plotColors = ['#22c55e','#3b82f6','#8b5cf6','#ef4444','#f97316','#8b5cf6']
 
-const moistureData = [
-  { time: "00:00", plotA: 65, plotB: 70, plotC: 60, plotD: 68 },
-  { time: "04:00", plotA: 68, plotB: 72, plotC: 63, plotD: 70 },
-  { time: "08:00", plotA: 62, plotB: 68, plotC: 58, plotD: 65 },
-  { time: "12:00", plotA: 55, plotB: 60, plotC: 50, plotD: 58 },
-  { time: "16:00", plotA: 48, plotB: 55, plotC: 45, plotD: 52 },
-  { time: "20:00", plotA: 58, plotB: 63, plotC: 55, plotD: 60 },
-]
+export default function WeatherDashboard({ talhoes }) {
+  const [temperatureData, setTemperatureData] = useState([])
+  const [humidityData, setHumidityData] = useState([])
+  const [rainData, setRainData] = useState([])
+  const [selectedTalhoes, setSelectedTalhoes] = useState({})
+  const [showFilter, setShowFilter] = useState(false)
+  const [activeTab, setActiveTab] = useState('temperature')
 
-const growthData = [
-  { week: "Week 1", plotA: 2.1, plotB: 1.8, plotC: 2.3, plotD: 2.0 },
-  { week: "Week 2", plotA: 4.5, plotB: 4.2, plotC: 4.8, plotD: 4.3 },
-  { week: "Week 3", plotA: 7.2, plotB: 6.8, plotC: 7.6, plotD: 7.0 },
-  { week: "Week 4", plotA: 10.1, plotB: 9.5, plotC: 10.8, plotD: 9.8 },
-  { week: "Week 5", plotA: 13.2, plotB: 12.4, plotC: 14.1, plotD: 12.9 },
-  { week: "Week 6", plotA: 16.8, plotB: 15.9, plotC: 17.5, plotD: 16.2 },
-]
+  // Inicializar todos os talhões como selecionados
+  useEffect(() => {
+    if (talhoes && talhoes.length > 0) {
+      const initialSelection = {}
+      talhoes.forEach(talhao => {
+        initialSelection[talhao.id] = true
+      })
+      setSelectedTalhoes(initialSelection)
+    }
+  }, [talhoes])
 
-const soilData = [
-  { metric: "pH Level", plotA: 6.8, plotB: 7.2, plotC: 6.5, plotD: 7.0 },
-  { metric: "Nitrogen", plotA: 85, plotB: 78, plotC: 92, plotD: 80 },
-  { metric: "Phosphorus", plotA: 45, plotB: 52, plotC: 38, plotD: 48 },
-  { metric: "Potassium", plotA: 120, plotB: 115, plotC: 128, plotD: 118 },
-]
+  // Selecionar/desmarcar todos os talhões
+  const toggleAllTalhoes = (selectAll) => {
+    const newSelection = {}
+    talhoes.forEach(talhao => {
+      newSelection[talhao.id] = selectAll
+    })
+    setSelectedTalhoes(newSelection)
+  }
 
-const plotStats = [
-  { name: "Plot A", area: "2.5 acres", status: "Optimal", lastWatered: "2 hours ago" },
-  { name: "Plot B", area: "3.1 acres", status: "Good", lastWatered: "4 hours ago" },
-  { name: "Plot C", area: "1.8 acres", status: "Needs Attention", lastWatered: "6 hours ago" },
-  { name: "Plot D", area: "2.9 acres", status: "Good", lastWatered: "3 hours ago" },
-]
+  // Alternar seleção de um talhão específico
+  const toggleTalhao = (talhaoId) => {
+    setSelectedTalhoes(prev => ({
+      ...prev,
+      [talhaoId]: !prev[talhaoId]
+    }))
+  }
 
-export default function DashboardGraphs() {
-  const [selectedPlot, setSelectedPlot] = useState("all")
-  const [timeRange, setTimeRange] = useState("24h")
+  // Obter talhões selecionados
+  const getSelectedTalhoes = () => {
+    return talhoes.filter(talhao => selectedTalhoes[talhao.id])
+  }
+
+  useEffect(() => {
+    async function fetchWeatherData() {
+      const selected = getSelectedTalhoes()
+      if (!selected || !selected.length) {
+        setTemperatureData([])
+        setHumidityData([])
+        setRainData([])
+        return
+      }
+
+      const tempPoints = []
+      const humidityPoints = []
+      const rainPoints = []
+
+      for (const talhao of selected) {
+        const lat = talhao.localizacao_json?.coordinates?.[0]?.[0]?.[1] || talhao.latitude
+        const lon = talhao.localizacao_json?.coordinates?.[0]?.[0]?.[0] || talhao.longitude
+        if (!lat || !lon) continue
+
+        try {
+          const res = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&lang=pt_br&appid=${API_KEY}`
+          )
+          const json = await res.json()
+          if (!json.list) continue
+
+          json.list.forEach(item => {
+            const time = new Date(item.dt * 1000).getHours().toString().padStart(2,'0') + 'H'
+            const date = new Date(item.dt * 1000).toLocaleDateString('pt-BR')
+
+            // Temperatura
+            let tempPoint = tempPoints.find(p => p.time === time)
+            if (!tempPoint) {
+              tempPoint = { time }
+              selected.forEach(t => { tempPoint[t.id] = null })
+              tempPoints.push(tempPoint)
+            }
+            tempPoint[talhao.id] = Number(item.main.temp.toFixed(1))
+
+            // Umidade
+            let humidityPoint = humidityPoints.find(p => p.time === time)
+            if (!humidityPoint) {
+              humidityPoint = { time }
+              selected.forEach(t => { humidityPoint[t.id] = null })
+              humidityPoints.push(humidityPoint)
+            }
+            humidityPoint[talhao.id] = Number(item.main.humidity)
+
+            // Precipitação (chuva)
+            let rainPoint = rainPoints.find(p => p.date === date)
+            if (!rainPoint) {
+              rainPoint = { date }
+              selected.forEach(t => { rainPoint[t.id] = null })
+              rainPoints.push(rainPoint)
+            }
+            
+            const rainValue = item.rain ? item.rain['3h'] || 0 : 0
+            if (rainPoint[talhao.id] === null) {
+              rainPoint[talhao.id] = rainValue
+            } else {
+              rainPoint[talhao.id] += rainValue
+            }
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      setTemperatureData(tempPoints)
+      setHumidityData(humidityPoints)
+      setRainData(rainPoints)
+    }
+
+    fetchWeatherData()
+  }, [selectedTalhoes, talhoes])
+
+  if (!talhoes || talhoes.length === 0) {
+    return (
+      <div className="bg-white p-4 rounded-lg shadow-md">
+        <h3 className="flex items-center mb-2 text-lg font-medium">
+          <Thermometer className="h-5 w-5 mr-2 text-green-500" />
+          Dashboard Meteorológico
+        </h3>
+        <p className="text-sm text-gray-500">Nenhum talhão disponível</p>
+      </div>
+    )
+  }
+
+  const selectedTalhoesList = getSelectedTalhoes()
+  const allSelected = selectedTalhoesList.length === talhoes.length
+  const noneSelected = selectedTalhoesList.length === 0
+
+  const renderChart = () => {
+    if (noneSelected) {
+      return (
+        <div className="h-64 flex items-center justify-center text-gray-400">
+          Selecione talhões para visualizar dados
+        </div>
+      )
+    }
+
+    switch (activeTab) {
+      case 'temperature':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={temperatureData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="time" />
+              <YAxis label={{ value: '°C', angle: -90, position: 'insideLeft' }} />
+              <Tooltip formatter={(value) => [`${value}°C`, 'Temperatura']} />
+              <Legend formatter={id => talhoes.find(t => t.id === id)?.nome || id} />
+              {selectedTalhoesList.map((t, idx) => (
+                <Line 
+                  key={t.id} 
+                  dataKey={t.id.toString()} 
+                  stroke={plotColors[idx % plotColors.length]} 
+                  connectNulls 
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        )
+      
+      case 'humidity':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={humidityData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="time" />
+              <YAxis label={{ value: '%', angle: -90, position: 'insideLeft' }} domain={[0, 100]} />
+              <Tooltip formatter={(value) => [`${value}%`, 'Umidade']} />
+              <Legend formatter={id => talhoes.find(t => t.id === id)?.nome || id} />
+              {selectedTalhoesList.map((t, idx) => (
+                <Line 
+                  key={t.id} 
+                  dataKey={t.id.toString()} 
+                  stroke={plotColors[idx % plotColors.length]} 
+                  connectNulls 
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        )
+      
+      case 'rain':
+        return (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={rainData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis label={{ value: 'mm', angle: -90, position: 'insideLeft' }} />
+              <Tooltip formatter={(value) => [`${value}mm`, 'Precipitação']} />
+              <Legend formatter={id => talhoes.find(t => t.id === id)?.nome || id} />
+              {selectedTalhoesList.map((t, idx) => (
+                <Bar 
+                  key={t.id} 
+                  dataKey={t.id.toString()} 
+                  fill={plotColors[idx % plotColors.length]} 
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        )
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="border-b bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Sprout className="h-8 w-8 text-green-500" />
-                <h1 className="text-2xl font-bold text-gray-900">AgriMonitor</h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <select 
-                  value={selectedPlot}
-                  onChange={(e) => setSelectedPlot(e.target.value)}
-                  className="w-40 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                >
-                  <option value="all">All Plots</option>
-                  <option value="plotA">Plot A</option>
-                  <option value="plotB">Plot B</option>
-                  <option value="plotC">Plot C</option>
-                  <option value="plotD">Plot D</option>
-                </select>
-              </div>
-              <button className="flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500">
-                <Calendar className="h-4 w-4 mr-2" />
-                Last 24h
-              </button>
-            </div>
+    <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="flex items-center text-lg font-medium">
+          {activeTab === 'temperature' && <Thermometer className="h-5 w-5 mr-2 text-green-500" />}
+          {activeTab === 'humidity' && <Droplets className="h-5 w-5 mr-2 text-blue-500" />}
+          {activeTab === 'rain' && <CloudRain className="h-5 w-5 mr-2 text-purple-500" />}
+          {activeTab === 'temperature' && 'Temperatura'}
+          {activeTab === 'humidity' && 'Umidade'}
+          {activeTab === 'rain' && 'Previsão de Chuva'}
+        </h3>
+        <button
+          onClick={() => setShowFilter(!showFilter)}
+          className="flex items-center text-sm text-gray-600 hover:text-gray-800"
+        >
+          <Filter className="h-4 w-4 mr-1" />
+          Filtros
+        </button>
+      </div>
+
+      {showFilter && (
+        <div className="mb-3 p-3 bg-gray-50 rounded-lg">
+          <div className="flex justify-between mb-2">
+            <button
+              onClick={() => toggleAllTalhoes(true)}
+              className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              <CheckSquare className="h-4 w-4 mr-1" />
+              Marcar todos
+            </button>
+            <button
+              onClick={() => toggleAllTalhoes(false)}
+              className="text-sm text-red-600 hover:text-red-800 flex items-center"
+            >
+              <Square className="h-4 w-4 mr-1" />
+              Desmarcar todos
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2">
+            {talhoes.map(talhao => (
+              <label key={talhao.id} className="flex items-center text-sm">
+                <input
+                  type="checkbox"
+                  checked={!!selectedTalhoes[talhao.id]}
+                  onChange={() => toggleTalhao(talhao.id)}
+                  className="mr-2 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                />
+                {talhao.nome}
+              </label>
+            ))}
           </div>
         </div>
-      </header>
+      )}
 
-      <main className="container mx-auto px-4 py-6">
-        {/* Plot Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {plotStats.map((plot) => (
-            <div key={plot.name} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-gray-900">{plot.name}</h3>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    plot.status === "Optimal" 
-                      ? "bg-green-100 text-green-800" 
-                      : plot.status === "Good" 
-                        ? "bg-blue-100 text-blue-800" 
-                        : "bg-red-100 text-red-800"
-                  }`}>
-                    {plot.status}
-                  </span>
-                </div>
-              </div>
-              <div className="px-4 py-3">
-                <div className="space-y-2">
-                  <div className="flex items-center text-sm text-gray-500">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    {plot.area}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Droplets className="h-4 w-4 mr-1" />
-                    {plot.lastWatered}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Tabs de navegação */}
+      <div className="flex mb-3 border-b border-gray-200">
+        <button
+          onClick={() => setActiveTab('temperature')}
+          className={`px-4 py-2 text-sm font-medium ${
+            activeTab === 'temperature'
+              ? 'text-green-600 border-b-2 border-green-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Temperatura
+        </button>
+        <button
+          onClick={() => setActiveTab('humidity')}
+          className={`px-4 py-2 text-sm font-medium ${
+            activeTab === 'humidity'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Umidade
+        </button>
+        <button
+          onClick={() => setActiveTab('rain')}
+          className={`px-4 py-2 text-sm font-medium ${
+            activeTab === 'rain'
+              ? 'text-purple-600 border-b-2 border-purple-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Chuva
+        </button>
+      </div>
 
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Temperature Chart */}
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-            <div className="px-4 py-5 border-b border-gray-200">
-              <h3 className="flex items-center text-lg font-medium text-gray-900">
-                <Thermometer className="h-5 w-5 mr-2 text-green-500" />
-                Temperature Over Time
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">Temperature readings (°C) across all plots in the last 24 hours</p>
-            </div>
-            <div className="px-4 py-5">
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={temperatureData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="plotA" stroke="#22c55e" strokeWidth={2} name="Plot A" />
-                    <Line type="monotone" dataKey="plotB" stroke="#3b82f6" strokeWidth={2} name="Plot B" />
-                    <Line type="monotone" dataKey="plotC" stroke="#8b5cf6" strokeWidth={2} name="Plot C" />
-                    <Line type="monotone" dataKey="plotD" stroke="#ef4444" strokeWidth={2} name="Plot D" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
+      <p className="text-sm text-gray-500 mb-3">
+        {noneSelected 
+          ? "Selecione pelo menos um talhão" 
+          : `Mostrando ${selectedTalhoesList.length} de ${talhoes.length} talhões`
+        }
+      </p>
 
-          {/* Moisture Chart */}
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-            <div className="px-4 py-5 border-b border-gray-200">
-              <h3 className="flex items-center text-lg font-medium text-gray-900">
-                <Droplets className="h-5 w-5 mr-2 text-green-500" />
-                Soil Moisture Levels
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">Moisture percentage across all plots in the last 24 hours</p>
-            </div>
-            <div className="px-4 py-5">
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={moistureData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Area
-                      type="monotone"
-                      dataKey="plotA"
-                      stackId="1"
-                      stroke="#22c55e"
-                      fill="#22c55e"
-                      fillOpacity={0.3}
-                      name="Plot A"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="plotB"
-                      stackId="2"
-                      stroke="#3b82f6"
-                      fill="#3b82f6"
-                      fillOpacity={0.3}
-                      name="Plot B"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="plotC"
-                      stackId="3"
-                      stroke="#8b5cf6"
-                      fill="#8b5cf6"
-                      fillOpacity={0.3}
-                      name="Plot C"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="plotD"
-                      stackId="4"
-                      stroke="#ef4444"
-                      fill="#ef4444"
-                      fillOpacity={0.3}
-                      name="Plot D"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-
-          {/* Growth Chart */}
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-            <div className="px-4 py-5 border-b border-gray-200">
-              <h3 className="flex items-center text-lg font-medium text-gray-900">
-                <TrendingUp className="h-5 w-5 mr-2 text-green-500" />
-                Plant Growth Progress
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">Average plant height (cm) over the past 6 weeks</p>
-            </div>
-            <div className="px-4 py-5">
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={growthData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="week" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="plotA" stroke="#22c55e" strokeWidth={3} name="Plot A" />
-                    <Line type="monotone" dataKey="plotB" stroke="#3b82f6" strokeWidth={3} name="Plot B" />
-                    <Line type="monotone" dataKey="plotC" stroke="#8b5cf6" strokeWidth={3} name="Plot C" />
-                    <Line type="monotone" dataKey="plotD" stroke="#ef4444" strokeWidth={3} name="Plot D" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-
-          {/* Soil Conditions Chart */}
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-            <div className="px-4 py-5 border-b border-gray-200">
-              <h3 className="flex items-center text-lg font-medium text-gray-900">
-                <Sprout className="h-5 w-5 mr-2 text-green-500" />
-                Soil Conditions Comparison
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">Current soil metrics across all plots</p>
-            </div>
-            <div className="px-4 py-5">
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={soilData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="metric" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="plotA" fill="#22c55e" name="Plot A" />
-                    <Bar dataKey="plotB" fill="#3b82f6" name="Plot B" />
-                    <Bar dataKey="plotC" fill="#8b5cf6" name="Plot C" />
-                    <Bar dataKey="plotD" fill="#ef4444" name="Plot D" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+      <div className="h-64">
+        {renderChart()}
+      </div>
     </div>
   )
 }

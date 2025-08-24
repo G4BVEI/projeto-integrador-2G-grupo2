@@ -325,7 +325,7 @@ export default function CropSenseLanding() {
               </div>
               <div className="relative">
                 <div className="bg-white rounded-2xl p-8">
-                  <img src="/landing-page.png" alt="Monitoramento agrícola inteligente" className="w-full h-auto rounded-lg" />
+                  <img src="/landingpage.png" alt="Monitoramento agrícola inteligente" className="w-full h-auto rounded-lg" />
                 </div>
               </div>
             </div>

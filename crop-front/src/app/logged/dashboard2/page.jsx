@@ -4,11 +4,6 @@ import PrecipitationChart from "@/components/graphs/PrecipitationChart";
 import TemperatureChart from "@/components/graphs/TemperatureChart";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import AllTalhoesMap from "@/components/maps/AllTalhoesMap";
-import {
-  getChartData,
-  getRecentActions,
-  getAlerts,
-} from "@/lib/fetchData";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
@@ -29,12 +24,6 @@ export default async function DashboardPage() {
     .eq('user_id', session.user.id)
     .order('criado_em', { ascending: false }); // ← CORRIGIDO: usar 'criado_em'
 
-  // Fetch de dados no servidor para melhor SEO
-  const [chartData, actionsData, alertsData] = await Promise.all([
-    getChartData(),
-    getRecentActions(),
-    getAlerts(),
-  ]);
 
   return (
     <div className="p-4 space-y-6">
@@ -49,20 +38,6 @@ export default async function DashboardPage() {
       {/* Mapa com todos os talhões */}
       <AllTalhoesMap talhoes={talhoes || []} />
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <PrecipitationChart data={chartData.precipitation} />
-
-        <TemperatureChart
-          data={chartData.temperature}
-          currentTemp={chartData.weather.currentTemp}
-          minTemp={chartData.weather.minTemp}
-          location={chartData.weather.location}
-        />
-
-        <AlertsCard alerts={alertsData} />
-      </section>
-
-      <RecentActions actions={actionsData} />
       <DashboardGraphs talhoes={talhoes || []} />
     </div>
   );
