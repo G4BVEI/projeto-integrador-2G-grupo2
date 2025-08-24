@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Chart } from 'chart.js/auto'
 
-const API_KEY = 'c1a01ddb4d54bf9903e1cefe8c0a35f3'
+const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
 
 export default function TemperatureChart() {
   const chartRef = useRef(null)

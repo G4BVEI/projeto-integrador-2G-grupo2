@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend, BarChart, Bar } from 'recharts'
 import { Thermometer, Droplets, CloudRain, Filter, CheckSquare, Square } from 'lucide-react'
 
-const API_KEY = 'c1a01ddb4d54bf9903e1cefe8c0a35f3'
+const API_KEY =  process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
 const plotColors = ['#22c55e','#3b82f6','#8b5cf6','#ef4444','#f97316','#8b5cf6']
 
 export default function WeatherDashboard({ talhoes }) {
