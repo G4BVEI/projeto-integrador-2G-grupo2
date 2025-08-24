@@ -9,7 +9,7 @@ Interface do sistema CropSense — monitoramento inteligente de lavouras.
 cd crop-front
 ```
 
-# Adicione as variaveis de desenvolvimento
+Adicione as variaveis de desenvolvimento
 (.env)
 ```bash
 # Instale as dependências
