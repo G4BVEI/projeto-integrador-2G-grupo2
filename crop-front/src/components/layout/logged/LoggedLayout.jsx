@@ -93,9 +93,9 @@ export default function LoggedLayout({ children }) {
 
           {/* Actions */}
           <div className="flex items-center space-x-4 flex-shrink-0">
-            <button className="p-2 rounded-md hover:bg-gray-100">
+            <a href="./notificacoes"><button className="p-2 rounded-md hover:bg-gray-100">
               <Bell size={24} />
-            </button>
+            </button></a>
             <button className="p-2 rounded-full hover:bg-gray-100">
               <User size={24} />
             </button>
