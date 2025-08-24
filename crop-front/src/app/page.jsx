@@ -76,6 +76,14 @@ export default function CropSenseLanding() {
               >
                 Começar Gratuitamente
               </Link>
+              <Link
+                href="/auth/login"
+                className="relative border-2 border-green-600 text-green-600 px-8 py-3 rounded-lg font-medium text-lg inline-block text-center transition-all duration-300 overflow-hidden
+                  hover:text-white hover:border-green-700
+                  before:absolute before:inset-0 before:bg-gradient-to-r before:from-green-600 before:to-green-400 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
+              >
+                <span className="relative z-10">Acesse Sua conta</span>
+              </Link>
             </div>
           </div>
         </div>
