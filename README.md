@@ -8,6 +8,7 @@ Interface do sistema CropSense — monitoramento inteligente de lavouras.
 # Clone o repositório e acesse a pasta
 cd crop-front
 
+# Adicione as variaveis de desenvolvimento (.env)
 # Instale as dependências
 npm install
 
