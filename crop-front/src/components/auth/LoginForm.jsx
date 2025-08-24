@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
-import ImagemFundo from './ImagemFundo';
+import { FcGoogle } from 'react-icons/fc';
 
-export default function LoginForm() {
+export default function LoginForm({ onGoogleLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,10 +33,20 @@ export default function LoginForm() {
     router.push('/logged/dashboard');
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await onGoogleLogin();
+    } catch (error) {
+      setError('Erro ao fazer login com Google');
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
-      <ImagemFundo></ImagemFundo>
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md z-10">
         <h1 className="text-2xl font-bold text-center text-green-600 mb-6">Login</h1>
         
         {error && (
@@ -44,6 +54,25 @@ export default function LoginForm() {
             {error}
           </div>
         )}
+
+        {/* Botão do Google */}
+        <button
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-md hover:bg-gray-50 transition mb-4 disabled:opacity-50"
+        >
+          <FcGoogle className="w-5 h-5" />
+          <span>Entrar com Google</span>
+        </button>
+
+        <div className="relative mb-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">ou</span>
+          </div>
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -76,7 +105,7 @@ export default function LoginForm() {
             disabled={loading}
             className={`w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? 'Entrando...' : 'Entrar com Email'}
           </button>
         </form>
 

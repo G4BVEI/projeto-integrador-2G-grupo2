@@ -1,17 +1,19 @@
 // app/auth/callback/route.js
-import { createClient } from "@/lib/supabase/server";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
 
 export async function GET(request) {
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get("code");
+  console.log('Callback reached! Redirecting to dashboard...');
   
-  if (code) {
-    const cookieStore = cookies(); // Get cookies
-    const supabase = createClient(cookieStore); // Pass cookies to client
-    await supabase.auth.exchangeCodeForSession(code);
-  }
-
-  return NextResponse.redirect(new URL("/logged/dashboard", request.url));
+  // URL absoluta para o dashboard
+  const dashboardUrl = new URL('/logged/dashboard', request.url);
+  
+  // Forçar redirecionamento imediato
+  const response = NextResponse.redirect(dashboardUrl);
+  
+  // Headers adicionais para garantir
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Expires', '0');
+  
+  return response;
 }

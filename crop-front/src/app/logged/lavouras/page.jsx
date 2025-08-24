@@ -96,7 +96,7 @@ function ListaTalhoes() {
                       Detalhes
                     </button>
                     <button 
-                      onClick={() => router.push(`/logged/lavouras/editar/${talhao.id}`)}
+                      onClick={() => router.push(`/logged/monitoramento/${talhao.id}/editar`)}
                       className="text-blue-600 hover:underline"
                     >
                       Editar
