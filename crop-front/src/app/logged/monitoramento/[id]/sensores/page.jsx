@@ -18,28 +18,54 @@ function SensoresTalhao() {
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true)
-        const talhaoId = params.id
+        setLoading(true);
+        const talhaoId = params.id;
 
+        // 1. Buscar talhão
         const { data: talhaoData, error: talhaoError } = await supabase
-          .from('talhoes').select('*').eq('id', talhaoId).single()
-        if (talhaoError) throw talhaoError
-        setTalhao(talhaoData)
+          .from('talhoes')
+          .select('*')
+          .eq('id', talhaoId)
+          .single();
+        if (talhaoError) throw talhaoError;
+        setTalhao(talhaoData);
 
+        // 2. Buscar sensores
         const { data: sensoresData, error: sensoresError } = await supabase
-          .from('sensores').select('*').eq('talhao_id', talhaoId)
-          .order('criado_em', { ascending: false })
-        if (sensoresError) throw sensoresError
-        setSensores(sensoresData || [])
+          .from('sensores')
+          .select('*')
+          .eq('talhao_id', talhaoId)
+          .order('criado_em', { ascending: false });
+        if (sensoresError) throw sensoresError;
+
+        // 3. Buscar última leitura de cada sensor
+        const sensoresComUltimaLeitura = await Promise.all(
+          (sensoresData || []).map(async sensor => {
+            const { data: dados, error: dadosError } = await supabase
+              .from('dados_sensor')
+              .select('valor, registrado_em')
+              .eq('sensor_id', sensor.id)
+              .order('registrado_em', { ascending: false })
+              .limit(1);
+            if (dadosError) console.error(dadosError);
+
+            return {
+              ...sensor,
+              ultima_leitura: dados?.[0] || null
+            };
+          })
+        );
+
+        setSensores(sensoresComUltimaLeitura);
       } catch (err) {
-        setError(err.message)
+        setError(err.message);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchData()
-  }, [params.id])
+    fetchData();
+  }, [params.id]);
 
   if (loading) return <div className="p-4">Carregando sensores...</div>;
   if (error) return <div className="p-4 text-red-500">Erro: {error}</div>;
@@ -71,6 +97,7 @@ function SensoresTalhao() {
                   <th className="px-4 py-3">Nome</th>
                   <th className="px-4 py-3">Tipo</th>
                   <th className="px-4 py-3">Unidade</th>
+                  <th className="px-4 py-3">Última leitura</th>
                   <th className="px-4 py-3">Ações</th>
                 </tr>
               </thead>
@@ -80,6 +107,9 @@ function SensoresTalhao() {
                     <td className="px-4 py-3 font-medium">{sensor.nome}</td>
                     <td className="px-4 py-3">{sensor.tipo}</td>
                     <td className="px-4 py-3">{sensor.unidade}</td>
+                    <td className="px-4 py-3">
+                      {sensor.ultima_leitura?.valor ?? "-"} {sensor.unidade ?? ""}
+                    </td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => router.push(`/logged/monitoramento/${params.id}/sensores/editar/${sensor.id}`)}
@@ -99,8 +129,7 @@ function SensoresTalhao() {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="4" className="px-4 py-8 text-center
-                    text-gray-500">
+                    <td colSpan="5" className="px-4 py-8 text-center text-gray-500">
                       Nenhum sensor cadastrado ainda
                     </td>
                   </tr>
@@ -124,7 +153,10 @@ function SensoresTalhao() {
                   }
                 ]}
                 selectedIds={[talhao.id]}
-                sensorPoints={sensoresComLocalizacao}
+                sensorPoints={sensoresComLocalizacao.map(sensor => ({
+                  ...sensor,
+                  popupContent: `${sensor.nome} - ${sensor.ultima_leitura?.valor ?? '-'} ${sensor.unidade ?? ''}`
+                }))}
               />
             )}
           </div>

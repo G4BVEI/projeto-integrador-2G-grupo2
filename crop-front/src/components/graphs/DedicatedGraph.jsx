@@ -258,7 +258,7 @@ export default function DedicatedGraph({ talhao }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold">Condições Meteorológicas</h2>
-          <p className="text-gray-500">Talhão: {talhao.nome}</p>
+          <p className="text-gray-500">Previsão do clima</p>
         </div>
         <div className="flex items-center text-sm text-gray-500">
           <Calendar className="h-4 w-4 mr-1" />
@@ -290,7 +290,7 @@ export default function DedicatedGraph({ talhao }) {
           }`}
         >
           <Thermometer className="h-4 w-4 inline mr-1" />
-          Temperatura
+          Temperatura do Ar
         </button>
         <button
           onClick={() => setActiveTab('humidity')}
@@ -301,7 +301,7 @@ export default function DedicatedGraph({ talhao }) {
           }`}
         >
           <Droplets className="h-4 w-4 inline mr-1" />
-          Umidade
+          Umidade do Ar
         </button>
         <button
           onClick={() => setActiveTab('rain')}
@@ -332,9 +332,9 @@ export default function DedicatedGraph({ talhao }) {
           <h3 className="font-semibold mb-3">Condições Atuais</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p><strong>Temperatura:</strong> {Math.round(currentWeather.main.temp)}°C</p>
+              <p><strong>Temperatura do Ar:</strong> {Math.round(currentWeather.main.temp)}°C</p>
               <p><strong>Sensação Térmica:</strong> {Math.round(currentWeather.main.feels_like)}°C</p>
-              <p><strong>Umidade:</strong> {currentWeather.main.humidity}%</p>
+              <p><strong>Umidade do Ar:</strong> {currentWeather.main.humidity}%</p>
             </div>
             <div>
               <p><strong>Pressão:</strong> {currentWeather.main.pressure}hPa</p>
