@@ -34,7 +34,7 @@ export default async function NotificationsPage() {
         <h1 className="text-2xl font-bold">Notificações</h1>
         <div className="flex gap-3">
           <Link
-            href="/logged/dashboard"
+            href="/protegido/dashboard"
             className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
           >
             Voltar ao Dashboard

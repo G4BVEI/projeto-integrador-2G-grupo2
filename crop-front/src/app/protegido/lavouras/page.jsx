@@ -64,7 +64,7 @@ function ListaTalhoes() {
       {/* Botão de Adicionar */}
       <div className="mb-4">
         <button
-          onClick={() => router.push("/logged/lavouras/adicionar")}
+          onClick={() => router.push("/protegido/lavouras/adicionar")}
           className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
         >
           <span className="text-lg">+</span> Adicionar Lavoura
@@ -97,13 +97,13 @@ function ListaTalhoes() {
                   <td className="px-4 py-3">{talhao.area ? `${talhao.area} ha` : '-'}</td>
                   <td className="px-4 py-3">
                     <button 
-                      onClick={() => router.push(`/logged/monitoramento/${talhao.id}`)}
+                      onClick={() => router.push(`/protegido/monitoramento/${talhao.id}`)}
                       className="text-green-600 hover:underline mr-3"
                     >
                       Detalhes
                     </button>
                     <button 
-                      onClick={() => router.push(`/logged/monitoramento/${talhao.id}/editar`)}
+                      onClick={() => router.push(`/protegido/monitoramento/${talhao.id}/editar`)}
                       className="text-blue-600 hover:underline"
                     >
                       Editar

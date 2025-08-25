@@ -236,9 +236,9 @@ if (loading) return (
   );
 
   const breadcrumbItems = [
-    { label: "Monitoramento", href: "/logged/monitoramento" },
-    ...(talhao ? [{ label: talhao.nome, href: `/logged/monitoramento/${talhao.id}` }] : []),
-    { label: "Sensores", href: `/logged/monitoramento/${params.id}/sensores` },
+    { label: "Monitoramento", href: "/protegido/monitoramento" },
+    ...(talhao ? [{ label: talhao.nome, href: `/protegido/monitoramento/${talhao.id}` }] : []),
+    { label: "Sensores", href: `/protegido/monitoramento/${params.id}/sensores` },
     { label: "Editar Sensor" },
     ...(sensor ? [{ label: sensor.nome }] : []),
   ];

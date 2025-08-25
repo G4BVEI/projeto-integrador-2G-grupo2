@@ -13,7 +13,7 @@ export default function ConfirmPage() {
     // Verificar se o usuário já está confirmado
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        router.push("/logged/dashboard");
+        router.push("/protegido/dashboard");
       }
     });
   }, []);

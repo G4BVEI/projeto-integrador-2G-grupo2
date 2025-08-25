@@ -129,7 +129,7 @@ export default function AdicionarSensor() {
 
       const data = await response.json();
       toast.success(`Sensor "${data.nome}" cadastrado com sucesso!`);
-      router.push(`/logged/monitoramento/${params.id}/sensores`);
+      router.push(`/protegido/monitoramento/${params.id}/sensores`);
 
     } catch (err) {
       console.error('Erro no cadastro:', err);

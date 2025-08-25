@@ -21,31 +21,31 @@ import { createClient } from "@/lib/supabase/client";
 // Índice de busca com todas as rotas
 const searchIndex = [
   {
-    path: '/logged/dashboard',
+    path: '/protegido/dashboard',
     title: 'Dashboard',
     description: 'Página inicial do sistema',
     category: 'Geral'
   },
   {
-    path: '/logged/dashboard/atividades',
+    path: '/protegido/dashboard/atividades',
     title: 'Atividades',
     description: 'Visualizar atividades do sistema',
     category: 'Dashboard'
   },
   {
-    path: '/logged/lavouras',
+    path: '/protegido/lavouras',
     title: 'Lavouras',
     description: 'Gerenciamento de lavouras',
     category: 'Lavouras'
   },
   {
-    path: '/logged/lavouras/adicionar',
+    path: '/protegido/lavouras/adicionar',
     title: 'Adicionar Lavoura',
     description: 'Criar nova lavoura',
     category: 'Lavouras'
   },
   {
-    path: '/logged/monitoramento',
+    path: '/protegido/monitoramento',
     title: 'Monitoramento',
     description: 'Acompanhamento de talhões',
     category: 'Monitoramento',
@@ -54,7 +54,7 @@ const searchIndex = [
     contextQuery: 'talhoes'
   },
   {
-    path: '/logged/monitoramento/[id]',
+    path: '/protegido/monitoramento/[id]',
     title: 'Detalhes do Talhão',
     description: 'Detalhes e métricas do talhão',
     category: 'Monitoramento',
@@ -63,7 +63,7 @@ const searchIndex = [
     contextQuery: 'talhoes'
   },
   {
-    path: '/logged/monitoramento/[id]/editar',
+    path: '/protegido/monitoramento/[id]/editar',
     title: 'Editar Talhão',
     description: 'Editar informações do talhão',
     category: 'Monitoramento',
@@ -72,7 +72,7 @@ const searchIndex = [
     contextQuery: 'talhoes'
   },
   {
-    path: '/logged/monitoramento/[id]/sensores',
+    path: '/protegido/monitoramento/[id]/sensores',
     title: 'Sensores do Talhão',
     description: 'Gerenciar sensores do talhão',
     category: 'Monitoramento',
@@ -81,7 +81,7 @@ const searchIndex = [
     contextQuery: 'talhoes'
   },
   {
-    path: '/logged/monitoramento/[id]/sensores/adicionar',
+    path: '/protegido/monitoramento/[id]/sensores/adicionar',
     title: 'Adicionar Sensor',
     description: 'Adicionar novo sensor ao talhão',
     category: 'Monitoramento',
@@ -90,7 +90,7 @@ const searchIndex = [
     contextQuery: 'talhoes'
   },
   {
-    path: '/logged/monitoramento/[id]/sensores/editar/[sensorId]',
+    path: '/protegido/monitoramento/[id]/sensores/editar/[sensorId]',
     title: 'Editar Sensor',
     description: 'Editar informações do sensor',
     category: 'Monitoramento',
@@ -110,25 +110,25 @@ const searchIndex = [
     ]
   },
   {
-    path: '/logged/clima',
+    path: '/protegido/clima',
     title: 'Clima',
     description: 'Previsão do tempo e condições climáticas',
     category: 'Clima'
   },
   {
-    path: '/logged/atividades/novo',
+    path: '/protegido/atividades/novo',
     title: 'Nova Atividade',
     description: 'Registrar nova atividade',
     category: 'Atividades'
   },
   {
-    path: '/logged/perfil',
+    path: '/protegido/perfil',
     title: 'Perfil',
     description: 'Editar informações do perfil',
     category: 'Perfil'
   },
   {
-    path: '/logged/notificacoes',
+    path: '/protegido/notificacoes',
     title: 'Notificações',
     description: 'Central de notificações',
     category: 'Sistema'
@@ -437,13 +437,13 @@ function NavLink({ href, icon: Icon, children, collapsed, session }) {
   );
 }
 
-export default function LoggedLayout({ children }) {
+export default function ProtectedLayout({ children }) {
   
   const [collapsed, setCollapsed] = useState(false);
   const [session, setSession] = useState(null);
   const router = useRouter();
   const supabase = createClient();
-  // inside LoggedLayout
+  // inside protegidoLayout
 const [userData, setUserData] = useState(null);
   useEffect(() => {
     const getUserData = async () => {
@@ -506,12 +506,12 @@ const [userData, setUserData] = useState(null);
 
           {/* Actions */}
           <div className="flex items-center space-x-4 flex-shrink-0">
-            <Link href="/logged/notificacoes">
+            <Link href="/protegido/notificacoes">
               <button className="p-2 rounded-md hover:bg-gray-100">
                 <Bell size={24} />
               </button>
             </Link>
-            <Link href="/logged/perfil">
+            <Link href="/protegido/perfil">
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <User size={24} />
               </button>
@@ -528,26 +528,26 @@ const [userData, setUserData] = useState(null);
       >
         {/* Navigation */}
         <nav className="mt-6 px-2 flex-1 space-y-2">
-          <NavLink href="/logged/dashboard" icon={Home} collapsed={collapsed} session={session}>
+          <NavLink href="/protegido/dashboard" icon={Home} collapsed={collapsed} session={session}>
             Dashboard
           </NavLink>
-          <NavLink href="/logged/lavouras" icon={Leaf} collapsed={collapsed} session={session}>
+          <NavLink href="/protegido/lavouras" icon={Leaf} collapsed={collapsed} session={session}>
             Lavouras
           </NavLink>
-          <NavLink href="/logged/monitoramento" icon={Wrench} collapsed={collapsed} session={session}>
+          <NavLink href="/protegido/monitoramento" icon={Wrench} collapsed={collapsed} session={session}>
             Monitoramento
           </NavLink>
-          <NavLink href="/logged/clima" icon={Cloud} collapsed={collapsed} session={session}>
+          <NavLink href="/protegido/clima" icon={Cloud} collapsed={collapsed} session={session}>
             Clima
           </NavLink>
-          <NavLink href="/logged/atividades/novo" icon={Info} collapsed={collapsed} session={session}>
+          <NavLink href="/protegido/atividades/novo" icon={Info} collapsed={collapsed} session={session}>
             Nova Atividade
           </NavLink>
         </nav>
 
         {/* User Profile */}
         <Link
-          href="/logged/perfil"
+          href="/protegido/perfil"
           className="px-2 pb-6 pt-4 border-t border-gray-200 hover:bg-gray-50 transition-colors"
         >
           <div className="flex items-center gap-3">

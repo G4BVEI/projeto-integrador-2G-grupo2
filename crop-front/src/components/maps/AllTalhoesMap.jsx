@@ -13,7 +13,7 @@
     useEffect(() => {
       // Configurar a função global de redirecionamento
       window.talhaoRedirect = (id) => {
-        router.push(`/logged/monitoramento/${id}`)
+        router.push(`/protegido/monitoramento/${id}`)
       }
 
       // Inicializar o mapa apenas uma vez
@@ -99,7 +99,7 @@
                 const button = document.querySelector('.detalhes-btn')
                 if (button) {
                   button.addEventListener('click', () => {
-                    router.push(`/logged/monitoramento/${talhao.id}`)
+                    router.push(`/protegido/monitoramento/${talhao.id}`)
                   })
                 }
               })

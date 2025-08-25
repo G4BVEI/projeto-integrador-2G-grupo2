@@ -143,7 +143,7 @@ function SensoresTalhao() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Lista de Sensores</h2>
             <button
-              onClick={() => router.push(`/logged/monitoramento/${params.id}/sensores/adicionar`)}
+              onClick={() => router.push(`/protegido/monitoramento/${params.id}/sensores/adicionar`)}
               className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-3 rounded-lg flex items-center gap-2 transition-all shadow-md hover:shadow-lg"
             >
               <Plus className="w-5 h-5" />
@@ -190,7 +190,7 @@ function SensoresTalhao() {
                     <td className="px-4 py-4">
                       <div className="flex gap-2">
                         <button
-                          onClick={() => router.push(`/logged/monitoramento/${params.id}/sensores/editar/${sensor.id}`)}
+                          onClick={() => router.push(`/protegido/monitoramento/${params.id}/sensores/editar/${sensor.id}`)}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Editar sensor"
                         >

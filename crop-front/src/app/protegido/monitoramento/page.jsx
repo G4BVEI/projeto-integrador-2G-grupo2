@@ -68,7 +68,7 @@ function Monitoramento() {
             {talhoes.length > 0 ? (
                 talhoes.map((talhao) => (
                     <li key={talhao.id} className="p-4 mb-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer"
-                        onClick={() => router.push(`/logged/monitoramento/${talhao.id}`)}>
+                        onClick={() => router.push(`/protegido/monitoramento/${talhao.id}`)}>
                       <div className="flex justify-between items-center">
                         <div>
                           <h2 className="text-lg font-medium">{talhao.nome}</h2>

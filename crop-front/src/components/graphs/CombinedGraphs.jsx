@@ -345,13 +345,13 @@ export default function CombinedGraphs({ talhao, sensores }) {
 
             {/* ===== Botões de Ação ===== */}
             <div className="flex gap-3 col-span-2">
-              <Link href={`/logged/monitoramento/${talhao.id}/sensores`}>
+              <Link href={`/protegido/monitoramento/${talhao.id}/sensores`}>
                 <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
                   <Settings className="w-4 h-4" />
                   Gerenciar Sensores
                 </button>
               </Link>
-              <Link href={`/logged/monitoramento/${talhao.id}/sensores/adicionar`}>
+              <Link href={`/protegido/monitoramento/${talhao.id}/sensores/adicionar`}>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
                   <Plus className="w-4 h-4" />
                   Adicionar Sensor

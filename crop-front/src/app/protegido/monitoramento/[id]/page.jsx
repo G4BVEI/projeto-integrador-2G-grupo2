@@ -196,7 +196,7 @@ export default function DashboardTalhao() {
               </div>
             </div>
 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-  <Link href={`/logged/monitoramento/${talhao.id}/editar`} className="sm:col-span-2">
+  <Link href={`/protegido/monitoramento/${talhao.id}/editar`} className="sm:col-span-2">
     <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
       bg-green-600 text-white rounded-lg 
       hover:bg-green-500 transition-all shadow-md hover:shadow-lg">
@@ -205,7 +205,7 @@ export default function DashboardTalhao() {
     </button>
   </Link>
 
-  <Link href={`/logged/monitoramento/${talhao.id}/sensores`}>
+  <Link href={`/protegido/monitoramento/${talhao.id}/sensores`}>
     <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
       bg-green-500 text-white rounded-lg 
       hover:bg-green-600 transition-all shadow-md hover:shadow-lg">
@@ -214,7 +214,7 @@ export default function DashboardTalhao() {
     </button>
   </Link>
 
-  <Link href={`/logged/monitoramento/${talhao.id}/sensores/adicionar`}>
+  <Link href={`/protegido/monitoramento/${talhao.id}/sensores/adicionar`}>
     <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
       bg-green-500 text-white rounded-lg 
       hover:bg-green-600 transition-all shadow-md hover:shadow-lg">

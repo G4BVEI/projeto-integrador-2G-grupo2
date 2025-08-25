@@ -30,7 +30,7 @@ export default function LoginForm({ onGoogleLogin }) {
       return;
     }
 
-    router.push('/logged/dashboard');
+    router.push('/protegido/dashboard');
   };
 
   const handleGoogleSignIn = async () => {
