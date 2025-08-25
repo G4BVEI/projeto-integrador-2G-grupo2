@@ -198,8 +198,8 @@ export default function DashboardTalhao() {
 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
   <Link href={`/logged/monitoramento/${talhao.id}/editar`} className="sm:col-span-2">
     <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
-      bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg 
-      hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg">
+      bg-green-600 text-white rounded-lg 
+      hover:bg-green-500 transition-all shadow-md hover:shadow-lg">
       <Edit2 className="w-4 h-4" />
       <span className="font-medium">Editar Talhão</span>
     </button>
@@ -207,8 +207,8 @@ export default function DashboardTalhao() {
 
   <Link href={`/logged/monitoramento/${talhao.id}/sensores`}>
     <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
-      bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg 
-      hover:from-indigo-700 hover:to-indigo-800 transition-all shadow-md hover:shadow-lg">
+      bg-green-500 text-white rounded-lg 
+      hover:bg-green-600 transition-all shadow-md hover:shadow-lg">
       <Settings className="w-4 h-4" />
       <span className="font-medium">Gerenciar Sensores</span>
     </button>
@@ -216,8 +216,8 @@ export default function DashboardTalhao() {
 
   <Link href={`/logged/monitoramento/${talhao.id}/sensores/adicionar`}>
     <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
-      bg-gradient-to-r  from-green-600 to-green-700 text-white rounded-lg 
-      hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
+      bg-green-500 text-white rounded-lg 
+      hover:bg-green-600 transition-all shadow-md hover:shadow-lg">
       <Plus className="w-4 h-4" />
       <span className="font-medium">Adicionar Sensor</span>
     </button>
@@ -232,7 +232,7 @@ export default function DashboardTalhao() {
           <div className="col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                <Navigation className="w-5 h-5 text-blue-600" />
+                <Navigation className="w-5 h-5 text-green-600" />
                 Localização Geográfica
               </h2>
               <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
