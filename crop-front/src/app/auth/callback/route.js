@@ -17,7 +17,7 @@ export async function GET(request) {
 
     // Cookies devem ser await
     const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = await createClient(cookieStore);
     
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     
@@ -31,7 +31,7 @@ export async function GET(request) {
     console.log('✅ Auth successful, redirecting to dashboard');
     
     // URL correta - use request.url como base
-    const perfilUrl = new URL("/logged/perfil", request.url);
+    const perfilUrl = new URL("/protegido/perfil", request.url);
     return NextResponse.redirect(perfilUrl);
 
   } catch (error) {
@@ -39,7 +39,7 @@ export async function GET(request) {
     
     // URL correta para erro também
     const loginUrl = new URL("/auth/login", request.url);
-    loginUrl.searchParams.set("error", "server_error");
+    loginUrl.searchParams.set("error", error);
     
     return NextResponse.redirect(loginUrl);
   }

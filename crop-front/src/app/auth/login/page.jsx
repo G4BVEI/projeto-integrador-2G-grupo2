@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+"use client"
 import ImagemFundo from "@/components/auth/ImagemFundo";
 import LoginForm from "@/components/auth/LoginForm";
 import { createClient } from "@/lib/supabase/client";

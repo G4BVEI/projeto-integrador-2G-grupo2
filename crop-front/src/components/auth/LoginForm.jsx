@@ -54,14 +54,6 @@ export default function LoginForm({ onGoogleLogin }) {
             {error}
           </div>
         )}
-        <div className="relative mb-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">ou</span>
-          </div>
-        </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -97,12 +89,13 @@ export default function LoginForm({ onGoogleLogin }) {
             {loading ? 'Entrando...' : 'Entrar com Email'}
           </button>
         </form>
-
-        <div className="mt-4 text-center text-sm">
-          <span className="text-gray-600">Não tem conta? </span>
-          <Link href="/auth/cadastro" className="text-green-600 hover:underline font-medium">
-            Cadastre-se
-          </Link>
+        <div className="relative m-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">ou</span>
+          </div>
         </div>
                 {/* Botão do Google */}
         <button
@@ -113,6 +106,12 @@ export default function LoginForm({ onGoogleLogin }) {
           <FcGoogle className="w-5 h-5" />
           <span>Entrar com Google</span>
         </button>
+        <div className="mt-4 text-center text-sm">
+          <span className="text-gray-600">Não tem conta? </span>
+          <Link href="/auth/cadastro" className="text-green-600 hover:underline font-medium">
+            Cadastre-se
+          </Link>
+        </div>
       </div>
     </div>
   );

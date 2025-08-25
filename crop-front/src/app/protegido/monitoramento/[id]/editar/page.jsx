@@ -151,7 +151,7 @@ export default function EditarTalhao() {
       }
       const data = await response.json();
       toast.success(`Talhão "${data.nome}" atualizado com sucesso!`);
-      router.push(`/protegido/monitoramento/${data.id}/sensores`);
+      router.push(`/protegido/monitoramento/${data.id}`);
     } catch (error) {
       toast.error(error.message);
     } finally {
