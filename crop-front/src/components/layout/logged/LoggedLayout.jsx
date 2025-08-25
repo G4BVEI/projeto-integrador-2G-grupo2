@@ -547,7 +547,7 @@ const [userData, setUserData] = useState(null);
 
         {/* User Profile */}
         <Link
-          href="/logged/atualizarperfil"
+          href="/logged/perfil"
           className="px-2 pb-6 pt-4 border-t border-gray-200 hover:bg-gray-50 transition-colors"
         >
           <div className="flex items-center gap-3">
