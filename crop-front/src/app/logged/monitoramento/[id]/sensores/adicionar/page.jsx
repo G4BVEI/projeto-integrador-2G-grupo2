@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { createClient } from '@/lib/supabase/client';
 import MapPointEditor from '@/components/maps/MapPointEditor';
-import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Save, MapPin } from 'lucide-react';
+import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Save, MapPin, TestTube } from 'lucide-react';
 
 // Mapeamento de tipos para unidades padrão
 const tipoUnidades = {
@@ -14,7 +14,7 @@ const tipoUnidades = {
   "Pluviometro": "mm",
   "Pressao": "hPa",
   "Luminosidade": "lux",
-  "Outro": ""
+  "pH": " "
 };
 
 // Ícones para cada tipo de sensor
@@ -24,7 +24,7 @@ const tipoIconos = {
   "Pluviometro": <CloudRain className="w-5 h-5 text-blue-600" />,
   "Pressao": <Zap className="w-5 h-5 text-yellow-500" />,
   "Luminosidade": <Sun className="w-5 h-5 text-orange-400" />,
-  "Outro": <Square className="w-5 h-5 text-gray-400" />
+  "pH": <TestTube className="w-5 h-5 text-purple-500" />
 };
 
 export default function AdicionarSensor() {
@@ -318,7 +318,7 @@ export default function AdicionarSensor() {
               <div>🌧️ Pluviômetro (mm)</div>
               <div>⚡ Pressão (hPa)</div>
               <div>☀️ Luminosidade (lux)</div>
-              <div>📦 Outro (personalizado)</div>
+              <div>🧪 pH (personalizado)</div>
             </div>
           </div>
         </div>

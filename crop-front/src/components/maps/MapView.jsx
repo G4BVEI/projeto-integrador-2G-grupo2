@@ -22,7 +22,7 @@ const sensorTypeColors = {
   "Pluviometro": "#1d4ed8", // Azul escuro
   "Pressao": "#eab308",     // Amarelo
   "Luminosidade": "#f97316",// Laranja
-  "Outro": "#6b7280"        // Cinza
+  "pH": "#a855f7"           // Roxo
 };
 
 export default function MapView({ fields = [], selectedIds = [], sensorPoints = [] }) {
@@ -71,7 +71,7 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
         const [lng, lat] = sensor.localizacao_json.coordinates;
         
         // Determina a cor baseada no tipo do sensor
-        const color = sensorTypeColors[sensor.tipo] || sensorTypeColors["Outro"];
+        const color = sensorTypeColors[sensor.tipo] || sensorTypeColors["pH"];
         
         const marker = L.marker([lat, lng], {
           draggable: false,

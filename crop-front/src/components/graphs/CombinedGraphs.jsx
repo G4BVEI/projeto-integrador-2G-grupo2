@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LineChart, Line } from 'recharts'
-import { Thermometer, Droplets, CloudRain, Wind, Gauge, Eye, Calendar, Zap, Sun, Square, Cpu, Plus, Settings, MapPin} from 'lucide-react'
+import { Thermometer, Droplets, CloudRain, Wind, Gauge, Eye, Calendar, Zap, Sun, Square, Cpu, Plus, Settings, MapPin, TestTube} from 'lucide-react'
 import Link from 'next/link'
 
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
@@ -53,9 +53,9 @@ export default function CombinedGraphs({ talhao, sensores }) {
   }, [talhao, activeMainTab])
 
   // Tipos de sensor e agrupamento
-  const tiposSensorPresentes = [...new Set(sensores.map(s => s.tipo || 'Outro'))]
+  const tiposSensorPresentes = [...new Set(sensores.map(s => s.tipo || 'pH'))]
   const sensoresPorTipo = sensores.reduce((acc, sensor) => {
-    const tipo = sensor.tipo || 'Outro'
+    const tipo = sensor.tipo || 'pH'
     if (!acc[tipo]) acc[tipo] = []
     acc[tipo].push(sensor)
     return acc
@@ -64,7 +64,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
   // Cores e ícones
   const tipoColors = {
     "Temperatura": "#ef4444", "Umidade": "#3b82f6", "Pluviometro": "#1d4ed8",
-    "Pressao": "#eab308", "Luminosidade": "#f97316", "Outro": "#6b7280"
+    "Pressao": "#eab308", "Luminosidade": "#f97316", "pH": "#a855f7"
   }
 
   const tipoIcons = {
@@ -73,7 +73,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
     "Pluviometro": <CloudRain className="h-4 w-4" />,
     "Pressao": <Zap className="h-4 w-4" />,
     "Luminosidade": <Sun className="h-4 w-4" />,
-    "Outro": <Square className="h-4 w-4" />
+    "pH": <TestTube className="h-4 w-4" />
   }
 
   const tipoBgMap = {
@@ -82,12 +82,12 @@ export default function CombinedGraphs({ talhao, sensores }) {
     "Pluviometro": "bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-600",
     "Pressao": "bg-gradient-to-br from-yellow-50 to-yellow-100 border-l-4 border-yellow-400",
     "Luminosidade": "bg-gradient-to-br from-orange-50 to-orange-100 border-l-4 border-orange-400",
-    "Outro": "bg-gradient-to-br from-gray-50 to-gray-100 border-l-4 border-gray-400"
+    "pH": "bg-gradient-to-br from-purple-50 to-purple-100 border-l-4 border-purple-400"
   }
 
   const tipoValueColorMap = {
     "Temperatura": "text-red-600", "Umidade": "text-blue-600", "Pluviometro": "text-blue-700",
-    "Pressao": "text-yellow-600", "Luminosidade": "text-orange-600", "Outro": "text-gray-600"
+    "Pressao": "text-yellow-600", "Luminosidade": "text-orange-600", "pH": "text-purple-600"
   }
 
   const formatDate = (dateString) => {
@@ -127,7 +127,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
   }
 
   const { hourlyData, dailyData } = processWeatherData()
-  const currentWeather = weatherData?.list[0]
+  const currentWeather = weatherData?.list?.[0]
 
   // Renderizar gráficos dos sensores
   const renderSensorGraphs = () => {
@@ -150,7 +150,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
           <YAxis label={{ value: data[0]?.unidade || 'Valor', angle: -90, position: 'insideLeft' }} />
           <Tooltip formatter={(value) => [`${value} ${data[0]?.unidade || ''}`, 'Valor']} labelFormatter={(value) => `Sensor: ${value}`} />
           <Legend />
-          <Bar dataKey="valor" fill={tipoColors[activeSensorTab] || tipoColors["Outro"]} name="Valor" />
+          <Bar dataKey="valor" fill={tipoColors[activeSensorTab] || tipoColors["pH"]} name="Valor" />
         </BarChart>
       </ResponsiveContainer>
     )
@@ -219,12 +219,14 @@ export default function CombinedGraphs({ talhao, sensores }) {
             </table>
           </div>
         )
+      default:
+        return null
     }
   }
 
   const renderCurrentWeather = () => (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      {[
+      {currentWeather && [
         { icon: <Thermometer className="h-8 w-8 text-blue-600 mx-auto mb-2" />, value: `${Math.round(currentWeather.main.temp)}°C`, label: 'Temperatura', bg: 'bg-blue-50', text: 'text-blue-600' },
         { icon: <Droplets className="h-8 w-8 text-green-600 mx-auto mb-2" />, value: `${currentWeather.main.humidity}%`, label: 'Umidade', bg: 'bg-green-50', text: 'text-green-600' },
         { icon: <CloudRain className="h-8 w-8 text-purple-600 mx-auto mb-2" />, value: currentWeather.rain ? `${currentWeather.rain['3h'] || 0}mm` : '0mm', label: 'Precipitação', bg: 'bg-purple-50', text: 'text-purple-600' },
@@ -270,25 +272,60 @@ export default function CombinedGraphs({ talhao, sensores }) {
       {/* Conteúdo */}
       <div className="bg-gray-50 p-6">
         {activeMainTab === 'sensores' ? (
-          <div>
-            {/* Cards dos Sensores */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-6">
+            {/* ===== Gráficos dos Sensores ===== */}
+            {tiposSensorPresentes.length > 0 && (
+              <div className="bg-white p-6 rounded-lg shadow-sm col-span-2">
+                <div className="flex mb-4 border-b border-gray-200 overflow-x-auto">
+                  {tiposSensorPresentes.map(tipo => (
+                    <button
+                      key={tipo}
+                      onClick={() => setActiveSensorTab(tipo)}
+                      className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                        activeSensorTab === tipo
+                          ? 'border-b-2'
+                          : 'text-gray-500 hover:text-gray-700'
+                      }`}
+                      style={{
+                        color: activeSensorTab === tipo ? tipoColors[tipo] || '#3b82f6' : undefined,
+                        borderBottomColor: activeSensorTab === tipo ? tipoColors[tipo] || '#3b82f6' : undefined
+                      }}
+                    >
+                      {tipoIcons[tipo] || tipoIcons["pH"]}
+                      <span className="ml-2">{tipo}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="h-80">{renderSensorGraphs()}</div>
+              </div>
+            )}
+
+            {/* ===== Cards dos Sensores ===== */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 col-span-2">
               {sensores.map(sensor => (
-                <div key={sensor.id} className={`p-4 rounded-xl shadow-md ${tipoBgMap[sensor.tipo] || 'bg-gray-100'}`}>
+                <div
+                  key={sensor.id}
+                  className={`p-4 rounded-xl shadow-md ${tipoBgMap[sensor.tipo] || 'bg-gray-100'}`}
+                >
+                  {/* Header do Card */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-800">{tipoIcons[sensor.tipo] || tipoIcons["Outro"]}</span>
+                      <span className="text-gray-800">{tipoIcons[sensor.tipo] || tipoIcons["pH"]}</span>
                       <span className="font-semibold text-gray-800 truncate">{sensor.nome}</span>
                     </div>
-                    {sensor.localizacao_json && <MapPin className="w-4 h-4 text-gray-400" title="Com localização" />}
+                    {sensor.localizacao_json && (
+                      <MapPin className="w-4 h-4 text-gray-400" title="Com localização" />
+                    )}
                   </div>
 
+                  {/* Tipo do Sensor */}
                   <div className="mb-3">
                     <span className="text-xs font-medium text-gray-500 bg-white px-2 py-1 rounded-full">
                       {sensor.tipo}
                     </span>
                   </div>
 
+                  {/* Última Leitura */}
                   <div className="flex items-center gap-2 mb-2">
                     <Gauge className="w-4 h-4 text-gray-400" />
                     <span className={`text-xl font-bold ${tipoValueColorMap[sensor.tipo]}`}>
@@ -297,6 +334,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
                     </span>
                   </div>
 
+                  {/* Data da Última Leitura */}
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Calendar className="w-3 h-3" />
                     <span>{formatDate(sensor.ultima_leitura?.registrado_em)}</span>
@@ -305,8 +343,8 @@ export default function CombinedGraphs({ talhao, sensores }) {
               ))}
             </div>
 
-            {/* Botões de Ação */}
-            <div className="flex gap-3 mb-6">
+            {/* ===== Botões de Ação ===== */}
+            <div className="flex gap-3 col-span-2">
               <Link href={`/logged/monitoramento/${talhao.id}/sensores`}>
                 <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
                   <Settings className="w-4 h-4" />
@@ -320,33 +358,6 @@ export default function CombinedGraphs({ talhao, sensores }) {
                 </button>
               </Link>
             </div>
-
-            {/* Gráficos dos Sensores */}
-            {tiposSensorPresentes.length > 0 && (
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex mb-4 border-b border-gray-200 overflow-x-auto">
-                  {tiposSensorPresentes.map(tipo => (
-                    <button
-                      key={tipo}
-                      onClick={() => setActiveSensorTab(tipo)}
-                      className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-                        activeSensorTab === tipo ? 'border-b-2' : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                      style={{
-                        color: activeSensorTab === tipo ? tipoColors[tipo] || '#3b82f6' : undefined,
-                        borderBottomColor: activeSensorTab === tipo ? tipoColors[tipo] || '#3b82f6' : undefined
-                      }}
-                    >
-                      {tipoIcons[tipo] || tipoIcons["Outro"]}
-                      <span className="ml-2">{tipo}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="h-80">
-                  {renderSensorGraphs()}
-                </div>
-              </div>
-            )}
           </div>
         ) : (
           <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -368,7 +379,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
                       {tab === 'rain' && <CloudRain className="h-4 w-4 inline mr-1" />}
                       {tab === 'forecast' && <Eye className="h-4 w-4 inline mr-1" />}
                       {tab === 'current' ? 'Atual' : tab === 'temperature' ? 'Temperatura' : 
-                       tab === 'humidity' ? 'Umidade' : tab === 'rain' ? 'Chuva' : 'Previsão'}
+                        tab === 'humidity' ? 'Umidade' : tab === 'rain' ? 'Chuva' : 'Previsão'}
                     </button>
                   ))}
                 </div>

@@ -48,6 +48,7 @@ export default async function DashboardPage() {
 
       {/* Mapa com todos os talhões */}
       <AllTalhoesMap talhoes={talhoes || []} />
+      <DashboardGraphs talhoes={talhoes || []} />
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <PrecipitationChart data={chartData.precipitation} />
@@ -63,7 +64,6 @@ export default async function DashboardPage() {
       </section>
 
       <RecentActions actions={actionsData} />
-      <DashboardGraphs talhoes={talhoes || []} />
     </div>
   );
 }

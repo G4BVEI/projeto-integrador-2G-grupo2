@@ -6,7 +6,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import CombinedGraphs from "@/components/graphs/CombinedGraphs";
-import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Edit2, Gauge, Calendar, MapPin, Sprout, Navigation } from "lucide-react";
+import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Edit2, Gauge, Calendar, MapPin, Sprout, Navigation, TestTube } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 const MapView = dynamic(() => import("@/components/maps/MapView"), { ssr: false });
@@ -26,7 +26,7 @@ export default function DashboardTalhao() {
     "Pluviometro": <CloudRain className="w-5 h-5 text-blue-600" />,
     "Pressao": <Zap className="w-5 h-5 text-yellow-500" />,
     "Luminosidade": <Sun className="w-5 h-5 text-orange-400" />,
-    "Outro": <Square className="w-5 h-5 text-gray-400" />,
+    "pH": <TestTube className="w-5 h-5 text-purple-500" />,
   };
 
   const tipoBgMap = {
@@ -35,7 +35,7 @@ export default function DashboardTalhao() {
     "Pluviometro": "bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-600",
     "Pressao": "bg-gradient-to-br from-yellow-50 to-yellow-100 border-l-4 border-yellow-400",
     "Luminosidade": "bg-gradient-to-br from-orange-50 to-orange-100 border-l-4 border-orange-400",
-    "Outro": "bg-gradient-to-br from-gray-50 to-gray-100 border-l-4 border-gray-400"
+    "pH": "bg-gradient-to-br from-purple-50 to-purple-100 border-l-4 border-purple-400"
   };
 
   const formatDate = (dateString) => {

@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import MapPointEditor from "@/components/maps/MapPointEditor";
-import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Save, MapPin, Gauge } from "lucide-react";
+import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Save, MapPin, Gauge, TestTube } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 // Mapeamento de tipos para unidades padrão
@@ -15,7 +15,7 @@ const tipoUnidades = {
   "Pluviometro": "mm",
   "Pressao": "hPa",
   "Luminosidade": "lux",
-  "Outro": ""
+  "pH": " "
 };
 
 // Ícones para cada tipo de sensor
@@ -25,7 +25,7 @@ const tipoIconos = {
   "Pluviometro": <CloudRain className="w-5 h-5 text-blue-600" />,
   "Pressao": <Zap className="w-5 h-5 text-yellow-500" />,
   "Luminosidade": <Sun className="w-5 h-5 text-orange-400" />,
-  "Outro": <Square className="w-5 h-5 text-gray-400" />
+  "pH": <TestTube className="w-5 h-5 text-purple-500" />
 };
 
 function LoadingSpinner({ size = 'medium', className = '' }) {
