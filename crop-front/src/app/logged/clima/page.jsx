@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import FullScreenLoader from "@/components/layout/LoadingSpinner";
 
 export default function ClimaPage() {
   const [weather, setWeather] = useState(null);
@@ -81,7 +82,7 @@ export default function ClimaPage() {
   }, [lat, lon]);
 
   // UI simples com debug
-  if (loading) return <p className="text-gray-500 text-center mt-10">Carregando clima...</p>;
+  if (loading) return <FullScreenLoader message="Carregando informações climatícas..." />;
 
   if (!weather)
     return (
