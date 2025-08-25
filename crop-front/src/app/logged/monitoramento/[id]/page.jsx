@@ -146,7 +146,7 @@ export default function DashboardTalhao() {
   const sensoresComLocalizacao = sensores.filter(s => s.localizacao_json?.coordinates);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-white-50 p-6">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">

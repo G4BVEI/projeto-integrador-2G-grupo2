@@ -196,6 +196,8 @@ export default function EditarTalhao() {
                   <option value="">Selecione...</option>
                   <option value="Soja">Soja</option>
                   <option value="Milho">Milho</option>
+                  <option value="Trigo">Trigo</option>
+                  <option value="Cevada">Cevada</option>
                   <option value="Café">Café</option>
                   <option value="Cana-de-açúcar">Cana-de-açúcar</option>
                   <option value="Algodão">Algodão</option>
