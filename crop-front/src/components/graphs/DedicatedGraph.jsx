@@ -136,13 +136,13 @@ export default function DedicatedGraph({ talhao }) {
       <div className="bg-blue-50 p-4 rounded-lg text-center">
         <Thermometer className="h-8 w-8 text-blue-600 mx-auto mb-2" />
         <div className="text-2xl font-bold">{Math.round(currentWeather.main.temp)}°C</div>
-        <div className="text-sm text-blue-600">Temperatura</div>
+        <div className="text-sm text-blue-600">Temperatura do Ar</div>
       </div>
 
       <div className="bg-green-50 p-4 rounded-lg text-center">
         <Droplets className="h-8 w-8 text-green-600 mx-auto mb-2" />
         <div className="text-2xl font-bold">{currentWeather.main.humidity}%</div>
-        <div className="text-sm text-green-600">Umidade</div>
+        <div className="text-sm text-green-600">Umidade do Ar</div>
       </div>
 
       <div className="bg-purple-50 p-4 rounded-lg text-center">
@@ -178,7 +178,7 @@ export default function DedicatedGraph({ talhao }) {
                 stroke="#22c55e" 
                 strokeWidth={2}
                 dot={{ r: 4 }}
-                name="Temperatura"
+                name="Temperatura do Ar"
               />
             </LineChart>
           </ResponsiveContainer>
@@ -199,7 +199,7 @@ export default function DedicatedGraph({ talhao }) {
                 stroke="#3b82f6" 
                 strokeWidth={2}
                 dot={{ r: 4 }}
-                name="Umidade"
+                name="Umidade do Ar"
               />
             </LineChart>
           </ResponsiveContainer>
@@ -223,35 +223,39 @@ export default function DedicatedGraph({ talhao }) {
           </ResponsiveContainer>
         )
 
-      case 'forecast':
-        return (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-4 py-2 text-left">Data</th>
-                  <th className="px-4 py-2 text-left">Mín/Máx</th>
-                  <th className="px-4 py-2 text-left">Chuva</th>
-                  <th className="px-4 py-2 text-left">Umidade</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dailyData.map((day, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="px-4 py-2">{day.date}</td>
-                    <td className="px-4 py-2">
-                      {Math.round(day.minTemp)}° / {Math.round(day.maxTemp)}°
-                    </td>
-                    <td className="px-4 py-2">{day.rain.toFixed(1)}mm</td>
-                    <td className="px-4 py-2">{day.humidity}%</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )
-    }
-  }
+case "forecast":
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm border border-gray-200 rounded-lg shadow-sm">
+        <thead>
+          <tr className="bg-gray-100 text-gray-700">
+            <th className="px-4 py-2 text-left font-medium">Data</th>
+            <th className="px-4 py-2 text-left font-medium">Mín / Máx</th>
+            <th className="px-4 py-2 text-left font-medium">Chuva</th>
+            <th className="px-4 py-2 text-left font-medium">Umidade</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+          {dailyData.map((day, index) => (
+            <tr
+              key={index}
+              className="hover:bg-gray-50 transition-colors"
+            >
+              <td className="px-4 py-2">{day.date}</td>
+              <td className="px-4 py-2">
+                <span className="text-blue-600">{Math.round(day.minTemp)}°</span>{" "}
+                /{" "}
+                <span className="text-red-600">{Math.round(day.maxTemp)}°</span>
+              </td>
+              <td className="px-4 py-2">{day.rain.toFixed(1)} mm</td>
+              <td className="px-4 py-2">{day.humidity}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}}
+
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">

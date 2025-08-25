@@ -51,15 +51,6 @@ export default async function DashboardPage() {
       <DashboardGraphs talhoes={talhoes || []} />
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <PrecipitationChart data={chartData.precipitation} />
-
-        <TemperatureChart
-          data={chartData.temperature}
-          currentTemp={chartData.weather.currentTemp}
-          minTemp={chartData.weather.minTemp}
-          location={chartData.weather.location}
-        />
-
         <AlertsCard alerts={alertsData} />
       </section>
 

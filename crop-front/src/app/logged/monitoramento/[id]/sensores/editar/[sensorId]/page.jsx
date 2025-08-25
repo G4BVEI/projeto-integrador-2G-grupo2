@@ -28,22 +28,6 @@ const tipoIconos = {
   "pH": <TestTube className="w-5 h-5 text-purple-500" />
 };
 
-function LoadingSpinner({ size = 'medium', className = '' }) {
-  const sizeClasses = {
-    small: 'h-6 w-6',
-    medium: 'h-12 w-12',
-    large: 'h-16 w-16',
-    xl: 'h-24 w-24'
-  }
-
-  return (
-    <div className={`flex items-center justify-center ${className}`}>
-      <div 
-        className={`animate-spin rounded-full border-b-2 border-green-600 ${sizeClasses[size]}`}
-      />
-    </div>
-  )
-}
 
 function EditarSensor() {
   const [talhao, setTalhao] = useState(null);
@@ -224,11 +208,17 @@ function EditarSensor() {
     }
   };
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <LoadingSpinner size="large" />
+if (loading) return (
+  <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
+    <div className="text-center">
+      <div className="flex items-center justify-center">
+        <div className="animate-spin rounded-full border-b-2 border-green-600 h-16 w-16" />
+      </div>
+      <p className="mt-4 text-gray-600">Carregando informações do Sensor...</p>
     </div>
-  );
+  </div>
+);
+
 
   if (error) return (
     <div className="min-h-screen flex items-center justify-center">

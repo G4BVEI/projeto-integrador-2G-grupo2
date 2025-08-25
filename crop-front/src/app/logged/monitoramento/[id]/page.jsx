@@ -6,8 +6,10 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import CombinedGraphs from "@/components/graphs/CombinedGraphs";
-import { Thermometer, Droplets, CloudRain, Zap, Sun, Square, Edit2, Gauge, Calendar, MapPin, Sprout, Navigation, TestTube } from "lucide-react";
+import { Thermometer, Droplets, CloudRain, Zap, Sun, Plus, Edit2, Gauge, Calendar, MapPin, Sprout, Navigation, TestTube, Settings} from "lucide-react";
 import "leaflet/dist/leaflet.css";
+import DedicatedGraph from "@/components/graphs/DedicatedGraph";
+import SensorGraph from "@/components/graphs/SensorGraph";
 
 const MapView = dynamic(() => import("@/components/maps/MapView"), { ssr: false });
 
@@ -107,10 +109,16 @@ export default function DashboardTalhao() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+    <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
+      <div className="text-center">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full border-b-2 border-green-600 h-16 w-16" />
+        </div>
+        <p className="mt-4 text-gray-600">Carregando informações sobre sua lavoura...</p>
+      </div>
     </div>
   );
+
 
   if (error) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -180,20 +188,44 @@ export default function DashboardTalhao() {
                 <span className="font-medium">Área Total</span>
                 <span className="text-gray-600">{talhao.area || 0} ha</span>
               </div>
-              {talhao.descricao && (
-                <div className="pt-2">
-                  <span className="font-medium block mb-1">Descrição</span>
-                  <p className="text-gray-600 text-sm">{talhao.descricao}</p>
-                </div>
-              )}
+              <div className="pt-2">
+                <span className="font-medium block mb-1">Descrição</span>
+                <p className="text-gray-600 text-sm">
+                  {talhao.descricao ? talhao.descricao : "Sem descrição provida"}
+                </p>
+              </div>
             </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  <Link href={`/logged/monitoramento/${talhao.id}/editar`} className="sm:col-span-2">
+    <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
+      bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg 
+      hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg">
+      <Edit2 className="w-4 h-4" />
+      <span className="font-medium">Editar Talhão</span>
+    </button>
+  </Link>
 
-            <Link href={`/logged/monitoramento/${talhao.id}/editar`}>
-              <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg">
-                <Edit2 className="w-4 h-4" /> 
-                <span className="font-medium">Editar Talhão</span>
-              </button>
-            </Link>
+  <Link href={`/logged/monitoramento/${talhao.id}/sensores`}>
+    <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
+      bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-lg 
+      hover:from-indigo-700 hover:to-indigo-800 transition-all shadow-md hover:shadow-lg">
+      <Settings className="w-4 h-4" />
+      <span className="font-medium">Gerenciar Sensores</span>
+    </button>
+  </Link>
+
+  <Link href={`/logged/monitoramento/${talhao.id}/sensores/adicionar`}>
+    <button className="w-full flex items-center justify-center gap-2 px-4 py-3 
+      bg-gradient-to-r  from-green-600 to-green-700 text-white rounded-lg 
+      hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg">
+      <Plus className="w-4 h-4" />
+      <span className="font-medium">Adicionar Sensor</span>
+    </button>
+  </Link>
+</div>
+
+
+
           </div>
 
           {/* Mapa */}
@@ -242,7 +274,10 @@ export default function DashboardTalhao() {
         </div>
 
         {/* Gráficos Combinados */}
-        <CombinedGraphs talhao={talhao} sensores={sensores} />
+        <DedicatedGraph talhao={talhao} />
+        <SensorGraph sensores={sensores} />
+
+        {/* Lista de Sensores */}
       </div>
     </div>
   );

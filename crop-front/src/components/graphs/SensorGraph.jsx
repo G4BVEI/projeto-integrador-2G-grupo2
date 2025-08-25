@@ -59,8 +59,8 @@ export default function SensorGraph({ sensores }) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="nome" 
-                  angle={-45}
-                  textAnchor="end"
+                  angle={0}
+                  textAnchor="middle"
                   height={80}
                 />
                 <YAxis 

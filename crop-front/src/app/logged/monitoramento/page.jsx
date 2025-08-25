@@ -44,9 +44,18 @@ function Monitoramento() {
     fetchTalhoes();
   }, []);
 
-  if (loading) {
-    return <div className="p-4">Carregando seus talhões...</div>;
-  }
+  if (loading) return (
+    <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
+      <div className="text-center">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full border-b-2 border-green-600 h-16 w-16" />
+        </div>
+        <p className="mt-4 text-gray-600">Carregando lavouras...</p>
+      </div>
+    </div>
+  );
+
+
 
   if (error) {
     return <div className="p-4 text-red-500">Erro: {error}</div>;
