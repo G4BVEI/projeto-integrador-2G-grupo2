@@ -31,8 +31,8 @@ export async function GET(request) {
     console.log('✅ Auth successful, redirecting to dashboard');
     
     // URL correta - use request.url como base
-    const dashboardUrl = new URL("/logged/dashboard", request.url);
-    return NextResponse.redirect(dashboardUrl);
+    const perfilUrl = new URL("/logged/perfil", request.url);
+    return NextResponse.redirect(perfilUrl);
 
   } catch (error) {
     console.error('❌ Callback error:', error);

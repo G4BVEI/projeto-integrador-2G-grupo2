@@ -122,8 +122,8 @@ const searchIndex = [
     category: 'Atividades'
   },
   {
-    path: '/logged/atualizarperfil',
-    title: 'Atualizar Perfil',
+    path: '/logged/perfil',
+    title: 'Perfil',
     description: 'Editar informações do perfil',
     category: 'Perfil'
   },
@@ -438,11 +438,27 @@ function NavLink({ href, icon: Icon, children, collapsed, session }) {
 }
 
 export default function LoggedLayout({ children }) {
+  
   const [collapsed, setCollapsed] = useState(false);
   const [session, setSession] = useState(null);
   const router = useRouter();
   const supabase = createClient();
+  // inside LoggedLayout
+const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const getUserData = async () => {
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from("user_data") // ⚠️ your table name
+          .select("username, img_url")
+          .eq("id", session.user.id)
+          .single();
+        if (!error) setUserData(data);
+      }
+    };
 
+    getUserData();
+  }, [session, supabase]);
   useEffect(() => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -495,7 +511,7 @@ export default function LoggedLayout({ children }) {
                 <Bell size={24} />
               </button>
             </Link>
-            <Link href="/logged/atualizarperfil">
+            <Link href="/logged/perfil">
               <button className="p-2 rounded-full hover:bg-gray-100">
                 <User size={24} />
               </button>
@@ -530,19 +546,34 @@ export default function LoggedLayout({ children }) {
         </nav>
 
         {/* User Profile */}
-        <div className="px-2 pb-6 pt-4 border-t border-gray-200">
+        <Link
+          href="/logged/atualizarperfil"
+          className="px-2 pb-6 pt-4 border-t border-gray-200 hover:bg-gray-50 transition-colors"
+        >
           <div className="flex items-center gap-3">
-            <div className="p-1 border-2 border-green-500 rounded-full">
-              <User size={24} className="text-green-500" />
-            </div>
+            {userData?.img_url ? (
+              <img
+                src={userData.img_url}
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full border-2 border-green-500 object-cover"
+              />
+            ) : (
+              <div className="p-1 border-2 border-green-500 rounded-full">
+                <User size={24} className="text-green-500" />
+              </div>
+            )}
+
             {!collapsed && (
               <div>
                 <p className="text-sm font-medium">{session.user.email}</p>
-                <p className="text-xs text-gray-500">Produtor Rural</p>
+                <p className="text-xs text-gray-500">
+                  {userData?.username || "Usuário"}
+                </p>
               </div>
             )}
           </div>
-        </div>
+        </Link>
+
       </aside>
 
       {/* MAIN CONTENT */}
