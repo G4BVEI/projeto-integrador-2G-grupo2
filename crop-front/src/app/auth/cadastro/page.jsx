@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ImagemFundo from "@/components/auth/ImagemFundo";
 import RegisterForm from "@/components/auth/RegisterForm";
 

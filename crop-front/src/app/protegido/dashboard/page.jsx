@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import AllTalhoesMap from "@/components/maps/AllTalhoesMap";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";

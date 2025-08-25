@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import NotificationItem from "@/components/notification/NotificationItem";
-import LoadingSpinner from "@/components/ui/LoadingSpinner"; // make sure path is correct
+import LoadingSpinner from "@/components/layout/LoadingSpinner"; // make sure path is correct
 
 export default async function NotificationsPage() {
   const supabase = createClient();
