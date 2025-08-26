@@ -13,7 +13,6 @@ import {
   X,
 } from "lucide-react"
 import { useState } from "react"
-import Footer from "@/components/layout/Footer"
 
 export default function CropSenseLanding() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -415,7 +414,10 @@ export default function CropSenseLanding() {
           </div>
         </div>
       </section>
+<<<<<<< HEAD
       <Footer />
+=======
+>>>>>>> ce1e8eefbf3b91d43b46dddd5b9ae022ebc8437e
     </div>
   );
 }
