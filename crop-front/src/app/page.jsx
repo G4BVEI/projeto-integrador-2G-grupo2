@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+import Footer from "@/components/layout/Footer"
 
 export default function CropSenseLanding() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -417,87 +418,7 @@ export default function CropSenseLanding() {
       </section>
 
       {/* Footer */}
-      <footer
-        id="contato"
-        className="py-12 bg-white-50 border-t border-green-200"
-      >
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <span className="text-xl font-bold text-green-800">
-                  CropSense
-                </span>
-              </div>
-              <p className="text-green-700">
-                Facilitando a agricultura de precisão para pequenos e médios
-                produtores.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-green-900 mb-4">Produto</h3>
-              <ul className="space-y-2 text-green-700">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-900 transition-colors"
-                  >
-                    Funcionalidades
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-900 transition-colors"
-                  >
-                    Preços
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-900 transition-colors"
-                  >
-                    Demonstração
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-green-900 mb-4">Recursos</h3>
-              <ul className="space-y-2 text-green-700">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-900 transition-colors"
-                  >
-                    Documentação
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-green-900 transition-colors"
-                  >
-                    Suporte
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-green-900 mb-4">Contato</h3>
-              <ul className="space-y-2 text-green-700">
-                <li>cropsense@gmail.com.br</li>
-                <li>(49) 99938-4275</li>
-                <li>Concórdia, SC</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-green-200 mt-8 pt-8 text-center text-green-700">
-            <p>&copy; 2025 CropSense. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
