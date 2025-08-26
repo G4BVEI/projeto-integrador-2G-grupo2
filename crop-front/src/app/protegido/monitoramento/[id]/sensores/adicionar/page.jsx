@@ -90,16 +90,6 @@ export default function AdicionarSensor() {
     setIsSubmitting(true);
 
     try {
-      // Parse parâmetros JSON
-      let parametrosObj = {};
-      if (formData.parametros) {
-        try {
-          parametrosObj = JSON.parse(formData.parametros);
-        } catch {
-          throw new Error('Parâmetros devem estar em formato JSON válido');
-        }
-      }
-
       // Preparar localização do sensor
       let localizacaoJson = null;
       if (formData.latitude && formData.longitude) {
@@ -116,7 +106,7 @@ export default function AdicionarSensor() {
           nome: formData.nome,
           tipo: formData.tipo,
           unidade: formData.unidade,
-          parametros: parametrosObj,
+          parametros: '',
           localizacao_json: localizacaoJson,
           talhao_id: params.id
         })
@@ -234,24 +224,6 @@ export default function AdicionarSensor() {
                 Unidade padrão para {formData.tipo || 'este tipo'} é {tipoUnidades[formData.tipo] || 'não definida'}
               </p>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Parâmetros Avançados (JSON)
-              </label>
-              <textarea
-                name="parametros"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-mono text-sm"
-                rows={4}
-                value={formData.parametros}
-                onChange={handleInputChange}
-                placeholder='{"frequencia_leituras": 5, "limite_min": 0, "limite_max": 100, "calibracao": 1.0}'
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Configure parâmetros específicos do sensor em formato JSON
-              </p>
-            </div>
-
             <button
               type="submit"
               disabled={isSubmitting || !formData.nome || !formData.tipo || !formData.unidade}

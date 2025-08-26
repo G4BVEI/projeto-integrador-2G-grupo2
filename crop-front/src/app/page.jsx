@@ -414,10 +414,6 @@ export default function CropSenseLanding() {
           </div>
         </div>
       </section>
-<<<<<<< HEAD
-      <Footer />
-=======
->>>>>>> ce1e8eefbf3b91d43b46dddd5b9ae022ebc8437e
     </div>
   );
 }
