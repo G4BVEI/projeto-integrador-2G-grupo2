@@ -5,11 +5,11 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
-import CombinedGraphs from "@/components/graphs/CombinedGraphs";
 import { Thermometer, Droplets, CloudRain, Zap, Sun, Plus, Edit2, Gauge, Calendar, MapPin, Sprout, Navigation, TestTube, Settings} from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import DedicatedGraph from "@/components/graphs/DedicatedGraph";
 import SensorGraph from "@/components/graphs/SensorGraph";
+import BestGraph from "@/components/graphs/BestGraphOutThere";
 
 const MapView = dynamic(() => import("@/components/maps/MapView"), { ssr: false });
 
@@ -87,20 +87,20 @@ export default function DashboardTalhao() {
         .order("criado_em", { ascending: false });
       if (sensoresError) throw sensoresError;
 
-      const sensoresComUltimaLeitura = await Promise.all(
+      const Leituras = await Promise.all(
         sensoresData.map(async s => {
           const { data, error } = await supabase
             .from("dados_sensor")
             .select("valor, registrado_em")
             .eq("sensor_id", s.id)
             .order("registrado_em", { ascending: false })
-            .limit(1);
+            .limit(10);
           if (error) console.error(error);
-          return { ...s, ultima_leitura: data?.[0] || null };
+          return { ...s, leituras: data || [] };
         })
       );
 
-      setSensores(sensoresComUltimaLeitura);
+      setSensores(Leituras);
     } catch (err) {
       setError(err.message || "Erro desconhecido");
     } finally {
@@ -274,9 +274,8 @@ export default function DashboardTalhao() {
         </div>
 
         {/* Gráficos Combinados */}
+        <BestGraph sensores={sensores}/>
         <DedicatedGraph talhao={talhao} />
-        <SensorGraph sensores={sensores} />
-
         {/* Lista de Sensores */}
       </div>
     </div>
