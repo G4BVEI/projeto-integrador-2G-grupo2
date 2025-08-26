@@ -34,10 +34,10 @@ export default function SobrePage() {
     <div className="p-6">
       {/* Título */}
       <h1 className="text-2xl font-bold mb-2">Sobre</h1>
-      <p className="text-gray-600 mb-6">Saiba mais sobre o nosso projeto</p>
+      <p className="text-gray-600 mb-6">sobre o site blablabla editar amanha</p>
 
       {/* Seção do time */}
-      <h2 className="text-xl font-semibold mb-4">O Time</h2>
+      <h2 className="text-xl font-semibold mb-4">Equipe</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Lista de membros */}
@@ -61,8 +61,7 @@ export default function SobrePage() {
             <span className="text-gray-500">Imagem</span>
           </div>
           <p className="text-center text-gray-600">
-            Este espaço pode ser usado para descrever o projeto, missão da
-            equipe ou até destacar algum integrante.
+            logo do if blablabla editar tmb
           </p>
         </div>
       </div>
