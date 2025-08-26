@@ -14,8 +14,8 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import GlobalSearch from "../GlobalSearch"; // Importa o GlobalSearch
-import Footer from "../../../components/layout/Footer"; // Importação do Footer
+import GlobalSearch from "@/components/layout/GlobalSearch"; // Importa o GlobalSearch
+import Footer from "@/components/layout/Footer"; // Importação do Footer
 
 function NavLink({ href, icon: Icon, children, collapsed, session }) {
   const pathname = usePathname();
@@ -188,7 +188,6 @@ export default function ProtectedLayout({ children }) {
       >
         {children}
       </main>
-      <Footer />
     </div>
   );
 }
