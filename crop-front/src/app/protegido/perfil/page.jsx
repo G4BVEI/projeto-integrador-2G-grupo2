@@ -288,7 +288,7 @@ export default function UserProfile() {
                 type="button"
                 onClick={() => setIsEditing(false)}
                 disabled={saving}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center"
+                className="px-4 py-2 border border-white-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center"
               >
                 <X className="w-4 h-4 mr-2" />
                 Cancelar

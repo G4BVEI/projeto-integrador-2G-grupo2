@@ -362,7 +362,7 @@ if (loading) return (
         <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-blue-600" />
+              <MapPin className="w-5 h-5 text-green-600" />
               Localização do Sensor
             </h2>
             <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
@@ -397,9 +397,9 @@ if (loading) return (
               </p>
             </div>
           ) : (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="p-4 bg-green-50 border border-blue-200 rounded-lg">
               <p className="text-blue-800 text-sm">
-                🗺️ Clique no mapa para definir a localização
+                Clique no mapa para definir a localização
               </p>
             </div>
           )}
@@ -409,7 +409,7 @@ if (loading) return (
       {/* Registro de Novos Dados */}
       <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Gauge className="w-5 h-5 text-blue-600" />
+          <Gauge className="w-5 h-5 text-green-600" />
           Registrar Novo Dado
         </h2>
         
@@ -424,7 +424,7 @@ if (loading) return (
               value={novoValor}
               onChange={e => setNovoValor(e.target.value)}
               placeholder={`Digite o valor em ${formData.unidade || 'unidades'}`}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
             />
           </div>
           <button
