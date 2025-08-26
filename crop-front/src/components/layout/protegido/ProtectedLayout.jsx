@@ -540,8 +540,8 @@ const [userData, setUserData] = useState(null);
           <NavLink href="/protegido/clima" icon={Cloud} collapsed={collapsed} session={session}>
             Clima
           </NavLink>
-          <NavLink href="/protegido/atividades/novo" icon={Info} collapsed={collapsed} session={session}>
-            Nova Atividade
+          <NavLink href="/protegido/sobre" icon={Info} collapsed={collapsed} session={session}>
+            Sobre
           </NavLink>
         </nav>
 

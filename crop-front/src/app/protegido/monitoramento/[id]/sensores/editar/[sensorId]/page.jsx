@@ -83,7 +83,7 @@ function EditarSensor() {
             nome: sensorData.nome || '',
             tipo: sensorData.tipo || '',
             unidade: sensorData.unidade || '',
-            parametros: sensorData.parametros ? JSON.stringify(sensorData.parametros, null, 2) : '',
+            parametros: '',
             latitude: sensorData.localizacao_json?.coordinates?.[1]?.toString() || '',
             longitude: sensorData.localizacao_json?.coordinates?.[0]?.toString() || ''
           });
@@ -138,15 +138,6 @@ function EditarSensor() {
     setUpdating(true);
 
     try {
-      // Parse parâmetros JSON
-      let parametrosObj = {};
-      if (formData.parametros) {
-        try {
-          parametrosObj = JSON.parse(formData.parametros);
-        } catch {
-          throw new Error('Parâmetros devem estar em formato JSON válido');
-        }
-      }
 
       // Preparar localização do sensor
       let localizacaoJson = null;
@@ -164,7 +155,7 @@ function EditarSensor() {
           nome: formData.nome,
           tipo: formData.tipo,
           unidade: formData.unidade,
-          parametros: parametrosObj,
+          parametros: '',
           localizacao_json: localizacaoJson
         })
       });
@@ -321,20 +312,6 @@ if (loading) return (
                 value={formData.unidade}
                 onChange={handleInputChange}
                 required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Parâmetros Avançados (JSON)
-              </label>
-              <textarea
-                name="parametros"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-mono text-sm"
-                rows={4}
-                value={formData.parametros}
-                onChange={handleInputChange}
-                placeholder='{"frequencia_leituras": 5, "limite_min": 0, "limite_max": 100}'
               />
             </div>
 
