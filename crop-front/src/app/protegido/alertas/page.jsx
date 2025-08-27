@@ -1,33 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle } from "lucide-react";
-
-// Dicionário de valores ideais para cada cultura
-const culturaValores = {
-  Soja: { temp_min: 20, temp_max: 30, umid_min: 600, umid_max: 700, ph_min: 5.5, ph_max: 6.5 },
-  Milho: { temp_min: 18, temp_max: 27, umid_min: 500, umid_max: 800, ph_min: 5.5, ph_max: 6.5 },
-  Trigo: { temp_min: 15, temp_max: 22, umid_min: 450, umid_max: 650, ph_min: 6.0, ph_max: 7.0 },
-  Cevada: { temp_min: 12, temp_max: 20, umid_min: 350, umid_max: 600, ph_min: 6.0, ph_max: 7.5 },
-  Café: { temp_min: 18, temp_max: 23, umid_min: 1200, umid_max: 1800, ph_min: 6.0, ph_max: 7.0 },
-  "Cana-de-açúcar": { temp_min: 22, temp_max: 30, umid_min: 1200, umid_max: 1800, ph_min: 6.0, ph_max: 7.0 },
-  Algodão: { temp_min: 20, temp_max: 30, umid_min: 700, umid_max: 1200, ph_min: 6.0, ph_max: 7.0 },
-  Arroz: { temp_min: 20, temp_max: 30, umid_min: 800, umid_max: 1200, ph_min: 6.0, ph_max: 7.0 },
-  Feijão: { temp_min: 18, temp_max: 24, umid_min: 300, umid_max: 600, ph_min: 6.0, ph_max: 7.0 },
-  Sorgo: { temp_min: 25, temp_max: 30, umid_min: 400, umid_max: 600, ph_min: 6.0, ph_max: 7.0 },
-  Amendoim: { temp_min: 20, temp_max: 30, umid_min: 500, umid_max: 700, ph_min: 6.0, ph_max: 7.0 },
-  Girassol: { temp_min: 18, temp_max: 25, umid_min: 400, umid_max: 600, ph_min: 6.0, ph_max: 7.0 },
-  Canola: { temp_min: 10, temp_max: 20, umid_min: 400, umid_max: 600, ph_min: 6.0, ph_max: 7.0 },
-  Mandioca: { temp_min: 20, temp_max: 27, umid_min: 500, umid_max: 700, ph_min: 6.0, ph_max: 7.0 },
-};
+import { AlertTriangle, CheckCircle, RefreshCw, Trash2 } from "lucide-react";
 
 export default function Alertas() {
   const [alertas, setAlertas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const supabase = createClient();
+  const [verificando, setVerificando] = useState(false);
 
   useEffect(() => {
     fetchAlertas();
@@ -36,98 +17,25 @@ export default function Alertas() {
   const fetchAlertas = async () => {
     try {
       setLoading(true);
+      const response = await fetch('/api/alertas');
       
-      // Buscar todos os talhões
-      const { data: talhoes, error: talhoesError } = await supabase
-        .from("talhoes")
-        .select("*");
-      
-      if (talhoesError) throw talhoesError;
-
-      // Buscar todos os sensores
-      const { data: sensores, error: sensoresError } = await supabase
-        .from("sensores")
-        .select("*");
-      
-      if (sensoresError) throw sensoresError;
-
-      // Buscar os dados mais recentes de cada sensor
-      const dadosSensorPromises = sensores.map(async (sensor) => {
-        const { data, error } = await supabase
-          .from("dados_sensor")
-          .select("*")
-          .eq("sensor_id", sensor.id)
-          .order("registrado_em", { ascending: false })
-          .limit(1);
-        
-        if (error) throw error;
-        return data && data.length > 0 ? { ...data[0], sensor_id: sensor.id } : null;
-      });
-
-      const dadosSensores = (await Promise.all(dadosSensorPromises)).filter(Boolean);
-
-      // Gerar alertas
-      const alertasGerados = [];
-      
-      for (const dado of dadosSensores) {
-        const sensor = sensores.find(s => s.id === dado.sensor_id);
-        if (!sensor) continue;
-        
-        const talhao = talhoes.find(t => t.id === sensor.talhao_id);
-        if (!talhao || !talhao.tipo_cultura) continue;
-        
-        const valoresIdeais = culturaValores[talhao.tipo_cultura];
-        if (!valoresIdeais) continue;
-        
-        // Verificar se o valor está fora do range ideal
-        let problema = null;
-        
-        switch (sensor.tipo) {
-          case "Temperatura":
-            if (dado.valor < valoresIdeais.temp_min) {
-              problema = `Temperatura abaixo do ideal (${valoresIdeais.temp_min}°C - ${valoresIdeais.temp_max}°C)`;
-            } else if (dado.valor > valoresIdeais.temp_max) {
-              problema = `Temperatura acima do ideal (${valoresIdeais.temp_min}°C - ${valoresIdeais.temp_max}°C)`;
-            }
-            break;
-            
-          case "Umidade":
-            if (dado.valor < valoresIdeais.umid_min) {
-              problema = `Umidade do solo abaixo do ideal (${valoresIdeais.umid_min} - ${valoresIdeais.umid_max})`;
-            } else if (dado.valor > valoresIdeais.umid_max) {
-              problema = `Umidade do solo acima do ideal (${valoresIdeais.umid_min} - ${valoresIdeais.umid_max})`;
-            }
-            break;
-            
-          case "pH":
-            if (dado.valor < valoresIdeais.ph_min) {
-              problema = `pH abaixo do ideal (${valoresIdeais.ph_min} - ${valoresIdeais.ph_max}). Considere aplicar calcário.`;
-            } else if (dado.valor > valoresIdeais.ph_max) {
-              problema = `pH acima do ideal (${valoresIdeais.ph_min} - ${valoresIdeais.ph_max}). Considere aplicar enxofre.`;
-            }
-            break;
-            
-          default:
-            // Para outros tipos de sensor, não temos valores de referência
-            break;
-        }
-        
-        if (problema) {
-          alertasGerados.push({
-            id: `${dado.sensor_id}-${dado.registrado_em}`,
-            sensor,
-            talhao,
-            dado,
-            problema,
-            registrado_em: dado.registrado_em,
-          });
-        }
+      if (!response.ok) {
+        throw new Error('Erro ao buscar alertas');
       }
       
-      // Ordenar por data (mais recente primeiro)
-      alertasGerados.sort((a, b) => new Date(b.registrado_em) - new Date(a.registrado_em));
+      const data = await response.json();
       
-      setAlertas(alertasGerados);
+      // Ordenar: não verificados primeiro, depois verificados (por data mais recente)
+      const alertasOrdenados = data.sort((a, b) => {
+        // Primeiro ordena por status de verificação (não verificados primeiro)
+        if (a.verificado && !b.verificado) return 1;
+        if (!a.verificado && b.verificado) return -1;
+        
+        // Se ambos têm o mesmo status, ordena por data (mais recente primeiro)
+        return new Date(b.criado_em) - new Date(a.criado_em);
+      });
+      
+      setAlertas(alertasOrdenados);
     } catch (err) {
       setError(err.message);
       console.error("Erro ao buscar alertas:", err);
@@ -135,6 +43,93 @@ export default function Alertas() {
       setLoading(false);
     }
   };
+
+  const verificarNovosAlertas = async () => {
+    try {
+      setVerificando(true);
+      const response = await fetch('/api/alertas', {
+        method: 'POST'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erro ao verificar novos alertas');
+      }
+      
+      const result = await response.json();
+      
+      if (result.novos_alertas > 0) {
+        await fetchAlertas();
+      }
+      
+      alert(`Verificação concluída. ${result.novos_alertas} novo(s) alerta(s) encontrado(s).`);
+    } catch (err) {
+      setError(err.message);
+      console.error("Erro ao verificar alertas:", err);
+    } finally {
+      setVerificando(false);
+    }
+  };
+
+  const marcarComoVerificado = async (alertaId) => {
+    try {
+      const response = await fetch(`/api/alertas/${alertaId}`, {
+        method: 'PATCH',
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao marcar alerta como verificado');
+      }
+      
+      const updatedAlerta = await response.json();
+      
+      // Atualizar a lista mantendo a ordenação
+      setAlertas(prevAlertas => {
+        const novosAlertas = prevAlertas.map(alerta => 
+          alerta.id === alertaId ? { ...alerta, verificado: true, verificado_em: new Date().toISOString() } : alerta
+        );
+        
+        // Reordenar após a atualização
+        return novosAlertas.sort((a, b) => {
+          if (a.verificado && !b.verificado) return 1;
+          if (!a.verificado && b.verificado) return -1;
+          return new Date(b.criado_em) - new Date(a.criado_em);
+        });
+      });
+      
+    } catch (err) {
+      console.error('Erro ao marcar alerta como verificado:', err);
+      alert(`Erro ao marcar alerta como verificado: ${err.message}`);
+    }
+  };
+
+  const deletarAlerta = async (alertaId) => {
+    if (!confirm('Tem certeza que deseja deletar este alerta?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/alertas/${alertaId}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao deletar alerta');
+      }
+      
+      setAlertas(alertas.filter(alerta => alerta.id !== alertaId));
+      alert('Alerta deletado com sucesso!');
+      
+    } catch (err) {
+      console.error('Erro ao deletar alerta:', err);
+      alert(`Erro ao deletar alerta: ${err.message}`);
+    }
+  };
+
+  // Separar alertas verificados e não verificados para exibição
+  const alertasNaoVerificados = alertas.filter(alerta => !alerta.verificado);
+  const alertasVerificados = alertas.filter(alerta => alerta.verificado);
 
   if (loading) {
     return (
@@ -169,12 +164,22 @@ export default function Alertas() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <AlertTriangle className="text-yellow-500" />
-            Alertas do Sistema
-          </h1>
-          <p className="text-gray-600 mt-1">Monitoramento de condições anômalas nas lavouras</p>
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+              <AlertTriangle className="text-yellow-500" />
+              Alertas do Sistema
+            </h1>
+            <p className="text-gray-600 mt-1">Monitoramento de condições anômalas nas lavouras</p>
+          </div>
+          <button
+            onClick={verificarNovosAlertas}
+            disabled={verificando}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${verificando ? 'animate-spin' : ''}`} />
+            {verificando ? 'Verificando...' : 'Verificar Novos Alertas'}
+          </button>
         </div>
 
         {alertas.length === 0 ? (
@@ -184,42 +189,112 @@ export default function Alertas() {
             <p className="text-gray-600">Todos os sensores estão reportando valores dentro dos parâmetros normais.</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {alertas.map((alerta) => (
-              <div key={alerta.id} className="bg-white p-6 rounded-xl shadow-lg border border-red-100 border-l-4 border-l-red-500">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                      Alerta no {alerta.talhao.nome} - {alerta.talhao.tipo_cultura}
-                    </h3>
-                    <p className="text-gray-700 mb-2">
-                      O sensor <strong>{alerta.sensor.nome}</strong> ({alerta.sensor.tipo}) detectou um valor fora do normal:{" "}
-                      <strong>{alerta.dado.valor} {alerta.sensor.unidade}</strong>
-                    </p>
-                    <p className="text-red-600 font-medium mb-3">{alerta.problema}</p>
-                    <p className="text-sm text-gray-500">
-                      Detectado em: {new Date(alerta.registrado_em).toLocaleString('pt-BR')}
-                    </p>
-                  </div>
-                  <div className="ml-4 flex flex-col gap-2">
-                    <Link
-                      href={`/protegido/monitoramento/${alerta.talhao.id}/sensores/editar/${alerta.sensor.id}`}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm text-center"
-                    >
-                      Ver Sensor
-                    </Link>
-                    <Link
-                      href={`/protegido/monitoramento/${alerta.talhao.id}`}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm text-center"
-                    >
-                      Ver Talhão
-                    </Link>
-                  </div>
+          <div className="space-y-6">
+            {/* Alertas Não Verificados */}
+            {alertasNaoVerificados.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <AlertTriangle className="text-red-500 w-5 h-5" />
+                  Alertas Ativos ({alertasNaoVerificados.length})
+                </h2>
+                <div className="space-y-4">
+                  {alertasNaoVerificados.map((alerta) => (
+                    <AlertaCard 
+                      key={alerta.id} 
+                      alerta={alerta} 
+                      onVerificar={marcarComoVerificado}
+                      onDeletar={deletarAlerta}
+                    />
+                  ))}
                 </div>
               </div>
-            ))}
+            )}
+
+            {/* Alertas Verificados */}
+            {alertasVerificados.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <CheckCircle className="text-green-500 w-5 h-5" />
+                  Alertas Verificados ({alertasVerificados.length})
+                </h2>
+                <div className="space-y-4">
+                  {alertasVerificados.map((alerta) => (
+                    <AlertaCard 
+                      key={alerta.id} 
+                      alerta={alerta} 
+                      onVerificar={marcarComoVerificado}
+                      onDeletar={deletarAlerta}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Componente separado para o card de alerta
+function AlertaCard({ alerta, onVerificar, onDeletar }) {
+  return (
+    <div className={`bg-white p-6 rounded-xl shadow-lg border ${alerta.verificado ? 'border-green-100 border-l-4 border-l-green-500' : 'border-red-100 border-l-4 border-l-red-500'}`}>
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Alerta no {alerta.talhoes?.nome} - {alerta.talhoes?.tipo_cultura}
+            </h3>
+            {alerta.verificado && (
+              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                Verificado
+              </span>
+            )}
+          </div>
+          <p className="text-gray-700 mb-2">
+            O sensor <strong>{alerta.sensores?.nome}</strong> ({alerta.sensores?.tipo}) detectou um valor fora do normal:{" "}
+            <strong>{alerta.valor_medido} {alerta.sensores?.unidade}</strong>
+          </p>
+          <p className="text-red-600 font-medium mb-3">{alerta.mensagem}</p>
+          <p className="text-sm text-gray-500">
+            Detectado em: {new Date(alerta.criado_em).toLocaleString('pt-BR')}
+          </p>
+          {alerta.verificado && alerta.verificado_em && (
+            <p className="text-sm text-green-600 mt-1">
+              Verificado em: {new Date(alerta.verificado_em).toLocaleString('pt-BR')}
+            </p>
+          )}
+        </div>
+        <div className="ml-4 flex flex-col gap-2">
+          {!alerta.verificado && (
+            <button
+              onClick={() => onVerificar(alerta.id)}
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm"
+            >
+              Marcar como verificado
+            </button>
+          )}
+          <button
+            onClick={() => onDeletar(alerta.id)}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm flex items-center justify-center gap-1"
+          >
+            <Trash2 className="w-4 h-4" />
+            Deletar
+          </button>
+          <Link
+            href={`/protegido/monitoramento/${alerta.talhao_id}/sensores/editar/${alerta.sensor_id}`}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm text-center"
+          >
+            Ver Sensor
+          </Link>
+          <Link
+            href={`/protegido/monitoramento/${alerta.talhao_id}`}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm text-center"
+          >
+            Ver Talhão
+          </Link>
+        </div>
       </div>
     </div>
   );
