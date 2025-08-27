@@ -228,3 +228,8 @@ html {
   font-weight: bold;
   pointer-events: none; /* permite clicar no marker sem problemas */
 }
+
+.sobretexto {
+  text-align: center;
+  justify-content: center;
+}
