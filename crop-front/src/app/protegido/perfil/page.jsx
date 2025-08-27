@@ -160,15 +160,15 @@ export default function UserProfile() {
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-green-600" />
-          <p className="mt-2 text-gray-600">Carregando perfil...</p>
+          <p className="mt-2 text-gray-600">Carregando perfil...</p>fd
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="flex justify-left items-center min-h-screen bg-white-100 p-4">
+      <div className="bg-gray-100 p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Meu Perfil</h1>
 
         {error && (

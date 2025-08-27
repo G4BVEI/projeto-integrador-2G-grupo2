@@ -58,7 +58,7 @@ export default function BestGraph({ sensores }) {
     Temperatura: "#ef4444",
     Umidade: "#3b82f6",
     Pluviometro: "#1d4ed8",
-    Pressao: "#eab308",
+    Pressao: "#eadf08ff",
     Luminosidade: "#f97316",
     Outro: "#6b7280",
   };
