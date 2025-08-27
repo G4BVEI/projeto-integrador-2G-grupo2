@@ -5,12 +5,10 @@ export default function SobrePage() {
     <div className="p-6">
       {/* Título */}
       <h1 className="text-2xl font-bold mb-2">Sobre O Projeto</h1>
-      <p className="text-gray-600 mb-6">
-      <div id="sobretexto">
+      <div id="sobretexto" className="text-gray-600 mb-6">
         <p>O CropSense é um projeto criado para ajudar quem está no agronegócio a cuidar melhor de suas lavouras. A proposta é trazer ferramentas que facilitam o dia a dia do campo, como o monitoramento das culturas, a organização das atividades e o acompanhamento do clima.</p>
         <p>Nosso foco está na agricultura de precisão e na sustentabilidade, buscando formas de tornar a produção mais eficiente, reduzir desperdícios e aproveitar melhor os recursos disponíveis.</p>
         <p>A ideia é mostrar como a tecnologia pode ser uma aliada no manejo das lavouras, tornando o trabalho mais prático e preparado para os desafios do futuro.</p></div>
-      </p>
 
       {/* Seção do time */}
       <h2 className="text-xl font-semibold mb-4">Equipe</h2>

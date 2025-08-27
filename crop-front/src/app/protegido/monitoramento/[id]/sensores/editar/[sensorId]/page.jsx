@@ -37,6 +37,7 @@ function EditarSensor() {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState(null);
   const [novoValor, setNovoValor] = useState("");
+  const [novaData, setNovaData] = useState(""); // Adicione este estado
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -50,7 +51,21 @@ function EditarSensor() {
   const params = useParams();
   const router = useRouter();
   const supabase = createClient();
+  const fetchDadosSensor = async () => {
+  try {
+    const { data: dadosData, error: dadosError } = await supabase
+      .from("dados_sensor")
+      .select("*")
+      .eq("sensor_id", params.sensorId)
+      .order("registrado_em", { ascending: false });
 
+    if (dadosError) throw dadosError;
+    setDadosSensor(dadosData || []);
+  } catch (err) {
+    console.error("Erro ao buscar dados:", err);
+    toast.error("Erro ao atualizar histórico");
+  }
+};
   // Fetch inicial
   useEffect(() => {
     async function fetchData() {
@@ -90,14 +105,7 @@ function EditarSensor() {
         }
 
         // Dados do sensor
-        const { data: dadosData, error: dadosError } = await supabase
-          .from("dados_sensor")
-          .select("*")
-          .eq("sensor_id", params.sensorId)
-          .order("registrado_em", { ascending: false });
-        
-        if (dadosError) throw dadosError;
-        setDadosSensor(dadosData || []);
+        fetchDadosSensor()
 
       } catch (err) {
         setError(err.message || "Erro ao carregar dados");
@@ -178,26 +186,41 @@ function EditarSensor() {
   };
 
   // Registrar novo dado
-  const handleAddData = async () => {
-    if (!novoValor) return;
+const handleAddData = async () => {
+  if (!novoValor) return;
 
-    try {
-      const res = await fetch(`/api/lavouras/${params.id}/sensores/${params.sensorId}/dados`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ valor: novoValor })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erro ao registrar dado");
-
-      setDadosSensor([data, ...dadosSensor]);
-      setNovoValor("");
-      toast.success("Dado registrado com sucesso!");
-    } catch (err) {
-      toast.error("Erro ao registrar dado: " + err.message);
+  try {
+    // Converter datetime-local para ISO string se fornecido
+    let dataISO = novaData;
+    if (novaData) {
+      dataISO = new Date(novaData).toISOString();
     }
-  };
+
+    const res = await fetch(`/api/lavouras/${params.id}/sensores/${params.sensorId}/dados`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        valor: novoValor,
+        data: dataISO
+      })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || "Erro ao registrar dado");
+    }
+
+    // ✅ SIMPLES E EFICAZ: Buscar os dados atualizados do servidor
+    await fetchDadosSensor();
+    
+    setNovoValor("");
+    setNovaData("");
+    toast.success("Dado registrado com sucesso!");
+  } catch (err) {
+    toast.error("Erro ao registrar dado: " + err.message);
+  }
+};
+
 
 if (loading) return (
   <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
@@ -374,46 +397,59 @@ if (loading) return (
               </p>
             </div>
           ) : (
-            <div className="p-4 bg-green-50 border border-blue-200 rounded-lg">
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-blue-800 text-sm">
-                Clique no mapa para definir a localização
+                🗺️ Clique no mapa para definir a localização
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Registro de Novos Dados */}
-      <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Gauge className="w-5 h-5 text-green-600" />
-          Registrar Novo Dado
-        </h2>
-        
-        <div className="flex gap-3 items-end">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Valor do Dado *
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              value={novoValor}
-              onChange={e => setNovoValor(e.target.value)}
-              placeholder={`Digite o valor em ${formData.unidade || 'unidades'}`}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-            />
-          </div>
-          <button
-            onClick={handleAddData}
-            disabled={!novoValor}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2"
-          >
-            <Save className="w-4 h-4" />
-            Registrar
-          </button>
+       {/* Registro de Novos Dados */}
+    <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <Gauge className="w-5 h-5 text-green-600" />
+        Registrar Novo Dado
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Valor do Dado *
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            value={novoValor}
+            onChange={e => setNovoValor(e.target.value)}
+            placeholder={`Digite o valor em ${formData.unidade || 'unidades'}`}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+          />
         </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Data e Hora (opcional)
+          </label>
+          <input
+            type="datetime-local"
+            value={novaData}
+            onChange={e => setNovaData(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+          />
+        </div>
+        
+        <button
+          onClick={handleAddData}
+          disabled={!novoValor}
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 h-11"
+        >
+          <Save className="w-4 h-4" />
+          Registrar
+        </button>
       </div>
+    </div>
 
       {/* Histórico de Dados */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">

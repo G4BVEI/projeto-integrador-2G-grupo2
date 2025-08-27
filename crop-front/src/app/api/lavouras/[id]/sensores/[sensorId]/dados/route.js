@@ -30,9 +30,16 @@ export async function POST(request, { params }) {
     const body = await request.json();
     if (!body.valor) return NextResponse.json({ error: "Valor obrigatório" }, { status: 400 });
 
+    // Usar a data fornecida ou a data atual se não for fornecida
+    const registrado_em = body.data || new Date().toISOString();
+
     const { data, error } = await supabase
       .from('dados_sensor')
-      .insert({ sensor_id: sensorId, valor: body.valor, registrado_em: new Date().toISOString() })
+      .insert({ 
+        sensor_id: sensorId, 
+        valor: body.valor, 
+        registrado_em: registrado_em 
+      })
       .select()
       .single();
 

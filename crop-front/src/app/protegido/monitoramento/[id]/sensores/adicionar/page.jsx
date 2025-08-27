@@ -287,18 +287,6 @@ export default function AdicionarSensor() {
               </p>
             </div>
           )}
-
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Tipos de Sensor:</h3>
-            <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-              <div>🌡️ Temperatura (°C)</div>
-              <div>💧 Umidade (%)</div>
-              <div>🌧️ Pluviômetro (mm)</div>
-              <div>⚡ Pressão (hPa)</div>
-              <div>☀️ Luminosidade (lux)</div>
-              <div>🧪 pH (personalizado)</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -168,7 +168,7 @@ export default function MapEditor({ fields = [], selectedIds = [], onPolygonUpda
     // Fit bounds to all points
     if (selectedField.coords.length > 0) {
       const bounds = L.latLngBounds(selectedField.coords)
-      mapRef.current.fitBounds(bounds, { padding: [20, 20] })
+      mapRef.current.fitBounds(bounds, { padding: [40, 40] })
     }
 
   }, [fields, selectedIds, onPolygonUpdate])

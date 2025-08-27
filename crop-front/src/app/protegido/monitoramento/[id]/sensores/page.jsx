@@ -6,23 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 import MapView from "@/components/maps/MapView";
 import { Plus, Edit, Trash2, MapPin, Gauge, Calendar } from "lucide-react";
 
-function LoadingSpinner({ size = 'medium', className = '' }) {
-  const sizeClasses = {
-    small: 'h-6 w-6',
-    medium: 'h-12 w-12',
-    large: 'h-16 w-16',
-    xl: 'h-24 w-24'
-  }
-
-  return (
-    <div className="flex items-center justify-center">
-      <div 
-        className="animate-spin rounded-full border-b-2 border-green-600 h-16 w-16"
-      />
-    </div>
-  )
-}
-
 function SensoresTalhao() {
   const [sensores, setSensores] = useState([]);
   const [talhao, setTalhao] = useState(null);

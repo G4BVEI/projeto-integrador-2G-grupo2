@@ -60,7 +60,8 @@ export default function BestGraph({ sensores }) {
     Pluviometro: "#1d4ed8",
     Pressao: "#eab308",
     Luminosidade: "#f97316",
-    Outro: "#6b7280",
+    pH: "#a855f7",
+    Outro: "#6b7280"
   };
   const tipoIcons = {
     Temperatura: <Thermometer className="h-4 w-4" />,
@@ -193,7 +194,7 @@ export default function BestGraph({ sensores }) {
                           `${value} ${sensor?.unidade || ""}`,
                           "Valor",
                         ]}
-                        labelFormatter={(value) => `Sensor: ${value}`}
+                        labelFormatter={(v) => `Data leitura: ${new Date(v).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", day: "2-digit" })}`}
                       />
                       <Bar
                         dataKey="valor"
