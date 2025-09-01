@@ -312,7 +312,7 @@ export default function CropSenseLanding() {
                 Integração
               </h3>
               <p className="text-green-700">
-                Conecte sensores ou APIs de clima para coleta de dados
+                Conecte sensores ou use nossas APIs de clima para coleta de dados
               </p>
             </div>
             <div className="text-center">
