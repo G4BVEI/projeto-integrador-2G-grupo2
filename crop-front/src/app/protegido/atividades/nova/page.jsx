@@ -208,7 +208,7 @@ export default function NovaAtividade() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-dark transition"
+              className="px-5 py-2.5 bg-green-500 text-white rounded-lg hover:bg-dark transition"
             >
               Salvar Atividade
             </button>

@@ -119,7 +119,7 @@ export default function CropSenseLanding() {
               <span className="text-green-600"> inteligência</span>
             </h1>
             <p className="text-lg sm:text-xl text-green-700 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
-              Facilite o acesso à agricultura de precisão. Monitore o solo, clima e plantações em tempo real, otimize
+              Acesso à agricultura de precisão facilitada. Monitore o solo, clima e plantações em tempo real, otimize
               recursos e aumente sua produtividade com decisões baseadas em dados.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
@@ -270,11 +270,10 @@ export default function CropSenseLanding() {
                 <FileText className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold text-green-900 mb-3">
-                Relatórios Exportáveis
+                mudar aq
               </h3>
               <p className="text-green-700">
-                Gere relatórios em PDF e CSV com dados históricos e análises
-                detalhadas
+                aa
               </p>
             </div>
           </div>
