@@ -37,7 +37,7 @@ export default function SobrePage() {
           {/* Thiago */}
           <div className="flex flex-col items-center border-2 border-gray-300 rounded-2xl p-4 hover:shadow-md transition">
             <div className="w-24 h-24 bg-gray-200 rounded-xl flex items-center justify-center overflow-hidden">
-              <img src="/thiago.png" alt="Thiago" className="w-full h-full object-cover" />
+              <img src="/thiago.jpg" alt="Thiago" className="w-full h-full object-cover" />
             </div>
             <p className="mt-2 font-medium">Thiago Segalla</p>
           </div>
