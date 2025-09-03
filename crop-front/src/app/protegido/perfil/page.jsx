@@ -36,9 +36,7 @@ export default function UserProfile() {
           .eq('id', session.user.id)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          throw error;
-        }
+        if (error && error.code !== 'PGRST116') throw error;
 
         if (!data) {
           const { data: newData, error: insertError } = await supabase
@@ -51,13 +49,11 @@ export default function UserProfile() {
             })
             .select()
             .single();
-
           if (insertError) throw insertError;
           setUserData(newData);
         } else {
           setUserData(data);
         }
-
       } catch (err) {
         setError(err.message);
         console.error('Erro ao buscar user_data:', err);
@@ -65,7 +61,6 @@ export default function UserProfile() {
         setLoading(false);
       }
     }
-
     fetchUserData();
   }, []);
 
@@ -77,40 +72,24 @@ export default function UserProfile() {
       setUploading(true);
       setError(null);
 
-      // Validar tipo e tamanho do arquivo
-      if (!file.type.startsWith('image/')) {
-        throw new Error('Apenas imagens são permitidas');
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error('A imagem deve ter no máximo 5MB');
-      }
+      if (!file.type.startsWith('image/')) throw new Error('Apenas imagens são permitidas');
+      if (file.size > 5 * 1024 * 1024) throw new Error('A imagem deve ter no máximo 5MB');
 
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
+      const response = await fetch('/api/upload', { method: 'POST', body: formData });
       const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro no upload');
-      }
+      if (!response.ok) throw new Error(result.error || 'Erro no upload');
 
-      // Atualizar o estado com a nova imagem
       setUserData(prev => ({ ...prev, img_url: result.imageUrl }));
       setSuccess('Imagem atualizada com sucesso!');
-
     } catch (err) {
       setError(err.message);
     } finally {
       setUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -122,10 +101,7 @@ export default function UserProfile() {
       setSuccess(null);
 
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session) {
-        throw sessionError || new Error("Usuário não autenticado");
-      }
+      if (sessionError || !session) throw sessionError || new Error("Usuário não autenticado");
 
       const { error } = await supabase
         .from('user_data')
@@ -135,7 +111,6 @@ export default function UserProfile() {
           updated_at: new Date().toISOString()
         })
         .eq('id', session.user.id);
-
       if (error) throw error;
 
       setSuccess("Dados atualizados com sucesso!");
@@ -149,10 +124,7 @@ export default function UserProfile() {
   };
 
   const handleInputChange = (field, value) => {
-    setUserData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setUserData(prev => ({ ...prev, [field]: value }));
   };
 
   if (loading) {
@@ -160,15 +132,15 @@ export default function UserProfile() {
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-green-600" />
-          <p className="mt-2 text-gray-600">Carregando perfil...</p>fd
+          <p className="mt-2 text-gray-600">Carregando perfil...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-left items-center min-h-screen bg-white-100 p-4">
-      <div className="bg-gray-100 p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Meu Perfil</h1>
 
         {error && (
@@ -188,11 +160,7 @@ export default function UserProfile() {
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
               {userData.img_url ? (
-                <img
-                  src={userData.img_url}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                />
+                <img src={userData.img_url} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
                 <User className="w-12 h-12 text-gray-400" />
               )}
@@ -223,9 +191,7 @@ export default function UserProfile() {
 
         <form className="space-y-4" onSubmit={handleSave}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nome de Usuário
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nome de Usuário</label>
             <input
               type="text"
               value={userData.username}
@@ -236,9 +202,7 @@ export default function UserProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nome Completo
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
             <input
               type="text"
               value={userData.nome}
@@ -249,27 +213,22 @@ export default function UserProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <div className="flex items-center">
               <Mail className="w-4 h-4 text-gray-400 mr-2" />
               <span className="text-gray-600">{session?.user?.email}</span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              O email não pode ser alterado
-            </p>
+            <p className="text-xs text-gray-500 mt-1">O email não pode ser alterado</p>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="button"
               onClick={() => setIsEditing(true)}
               className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
               disabled={isEditing}
             >
-              <Edit3 className="w-4 h-4 mr-2" />
-              Editar Perfil
+              <Edit3 className="w-4 h-4 mr-2" /> Editar Perfil
             </button>
             <button
               type="submit"
@@ -288,16 +247,15 @@ export default function UserProfile() {
                 type="button"
                 onClick={() => setIsEditing(false)}
                 disabled={saving}
-                className="px-4 py-2 border border-white-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center"
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 flex items-center justify-center"
               >
-                <X className="w-4 h-4 mr-2" />
-                Cancelar
+                <X className="w-4 h-4 mr-2" /> Cancelar
               </button>
             )}
           </div>
         </form>
 
-        <div className="mt-8 pt-4 border-t border-gray-200">
+        <div className="mt-8 pt-4 border-t border-gray-200 text-center">
           <h3 className="text-sm font-medium text-gray-700 mb-2">Informações da Conta</h3>
           <div className="text-sm text-gray-600 space-y-1">
             <p>ID: {userData.id}</p>
