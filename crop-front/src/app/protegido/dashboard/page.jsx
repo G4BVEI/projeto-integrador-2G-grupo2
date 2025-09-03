@@ -27,7 +27,6 @@ return (
         <p className="text-gray-600 text-sm sm:text-base break-words max-w-[250px] sm:max-w-none">
           Bem-vindo, <span className="font-medium">{session.user.email}</span>!
         </p>
-        <LogoutButton />
       </div>
     </div>
 
