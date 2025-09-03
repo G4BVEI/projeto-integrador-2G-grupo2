@@ -452,6 +452,7 @@ export default function ProtectedLayout({ children }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [session, setSession] = useState(null)
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = createClient()
   const [userData, setUserData] = useState(null)
 
@@ -493,6 +494,34 @@ export default function ProtectedLayout({ children }) {
     return () => subscription?.unsubscribe()
   }, [router, supabase.auth])
 
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuOpen) {
+        const sidebar = document.querySelector("[data-sidebar]")
+        const menuButton = document.querySelector("[data-menu-button]")
+
+        // Se clicou fora do sidebar e não foi no botão do menu, fecha o menu
+        if (sidebar && !sidebar.contains(event.target) && !menuButton?.contains(event.target)) {
+          setMobileMenuOpen(false)
+        }
+      }
+    }
+
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("touchstart", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("touchstart", handleClickOutside)
+    }
+  }, [mobileMenuOpen])
+
   if (!session) {
     return null
   }
@@ -503,7 +532,11 @@ export default function ProtectedLayout({ children }) {
       <header className="fixed top-0 left-0 w-full h-16 bg-white shadow-sm z-[100] px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center md:hidden">
-            <button className="p-2 rounded-md hover:bg-gray-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <button
+              className="p-2 rounded-md hover:bg-gray-100"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              data-menu-button
+            >
               <Menu size={24} />
             </button>
           </div>
@@ -550,6 +583,7 @@ export default function ProtectedLayout({ children }) {
 
       {/* SIDEBAR */}
       <aside
+        data-sidebar
         className={`fixed top-16 left-0 h-[calc(100%-4rem)] bg-white text-gray-700 border-r border-gray-200 flex flex-col justify-between transition-all duration-300 ${
           mobileMenuOpen ? "w-64 z-40" : "-translate-x-full z-40"
         } md:translate-x-0 md:z-10 ${collapsed ? "md:w-16" : "md:w-64"}`}
