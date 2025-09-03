@@ -25,7 +25,6 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-4">
           <p className="text-gray-600">Bem-vindo, {session.user.email}!</p>
-          <LogoutButton />
         </div>
       </div>
 
