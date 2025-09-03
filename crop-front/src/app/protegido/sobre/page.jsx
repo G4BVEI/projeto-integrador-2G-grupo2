@@ -21,7 +21,7 @@ export default function SobrePage() {
           {/* Gabriel */}
           <div className="flex flex-col items-center border-2 border-gray-300 rounded-2xl p-4 hover:shadow-md transition">
             <div className="w-24 h-24 bg-gray-200 rounded-xl flex items-center justify-center overflow-hidden">
-              <img src="/gabriel.png" alt="Gabriel" className="w-full h-full object-cover" />
+              <img src="/beiço.png" alt="Gabriel" className="w-full h-full object-cover" />
             </div>
             <p className="mt-2 font-medium">Gabriel da Veiga</p>
           </div>
