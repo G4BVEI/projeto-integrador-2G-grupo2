@@ -19,18 +19,21 @@ export default async function DashboardPage() {
     .eq("user_id", session.user.id)
     .order("criado_em", { ascending: false });
 
-  return (
-    <div className="p-4 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <p className="text-gray-600">Bem-vindo, {session.user.email}!</p>
-          <LogoutButton />
-        </div>
+return (
+  <div className="p-4 space-y-6">
+    <div className="flex justify-between items-center flex-col sm:flex-row gap-2 sm:gap-4">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
+        <p className="text-gray-600 text-sm sm:text-base break-words max-w-[250px] sm:max-w-none">
+          Bem-vindo, <span className="font-medium">{session.user.email}</span>!
+        </p>
+        <LogoutButton />
       </div>
-
-      <AllTalhoesMap talhoes={talhoes || []} />
-      <DashboardGraphs talhoes={talhoes || []} />
     </div>
-  );
+
+    <AllTalhoesMap talhoes={talhoes || []} />
+    <DashboardGraphs talhoes={talhoes || []} />
+  </div>
+);
+
 }
