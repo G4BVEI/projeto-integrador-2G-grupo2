@@ -213,7 +213,7 @@
 
     return (
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Meus Lavouras</h2>
+        <h2 className="text-xl font-semibold mb-4">Minhas Lavouras</h2>
         <div className="relative">
           <div id="all-lavouras-map" className="h-96 rounded"></div>
           <div className="absolute top-2 right-2 z-[1000] bg-white p-2 rounded shadow">
