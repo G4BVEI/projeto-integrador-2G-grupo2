@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import { toast } from 'react-hot-toast';
@@ -32,6 +32,28 @@ export default function AdicionarLavoura() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const supabase = createClient();
   const router = useRouter();
+  const [sementes, setSementes] = useState([]);
+
+  useEffect(() => {
+        async function fetchSementes() {
+          try {
+
+    
+            const { data, error } = await supabase
+              .from('sementes')
+              .select('*')
+    
+            if (error) throw error;
+    
+            setSementes(data || []);
+          } catch (err) {
+            setError(err.message);
+            console.error('Error fetching sementes:', err);
+          } finally {
+            setLoading(false);
+          } 
+        }    fetchSementes();
+  }, []);
 
   const addPoint = () => {
     setPoints([...points, { lat: "", lng: "" }]);
@@ -178,7 +200,7 @@ export default function AdicionarLavoura() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Nome da Lavoura*
+                  Nome do Lavoura*
                 </label>
                 <input
                   type="text"
@@ -191,9 +213,7 @@ export default function AdicionarLavoura() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Tipo de Cultura*
-                </label>
+                <label className="block text-sm font-medium mb-1">Tipo de Cultura*</label>
                 <select
                   name="tipo_cultura"
                   className="w-full p-2 border rounded"
@@ -202,13 +222,11 @@ export default function AdicionarLavoura() {
                   required
                 >
                   <option value="">Selecione...</option>
-                  <option value="Soja">Soja</option>
-                  <option value="Milho">Milho</option>
-                  <option value="Trigo">Trigo</option>
-                  <option value="Cevada">Cevada</option>
-                  <option value="Café">Café</option>
-                  <option value="Cana-de-açúcar">Cana-de-açúcar</option>
-                  <option value="Algodão">Algodão</option>
+                  {
+                  sementes.map((sementes) => (
+                    <option key={sementes.tipo}value={sementes.tipo}>{sementes.tipo}</option>
+                    ))
+                  }
                 </select>
               </div>
 
