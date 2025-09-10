@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-import AllTalhoesMap from "@/components/maps/AllTalhoesMap";
+import AllLavourasMap from "@/components/maps/AllLavourasMap";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
@@ -13,8 +13,8 @@ export default async function DashboardPage() {
     redirect("/auth/login");
   }
   
-  const { data: talhoes } = await supabase
-    .from("talhoes")
+  const { data: lavouras } = await supabase
+    .from("lavouras")
     .select("*")
     .eq("user_id", session.user.id)
     .order("criado_em", { ascending: false });
@@ -30,8 +30,8 @@ return (
       </div>
     </div>
 
-    <AllTalhoesMap talhoes={talhoes || []} />
-    <DashboardGraphs talhoes={talhoes || []} />
+    <AllLavourasMap lavouras={lavouras || []} />
+    <DashboardGraphs lavouras={lavouras || []} />
   </div>
 );
 

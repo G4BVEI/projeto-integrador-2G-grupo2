@@ -4,15 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-function ListaTalhoes() {
-  const [talhoes, setTalhoes] = useState([]);
+function ListaLavouras() {
+  const [lavouras, setLavouras] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
-    async function fetchTalhoes() {
+    async function fetchLavouras() {
       try {
         setLoading(true);
         
@@ -23,25 +23,25 @@ function ListaTalhoes() {
           throw userError || new Error("Usuário não autenticado");
         }
 
-        // Fetch talhoes only for this user
+        // Fetch lavouras only for this user
         const { data, error } = await supabase
-          .from('talhoes')
+          .from('lavouras')
           .select('*')
           .eq('user_id', user.id)
           .order('criado_em', { ascending: false });
 
         if (error) throw error;
 
-        setTalhoes(data || []);
+        setLavouras(data || []);
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching talhoes:', err);
+        console.error('Error fetching lavouras:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchTalhoes();
+    fetchLavouras();
   }, []);
 
   if (loading) return (
@@ -85,25 +85,25 @@ function ListaTalhoes() {
             </tr>
           </thead>
           <tbody className="text-gray-800">
-            {talhoes.length > 0 ? (
-              talhoes.map((talhao) => (
-                <tr key={talhao.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">{talhao.nome}</td>
-                  <td className="px-4 py-3">{talhao.tipo_cultura}</td>
-                  <td className="px-4 py-3">{talhao.sistema_irrigacao}</td>
+            {lavouras.length > 0 ? (
+              lavouras.map((lavoura) => (
+                <tr key={lavoura.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 font-medium">{lavoura.nome}</td>
+                  <td className="px-4 py-3">{lavoura.tipo_cultura}</td>
+                  <td className="px-4 py-3">{lavoura.sistema_irrigacao}</td>
                   <td className="px-4 py-3">
-                    {talhao.data_plantio ? new Date(talhao.data_plantio).toLocaleDateString() : '-'}
+                    {lavoura.data_plantio ? new Date(lavoura.data_plantio).toLocaleDateString() : '-'}
                   </td>
-                  <td className="px-4 py-3">{talhao.area ? `${talhao.area} ha` : '-'}</td>
+                  <td className="px-4 py-3">{lavoura.area ? `${lavoura.area} ha` : '-'}</td>
                   <td className="px-4 py-3">
                     <button 
-                      onClick={() => router.push(`/protegido/monitoramento/${talhao.id}`)}
+                      onClick={() => router.push(`/protegido/monitoramento/${lavoura.id}`)}
                       className="text-green-600 hover:underline mr-3"
                     >
                       Detalhes
                     </button>
                     <button 
-                      onClick={() => router.push(`/protegido/monitoramento/${talhao.id}/editar`)}
+                      onClick={() => router.push(`/protegido/monitoramento/${lavoura.id}/editar`)}
                       className="text-blue-600 hover:underline"
                     >
                       Editar
@@ -114,7 +114,7 @@ function ListaTalhoes() {
             ) : (
               <tr>
                 <td colSpan="6" className="px-4 py-3 text-center text-gray-500">
-                  Nenhum talhão cadastrado ainda
+                  Nenhum lavoura cadastrado ainda
                 </td>
               </tr>
             )}
@@ -125,4 +125,4 @@ function ListaTalhoes() {
   );
 }
 
-export default ListaTalhoes;
+export default ListaLavouras;

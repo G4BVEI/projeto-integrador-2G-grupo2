@@ -21,7 +21,7 @@ export default function GerenciamentoAtividades() {
       dataInicio: '2024-01-20',
       dataConclusao: '2024-01-22',
       status: 'em_andamento',
-      descricao: 'Irrigação por aspersão no talhão 3'
+      descricao: 'Irrigação por aspersão no lavoura 3'
     },
     {
       id: 3,
@@ -39,7 +39,7 @@ export default function GerenciamentoAtividades() {
       dataInicio: '2024-02-01',
       dataConclusao: '2024-02-05',
       status: 'pendente',
-      descricao: 'Colheita do milho no talhão 1'
+      descricao: 'Colheita do milho no lavoura 1'
     }
   ]);
 

@@ -6,7 +6,7 @@ import { Thermometer, Droplets, CloudRain, Wind, Gauge, Eye, Calendar } from 'lu
 
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
 
-export default function DedicatedGraph({ talhao }) {
+export default function DedicatedGraph({ lavoura }) {
   const [weatherData, setWeatherData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -14,15 +14,15 @@ export default function DedicatedGraph({ talhao }) {
 
   useEffect(() => {
     async function fetchWeatherData() {
-      if (!talhao) return
+      if (!lavoura) return
 
       setLoading(true)
       try {
-        const lat = talhao.localizacao_json?.coordinates?.[0]?.[0]?.[1] || talhao.latitude
-        const lon = talhao.localizacao_json?.coordinates?.[0]?.[0]?.[0] || talhao.longitude
+        const lat = lavoura.localizacao_json?.coordinates?.[0]?.[0]?.[1] || lavoura.latitude
+        const lon = lavoura.localizacao_json?.coordinates?.[0]?.[0]?.[0] || lavoura.longitude
         
         if (!lat || !lon) {
-          throw new Error('Coordenadas do talhão não disponíveis')
+          throw new Error('Coordenadas do lavoura não disponíveis')
         }
 
         const response = await fetch(
@@ -44,13 +44,13 @@ export default function DedicatedGraph({ talhao }) {
     }
 
     fetchWeatherData()
-  }, [talhao])
+  }, [lavoura])
 
-  if (!talhao) {
+  if (!lavoura) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="text-center text-gray-500">
-          Nenhum talhão selecionado
+          Nenhum lavoura selecionado
         </div>
       </div>
     )

@@ -16,9 +16,9 @@ export async function GET(request, { params }) {
       )
     }
 
-    // 2. Buscar talhão específico
+    // 2. Buscar lavoura específico
     const { data, error } = await supabase
-      .from('talhoes')
+      .from('lavouras')
       .select('*')
       .eq('id', id)
       .eq('user_id', user.id)
@@ -27,7 +27,7 @@ export async function GET(request, { params }) {
     if (error) {
       if (error.code === 'PGRST116') {
         return NextResponse.json(
-          { error: 'Talhão não encontrado' },
+          { error: 'Lavoura não encontrado' },
           { status: 404 }
         )
       }
@@ -74,24 +74,24 @@ export async function PUT(request, { params }) {
       )
     }
 
-    // 3. Verificar se o talhão pertence ao usuário
-    const { data: existingTalhao, error: checkError } = await supabase
-      .from('talhoes')
+    // 3. Verificar se o lavoura pertence ao usuário
+    const { data: existingLavoura, error: checkError } = await supabase
+      .from('lavouras')
       .select('id')
       .eq('id', id)
       .eq('user_id', user.id)
       .single()
 
-    if (checkError || !existingTalhao) {
+    if (checkError || !existingLavoura) {
       return NextResponse.json(
-        { error: 'Talhão não encontrado ou não pertence ao usuário' },
+        { error: 'Lavoura não encontrado ou não pertence ao usuário' },
         { status: 404 }
       )
     }
 
-    // 4. Atualizar o talhão
+    // 4. Atualizar o lavoura
     const { data, error } = await supabase
-      .from('talhoes')
+      .from('lavouras')
       .update({
         nome: body.nome,
         descricao: body.descricao,

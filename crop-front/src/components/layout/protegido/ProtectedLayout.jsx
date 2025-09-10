@@ -35,47 +35,47 @@ const searchIndex = [
   {
     path: "/protegido/monitoramento",
     title: "Monitoramento",
-    description: "Acompanhamento de talhões",
+    description: "Acompanhamento de lavouras",
     category: "Monitoramento",
     requiresContext: true,
-    contextPrompt: "Monitoramento de qual talhão?",
-    contextQuery: "talhoes",
+    contextPrompt: "Monitoramento de qual lavoura?",
+    contextQuery: "lavouras",
   },
   {
     path: "/protegido/monitoramento/[id]",
-    title: "Detalhes do Talhão",
-    description: "Detalhes e métricas do talhão",
+    title: "Detalhes do Lavoura",
+    description: "Detalhes e métricas do lavoura",
     category: "Monitoramento",
     requiresContext: true,
-    contextPrompt: "Qual talhão deseja visualizar?",
-    contextQuery: "talhoes",
+    contextPrompt: "Qual lavoura deseja visualizar?",
+    contextQuery: "lavouras",
   },
   {
     path: "/protegido/monitoramento/[id]/editar",
-    title: "Editar Talhão",
-    description: "Editar informações do talhão",
+    title: "Editar Lavoura",
+    description: "Editar informações do lavoura",
     category: "Monitoramento",
     requiresContext: true,
-    contextPrompt: "Qual talhão deseja editar?",
-    contextQuery: "talhoes",
+    contextPrompt: "Qual lavoura deseja editar?",
+    contextQuery: "lavouras",
   },
   {
     path: "/protegido/monitoramento/[id]/sensores",
-    title: "Sensores do Talhão",
-    description: "Gerenciar sensores do talhão",
+    title: "Sensores do Lavoura",
+    description: "Gerenciar sensores do lavoura",
     category: "Monitoramento",
     requiresContext: true,
-    contextPrompt: "Sensores de qual talhão?",
-    contextQuery: "talhoes",
+    contextPrompt: "Sensores de qual lavoura?",
+    contextQuery: "lavouras",
   },
   {
     path: "/protegido/monitoramento/[id]/sensores/adicionar",
     title: "Adicionar Sensor",
-    description: "Adicionar novo sensor ao talhão",
+    description: "Adicionar novo sensor ao lavoura",
     category: "Monitoramento",
     requiresContext: true,
-    contextPrompt: "Adicionar sensor em qual talhão?",
-    contextQuery: "talhoes",
+    contextPrompt: "Adicionar sensor em qual lavoura?",
+    contextQuery: "lavouras",
   },
   {
     path: "/protegido/monitoramento/[id]/sensores/editar/[sensorId]",
@@ -85,8 +85,8 @@ const searchIndex = [
     requiresContext: true,
     contextLevels: [
       {
-        prompt: "Editar sensor de qual talhão?",
-        query: "talhoes",
+        prompt: "Editar sensor de qual lavoura?",
+        query: "lavouras",
         param: "id",
       },
       {
@@ -185,7 +185,7 @@ function NotificationPopup({ alertas, onMarkAsRead, onDelete, onRefresh, verific
                         </div>
                         <p className="text-sm text-gray-700 mt-1">{alerta.mensagem}</p>
                         <p className="text-xs text-gray-500 mt-1">
-                          Talhão: {alerta.talhoes?.nome || 'N/A'} • Sensor: {alerta.sensores?.nome || 'N/A'}
+                          Lavoura: {alerta.lavouras?.nome || 'N/A'} • Sensor: {alerta.sensores?.nome || 'N/A'}
                         </p>
                         {!alerta.verificado && (
                           <div className="flex gap-2 mt-3">
@@ -245,14 +245,14 @@ function GlobalSearch({ isMobile = false }) {
     try {
       let data = []
 
-      if (contextQuery === "talhoes") {
-        const { data: talhoes, error } = await supabase.from("talhoes").select("id, nome").order("nome")
-        if (!error) data = talhoes
+      if (contextQuery === "lavouras") {
+        const { data: lavouras, error } = await supabase.from("lavouras").select("id, nome").order("nome")
+        if (!error) data = lavouras
       } else if (contextQuery === "sensores" && dependsOnValue) {
         const { data: sensores, error } = await supabase
           .from("sensores")
           .select("id, nome, tipo")
-          .eq("talhao_id", dependsOnValue)
+          .eq("lavoura_id", dependsOnValue)
           .order("nome")
         if (!error) data = sensores
       }
@@ -479,7 +479,7 @@ function GlobalSearch({ isMobile = false }) {
                     ))}
                     {contextOptions.length === 0 && !loading && (
                       <div className="text-center text-gray-500 py-4">
-                        {contextLevel === 0 ? "Nenhum talhão encontrado" : "Nenhum sensor encontrado"}
+                        {contextLevel === 0 ? "Nenhum lavoura encontrado" : "Nenhum sensor encontrado"}
                       </div>
                     )}
                   </div>

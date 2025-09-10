@@ -71,7 +71,7 @@ export default function MapEditor({ fields = [], selectedIds = [], onPolygonUpda
           const newCoords = [...selectedField.coords, newPoint];
           onPolygonUpdate(newCoords);
         } else if (selectedIds.includes('new-field')) {
-          // Para o novo talhão (quando não há campo selecionado ainda)
+          // Para o novo lavoura (quando não há campo selecionado ainda)
           const newField = fields.find(field => field.id === 'new-field');
           if (newField) {
             const newCoords = [...newField.coords, newPoint];

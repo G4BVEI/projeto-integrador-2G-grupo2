@@ -62,8 +62,8 @@ export default function MapView({ fields = [], selectedIds = [], sensorPoints = 
         fillOpacity: 0.3,
       }).addTo(layerRef.current);
 
-      // ⚠️ REMOVIDO: bindTooltip do talhão para evitar popups duplicados
-      // O talhão não terá nenhum popup ou tooltip
+      // ⚠️ REMOVIDO: bindTooltip do lavoura para evitar popups duplicados
+      // O lavoura não terá nenhum popup ou tooltip
     }
 
     sensorPoints.forEach(sensor => {

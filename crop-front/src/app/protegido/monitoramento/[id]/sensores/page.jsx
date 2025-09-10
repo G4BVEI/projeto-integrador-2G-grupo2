@@ -6,9 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import MapView from "@/components/maps/MapView";
 import { Plus, Edit, Trash2, MapPin, Gauge, Calendar } from "lucide-react";
 
-function SensoresTalhao() {
+function SensoresLavoura() {
   const [sensores, setSensores] = useState([]);
-  const [talhao, setTalhao] = useState(null);
+  const [lavoura, setLavoura] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,22 +20,22 @@ function SensoresTalhao() {
     async function fetchData() {
       try {
         setLoading(true);
-        const talhaoId = params.id;
+        const lavouraId = params.id;
 
-        // 1. Buscar talhão
-        const { data: talhaoData, error: talhaoError } = await supabase
-          .from('talhoes')
+        // 1. Buscar lavoura
+        const { data: lavouraData, error: lavouraError } = await supabase
+          .from('lavouras')
           .select('*')
-          .eq('id', talhaoId)
+          .eq('id', lavouraId)
           .single();
-        if (talhaoError) throw talhaoError;
-        setTalhao(talhaoData);
+        if (lavouraError) throw lavouraError;
+        setLavoura(lavouraData);
 
         // 2. Buscar sensores
         const { data: sensoresData, error: sensoresError } = await supabase
           .from('sensores')
           .select('*')
-          .eq('talhao_id', talhaoId)
+          .eq('lavoura_id', lavouraId)
           .order('criado_em', { ascending: false });
         if (sensoresError) throw sensoresError;
 
@@ -112,10 +112,10 @@ function SensoresTalhao() {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Sensores do Talhão</h1>
-        {talhao && (
+        <h1 className="text-3xl font-bold text-gray-800">Sensores do Lavoura</h1>
+        {lavoura && (
           <p className="text-gray-600 mt-2">
-            {talhao.nome} • {talhao.tipo_cultura || 'Sem cultura definida'} • {talhao.area || 0} ha
+            {lavoura.nome} • {lavoura.tipo_cultura || 'Sem cultura definida'} • {lavoura.area || 0} ha
           </p>
         )}
       </div>
@@ -228,16 +228,16 @@ function SensoresTalhao() {
           </div>
 
           <div className="h-96 rounded-lg overflow-hidden border border-gray-200">
-            {talhao && (
+            {lavoura && (
               <MapView
                 fields={[
                   {
-                    id: talhao.id,
-                    nome: talhao.nome,
-                    coords: talhao.localizacao_json?.coordinates?.[0]?.map(coord => [coord[1], coord[0]]) || []
+                    id: lavoura.id,
+                    nome: lavoura.nome,
+                    coords: lavoura.localizacao_json?.coordinates?.[0]?.map(coord => [coord[1], coord[0]]) || []
                   }
                 ]}
-                selectedIds={[talhao.id]}
+                selectedIds={[lavoura.id]}
                 sensorPoints={sensoresComLocalizacao.map(sensor => ({
                   ...sensor,
                   popupContent: `
@@ -274,4 +274,4 @@ function SensoresTalhao() {
   );
 }
 
-export default SensoresTalhao;
+export default SensoresLavoura;

@@ -30,9 +30,9 @@ export async function POST(request) {
       )
     }
 
-    // 3. Inserir no banco usando a nova estrutura talhoes
+    // 3. Inserir no banco usando a nova estrutura lavouras
     const { data, error } = await supabase
-      .from('talhoes')
+      .from('lavouras')
       .insert({
         user_id: user.id,
         nome: body.nome,

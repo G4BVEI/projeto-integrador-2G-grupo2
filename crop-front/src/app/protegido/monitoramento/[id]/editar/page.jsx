@@ -19,7 +19,7 @@ const MapEditor = dynamic(
   }
 );
 
-export default function EditarTalhao() {
+export default function EditarLavoura() {
   const { id } = useParams();
   const [points, setPoints] = useState([]);
   const [formData, setFormData] = useState({
@@ -35,12 +35,12 @@ export default function EditarTalhao() {
   const supabase = createClient();
   const router = useRouter();
 
-  // Carregar dados do talhão
+  // Carregar dados do lavoura
   useEffect(() => {
-    const fetchTalhao = async () => {
+    const fetchLavoura = async () => {
       try {
         const res = await fetch(`/api/lavouras/${id}`);
-        if (!res.ok) throw new Error('Erro ao carregar talhão');
+        if (!res.ok) throw new Error('Erro ao carregar lavoura');
         const data = await res.json();
 
         setFormData({
@@ -68,7 +68,7 @@ export default function EditarTalhao() {
       }
     };
 
-    fetchTalhao();
+    fetchLavoura();
   }, [id]);
 
   const addPoint = () => setPoints([...points, { lat: "", lng: "" }]);
@@ -147,10 +147,10 @@ export default function EditarTalhao() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Erro ao atualizar talhão');
+        throw new Error(errorData.error || 'Erro ao atualizar lavoura');
       }
       const data = await response.json();
-      toast.success(`Talhão "${data.nome}" atualizado com sucesso!`);
+      toast.success(`Lavoura "${data.nome}" atualizado com sucesso!`);
       router.push(`/protegido/monitoramento/${data.id}`);
     } catch (error) {
       toast.error(error.message);
@@ -163,7 +163,7 @@ export default function EditarTalhao() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Editar Talhão</h1>
+      <h1 className="text-2xl font-bold mb-6">Editar Lavoura</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}
@@ -172,7 +172,7 @@ export default function EditarTalhao() {
             <div className="space-y-4">
               {/* Nome */}
               <div>
-                <label className="block text-sm font-medium mb-1">Nome do Talhão*</label>
+                <label className="block text-sm font-medium mb-1">Nome do Lavoura*</label>
                 <input
                   type="text"
                   name="nome"
@@ -326,7 +326,7 @@ export default function EditarTalhao() {
               className="w-full mt-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
               disabled={isSubmitting || points.filter((p) => p.lat && p.lng).length < 3}
             >
-              {isSubmitting ? "Salvando..." : "Atualizar Talhão"}
+              {isSubmitting ? "Salvando..." : "Atualizar Lavoura"}
             </button>
           </form>
         </div>
@@ -340,7 +340,7 @@ export default function EditarTalhao() {
                   id: "edit-field",
                   name: formData.nome,
                   description: formData.descricao,
-                  type: "talhao",
+                  type: "lavoura",
                   coords: points.filter((p) => p.lat && p.lng).map((p) => [Number(p.lat), Number(p.lng)]),
                 },
               ]}

@@ -32,7 +32,7 @@ export async function GET(request) {
       .select(`
         *,
         sensores (*),
-        talhoes (*)
+        lavouras (*)
       `)
       .order('criado_em', { ascending: false });
 
@@ -55,12 +55,12 @@ export async function POST(request) {
   const supabase = createClient();
 
   try {
-    // Buscar todos os talhões
-    const { data: talhoes, error: talhoesError } = await supabase
-      .from("talhoes")
+    // Buscar todos os lavouras
+    const { data: lavouras, error: lavourasError } = await supabase
+      .from("lavouras")
       .select("*");
     
-    if (talhoesError) throw talhoesError;
+    if (lavourasError) throw lavourasError;
 
     // Buscar todos os sensores
     const { data: sensores, error: sensoresError } = await supabase
@@ -91,10 +91,10 @@ export async function POST(request) {
       const sensor = sensores.find(s => s.id === dado.sensor_id);
       if (!sensor) continue;
       
-      const talhao = talhoes.find(t => t.id === sensor.talhao_id);
-      if (!talhao || !talhao.tipo_cultura) continue;
+      const lavoura = lavouras.find(t => t.id === sensor.lavoura_id);
+      if (!lavoura || !lavoura.tipo_cultura) continue;
       
-      const valoresIdeais = culturaValores[talhao.tipo_cultura];
+      const valoresIdeais = culturaValores[lavoura.tipo_cultura];
       if (!valoresIdeais) continue;
       
       // Verificar se já existe um alerta não verificado para este sensor
@@ -163,7 +163,7 @@ export async function POST(request) {
       if (problema) {
         const alertaData = {
           sensor_id: sensor.id,
-          talhao_id: talhao.id,
+          lavoura_id: lavoura.id,
           tipo_alerta: tipoAlerta,
           valor_medido: dado.valor,
           valor_ideal_min: valorIdealMin,

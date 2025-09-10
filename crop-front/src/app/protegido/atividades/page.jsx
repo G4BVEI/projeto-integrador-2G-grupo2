@@ -24,12 +24,12 @@ function GerenciamentoAtividades() {
           throw userError || new Error("Usuário não autenticado");
         }
 
-        // Fetch atividades with talhao info
+        // Fetch atividades with lavoura info
         const { data, error } = await supabase
           .from('atividades')
           .select(`
             *,
-            talhoes:nome
+            lavouras:nome
           `)
           .order('created_at', { ascending: false });
 

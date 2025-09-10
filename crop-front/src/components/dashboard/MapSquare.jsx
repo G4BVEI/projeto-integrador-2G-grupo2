@@ -21,26 +21,26 @@ const fixLeafletIcons = () => {
 const MapSquare = ({ markers, center, zoom }) => {
   const mapRef = useRef(null)
   const router = useRouter()
-  const [talhoes, setTalhoes] = useState([])
+  const [lavouras, setLavouras] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Carregar todos os talhões
-    const fetchTalhoes = async () => {
+    // Carregar todos os lavouras
+    const fetchLavouras = async () => {
       try {
         const response = await fetch('/api/lavouras')
         if (response.ok) {
           const data = await response.json()
-          setTalhoes(data)
+          setLavouras(data)
         }
       } catch (error) {
-        console.error('Erro ao carregar talhões:', error)
+        console.error('Erro ao carregar lavouras:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchTalhoes()
+    fetchLavouras()
   }, [])
 
   useEffect(() => {
@@ -66,8 +66,8 @@ const MapSquare = ({ markers, center, zoom }) => {
         { maxZoom: 19, attribution: '© OpenStreetMap' }
       ).addTo(map)
 
-      // Adicionar marcadores padrão se não houver talhões
-      if (talhoes.length === 0 && markers && markers.length > 0) {
+      // Adicionar marcadores padrão se não houver lavouras
+      if (lavouras.length === 0 && markers && markers.length > 0) {
         markers.forEach(marker => {
           L.marker(marker.position)
             .addTo(map)
@@ -84,14 +84,14 @@ const MapSquare = ({ markers, center, zoom }) => {
         return
       }
 
-      // Adicionar polígonos dos talhões
+      // Adicionar polígonos dos lavouras
       const allBounds = []
       
-      talhoes.forEach(talhao => {
-        if (talhao.localizacao_json && talhao.localizacao_json.coordinates) {
+      lavouras.forEach(lavoura => {
+        if (lavoura.localizacao_json && lavoura.localizacao_json.coordinates) {
           try {
             // Converter GeoJSON para formato do Leaflet
-            const coords = talhao.localizacao_json.coordinates[0].map(coord => [coord[1], coord[0]])
+            const coords = lavoura.localizacao_json.coordinates[0].map(coord => [coord[1], coord[0]])
             
             // Criar polígono
             const polygon = L.polygon(coords, {
@@ -103,12 +103,12 @@ const MapSquare = ({ markers, center, zoom }) => {
             // Adicionar popup com informações
             const popupContent = `
               <div class="p-2">
-                <h3 class="font-bold text-lg">${talhao.nome}</h3>
-                <p class="text-sm">${talhao.tipo_cultura || 'Tipo não especificado'}</p>
-                <p class="text-sm">Área: ${talhao.area || 0} hectares</p>
+                <h3 class="font-bold text-lg">${lavoura.nome}</h3>
+                <p class="text-sm">${lavoura.tipo_cultura || 'Tipo não especificado'}</p>
+                <p class="text-sm">Área: ${lavoura.area || 0} hectares</p>
                 <button 
-                  class="mt-2 px-3 py-1 bg-green-600 text-white rounded text-xs view-talhao"
-                  data-id="${talhao.id}"
+                  class="mt-2 px-3 py-1 bg-green-600 text-white rounded text-xs view-lavoura"
+                  data-id="${lavoura.id}"
                 >
                   Ver detalhes
                 </button>
@@ -119,11 +119,11 @@ const MapSquare = ({ markers, center, zoom }) => {
             
             // Evento de clique no botão dentro do popup
             polygon.on('popupopen', () => {
-              const button = document.querySelector('.view-talhao')
+              const button = document.querySelector('.view-lavoura')
               if (button) {
                 button.addEventListener('click', (e) => {
-                  const talhaoId = e.target.getAttribute('data-id')
-                  router.push(`/talhoes/${talhaoId}`)
+                  const lavouraId = e.target.getAttribute('data-id')
+                  router.push(`/lavouras/${lavouraId}`)
                 })
               }
             })
@@ -139,12 +139,12 @@ const MapSquare = ({ markers, center, zoom }) => {
             
             allBounds.push(polygon.getBounds())
           } catch (error) {
-            console.error('Erro ao renderizar talhão:', talhao.nome, error)
+            console.error('Erro ao renderizar lavoura:', lavoura.nome, error)
           }
         }
       })
 
-      // Ajustar visualização para mostrar todos os talhões
+      // Ajustar visualização para mostrar todos os lavouras
       if (allBounds.length > 0) {
         const bounds = L.latLngBounds(allBounds)
         map.fitBounds(bounds, { padding: [20, 20] })
@@ -159,7 +159,7 @@ const MapSquare = ({ markers, center, zoom }) => {
         mapRef.current = null
       }
     }
-  }, [talhoes, isLoading, center, zoom, markers, router])
+  }, [lavouras, isLoading, center, zoom, markers, router])
 
   if (isLoading) {
     return (

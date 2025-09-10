@@ -30,7 +30,7 @@ const tipoIconos = {
 
 
 function EditarSensor() {
-  const [talhao, setTalhao] = useState(null);
+  const [lavoura, setLavoura] = useState(null);
   const [sensor, setSensor] = useState(null);
   const [dadosSensor, setDadosSensor] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,15 +72,15 @@ function EditarSensor() {
       try {
         setLoading(true);
 
-        // Talhão
-        const { data: talhaoData, error: talhaoError } = await supabase
-          .from("talhoes")
+        // Lavoura
+        const { data: lavouraData, error: lavouraError } = await supabase
+          .from("lavouras")
           .select("*")
           .eq("id", params.id)
           .single();
         
-        if (talhaoError) throw talhaoError;
-        setTalhao(talhaoData);
+        if (lavouraError) throw lavouraError;
+        setLavoura(lavouraData);
 
         // Sensor
         const { data: sensorData, error: sensorError } = await supabase
@@ -251,7 +251,7 @@ if (loading) return (
 
   const breadcrumbItems = [
     { label: "Monitoramento", href: "/protegido/monitoramento" },
-    ...(talhao ? [{ label: talhao.nome, href: `/protegido/monitoramento/${talhao.id}` }] : []),
+    ...(lavoura ? [{ label: lavoura.nome, href: `/protegido/monitoramento/${lavoura.id}` }] : []),
     { label: "Sensores", href: `/protegido/monitoramento/${params.id}/sensores` },
     { label: "Editar Sensor" },
     ...(sensor ? [{ label: sensor.nome }] : []),
@@ -268,9 +268,9 @@ if (loading) return (
           Editar Sensor
         </h1>
         <p className="text-gray-600 mt-2">
-          Talhão: <span className="font-semibold text-green-700">{talhao?.nome}</span>
-          {talhao?.tipo_cultura && ` • ${talhao.tipo_cultura}`}
-          {talhao?.area && ` • ${talhao.area} ha`}
+          Lavoura: <span className="font-semibold text-green-700">{lavoura?.nome}</span>
+          {lavoura?.tipo_cultura && ` • ${lavoura.tipo_cultura}`}
+          {lavoura?.area && ` • ${lavoura.area} ha`}
         </p>
       </div>
 
@@ -371,14 +371,14 @@ if (loading) return (
           </div>
 
           <div className="h-96 rounded-lg overflow-hidden border border-gray-200 mb-4">
-            {talhao && (
+            {lavoura && (
               <MapPointEditor
                 fields={[{
-                  id: talhao.id,
-                  nome: talhao.nome,
-                  coords: talhao.localizacao_json?.coordinates?.[0]?.map(c => [c[1], c[0]]) || []
+                  id: lavoura.id,
+                  nome: lavoura.nome,
+                  coords: lavoura.localizacao_json?.coordinates?.[0]?.map(c => [c[1], c[0]]) || []
                 }]}
-                selectedIds={[talhao.id]}
+                selectedIds={[lavoura.id]}
                 initialPoint={formData.latitude && formData.longitude
                   ? [Number(formData.latitude), Number(formData.longitude)]
                   : null}

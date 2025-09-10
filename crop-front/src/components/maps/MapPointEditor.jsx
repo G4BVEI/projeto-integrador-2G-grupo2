@@ -84,7 +84,7 @@ export default function MapPointEditor({
     sensorMarkerRef.current = null
     polygonRef.current = null
 
-    // Adicionar polígono do talhão
+    // Adicionar polígono do lavoura
     const field = fields.find(f => selectedIds.includes(f.id))
     if (field && field.coords && field.coords.length >= 3) {
       polygonRef.current = L.polygon(field.coords, {

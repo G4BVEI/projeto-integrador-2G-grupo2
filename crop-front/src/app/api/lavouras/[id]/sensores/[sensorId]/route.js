@@ -19,21 +19,21 @@ export async function GET(request, { params }) {
       .from('sensores')
       .select('*')
       .eq('id', sensorId)
-      .eq('talhao_id', id)
+      .eq('lavoura_id', id)
       .single();
 
     if (sensorError || !sensor) {
       return NextResponse.json({ error: 'Sensor não encontrado' }, { status: 404 });
     }
 
-    // Verificar se o talhão pertence ao usuário
-    const { data: talhao, error: talhaoError } = await supabase
-      .from('talhoes')
+    // Verificar se o lavoura pertence ao usuário
+    const { data: lavoura, error: lavouraError } = await supabase
+      .from('lavouras')
       .select('user_id')
       .eq('id', id)
       .single();
 
-    if (talhaoError || !talhao || talhao.user_id !== user.id) {
+    if (lavouraError || !lavoura || lavoura.user_id !== user.id) {
       return NextResponse.json({ error: 'Acesso não autorizado' }, { status: 403 });
     }
 
@@ -58,15 +58,15 @@ export async function PUT(request, { params }) {
     }
 
     // Verificar se o sensor pertence ao usuário
-    const { data: talhao, error: talhaoError } = await supabase
-      .from('talhoes')
+    const { data: lavoura, error: lavouraError } = await supabase
+      .from('lavouras')
       .select('id')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
 
-    if (talhaoError || !talhao) {
-      return NextResponse.json({ error: 'Talhão não encontrado' }, { status: 404 });
+    if (lavouraError || !lavoura) {
+      return NextResponse.json({ error: 'Lavoura não encontrado' }, { status: 404 });
     }
 
     // Validar corpo da requisição
@@ -90,7 +90,7 @@ export async function PUT(request, { params }) {
         localizacao_json: body.localizacao_json || null
       })
       .eq('id', sensorId)
-      .eq('talhao_id', id)
+      .eq('lavoura_id', id)
       .select()
       .single();
 
@@ -117,15 +117,15 @@ export async function DELETE(request, { params }) {
     }
 
     // Verificar se o sensor pertence ao usuário
-    const { data: talhao, error: talhaoError } = await supabase
-      .from('talhoes')
+    const { data: lavoura, error: lavouraError } = await supabase
+      .from('lavouras')
       .select('id')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
 
-    if (talhaoError || !talhao) {
-      return NextResponse.json({ error: 'Talhão não encontrado' }, { status: 404 });
+    if (lavouraError || !lavoura) {
+      return NextResponse.json({ error: 'Lavoura não encontrado' }, { status: 404 });
     }
 
     // Deletar sensor
@@ -133,7 +133,7 @@ export async function DELETE(request, { params }) {
       .from('sensores')
       .delete()
       .eq('id', sensorId)
-      .eq('talhao_id', id);
+      .eq('lavoura_id', id);
 
     if (deleteError) throw deleteError;
 

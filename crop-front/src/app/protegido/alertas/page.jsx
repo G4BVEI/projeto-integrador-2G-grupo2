@@ -244,7 +244,7 @@ function AlertaCard({ alerta, onVerificar, onDeletar }) {
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="text-lg font-semibold text-gray-800">
-              Alerta no {alerta.talhoes?.nome} - {alerta.talhoes?.tipo_cultura}
+              Alerta no {alerta.lavouras?.nome} - {alerta.lavouras?.tipo_cultura}
             </h3>
             {alerta.verificado && (
               <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
@@ -283,16 +283,16 @@ function AlertaCard({ alerta, onVerificar, onDeletar }) {
             Deletar
           </button>
           <Link
-            href={`/protegido/monitoramento/${alerta.talhao_id}/sensores/editar/${alerta.sensor_id}`}
+            href={`/protegido/monitoramento/${alerta.lavoura_id}/sensores/editar/${alerta.sensor_id}`}
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm text-center"
           >
             Ver Sensor
           </Link>
           <Link
-            href={`/protegido/monitoramento/${alerta.talhao_id}`}
+            href={`/protegido/monitoramento/${alerta.lavoura_id}`}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm text-center"
           >
-            Ver Talhão
+            Ver Lavoura
           </Link>
         </div>
       </div>

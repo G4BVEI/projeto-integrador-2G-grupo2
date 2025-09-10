@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 export default function NovaAtividade() {
   const supabase = createClient();
 
-  const [talhoes, setTalhoes] = useState([]);
+  const [lavouras, setLavouras] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
@@ -17,22 +17,22 @@ export default function NovaAtividade() {
     data_conclusao: "",
     status: "Planejada",
     descricao: "",
-    talhao_id: "",
+    lavoura_id: "",
   });
 
-  // Buscar os talhões no Supabase
+  // Buscar os lavouras no Supabase
   useEffect(() => {
-    async function fetchTalhoes() {
-      const { data, error } = await supabase.from("talhoes").select("*");
+    async function fetchLavouras() {
+      const { data, error } = await supabase.from("lavouras").select("*");
       if (error) {
-        toast.error("Erro ao carregar talhões");
+        toast.error("Erro ao carregar lavouras");
         console.error(error);
       } else {
-        setTalhoes(data || []);
+        setLavouras(data || []);
       }
       setLoading(false);
     }
-    fetchTalhoes();
+    fetchLavouras();
   }, []);
 
   // Manipular envio do formulário
@@ -55,7 +55,7 @@ export default function NovaAtividade() {
         data_conclusao: "",
         status: "Planejada",
         descricao: "",
-        talhao_id: "",
+        lavoura_id: "",
       });
     }
   }
@@ -158,20 +158,20 @@ export default function NovaAtividade() {
               </select>
             </div>
 
-            {/* Talhão */}
+            {/* Lavoura */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Talhão *
+                Lavoura *
               </label>
               <select
-                value={form.talhao_id}
-                onChange={(e) => setForm({ ...form, talhao_id: e.target.value })}
+                value={form.lavoura_id}
+                onChange={(e) => setForm({ ...form, lavoura_id: e.target.value })}
                 required
                 disabled={loading}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
               >
-                <option value="">Selecione o talhão</option>
-                {talhoes.map((t) => (
+                <option value="">Selecione o lavoura</option>
+                {lavouras.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.nome} - {t.cultura}
                   </option>

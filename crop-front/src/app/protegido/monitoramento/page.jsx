@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 function Monitoramento() {
-  const [talhoes, setTalhoes] = useState([]);
+  const [lavouras, setLavouras] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
-    async function fetchTalhoes() {
+    async function fetchLavouras() {
       try {
         setLoading(true);
         
@@ -23,25 +23,25 @@ function Monitoramento() {
           throw userError || new Error("Usuário não autenticado");
         }
 
-        // Fetch talhoes only for this user
+        // Fetch lavouras only for this user
         const { data, error } = await supabase
-          .from('talhoes')
+          .from('lavouras')
           .select('*')
           .eq('user_id', user.id)
           .order('criado_em', { ascending: false });
 
         if (error) throw error;
 
-        setTalhoes(data || []);
+        setLavouras(data || []);
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching talhoes:', err);
+        console.error('Error fetching lavouras:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchTalhoes();
+    fetchLavouras();
   }, []);
 
   if (loading) return (
@@ -65,23 +65,23 @@ function Monitoramento() {
       <div className="overflow-x-auto">
         <ul>
 
-            {talhoes.length > 0 ? (
-                talhoes.map((talhao) => (
-                    <li key={talhao.id} className="p-4 mb-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer"
-                        onClick={() => router.push(`/protegido/monitoramento/${talhao.id}`)}>
+            {lavouras.length > 0 ? (
+                lavouras.map((lavoura) => (
+                    <li key={lavoura.id} className="p-4 mb-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer"
+                        onClick={() => router.push(`/protegido/monitoramento/${lavoura.id}`)}>
                       <div className="flex justify-between items-center">
                         <div>
-                          <h2 className="text-lg font-medium">{talhao.nome}</h2>
-                          <p className="text-gray-600">{talhao.tipo_cultura || '-'}</p>
+                          <h2 className="text-lg font-medium">{lavoura.nome}</h2>
+                          <p className="text-gray-600">{lavoura.tipo_cultura || '-'}</p>
                         </div>
                         <div className="text-sm text-gray-500">
-                          Criado em: {new Date(talhao.criado_em).toLocaleDateString()}
+                          Criado em: {new Date(lavoura.criado_em).toLocaleDateString()}
                         </div>
                       </div>
                     </li>
               ))
             ) : (
-                <li>Nenhum talhão adicionado ainda</li>
+                <li>Nenhum lavoura adicionado ainda</li>
             )}
         </ul>
     </div>

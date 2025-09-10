@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY
 
-export default function CombinedGraphs({ talhao, sensores }) {
+export default function CombinedGraphs({ lavoura, sensores }) {
   const [activeMainTab, setActiveMainTab] = useState('sensores')
   const [activeSensorTab, setActiveSensorTab] = useState('Temperatura')
   const [activeWeatherTab, setActiveWeatherTab] = useState('current')
@@ -18,15 +18,15 @@ export default function CombinedGraphs({ talhao, sensores }) {
   // Fetch weather data
   useEffect(() => {
     async function fetchWeatherData() {
-      if (!talhao) return
+      if (!lavoura) return
 
       setLoading(true)
       try {
-        const lat = talhao.localizacao_json?.coordinates?.[0]?.[0]?.[1] || talhao.latitude
-        const lon = talhao.localizacao_json?.coordinates?.[0]?.[0]?.[0] || talhao.longitude
+        const lat = lavoura.localizacao_json?.coordinates?.[0]?.[0]?.[1] || lavoura.latitude
+        const lon = lavoura.localizacao_json?.coordinates?.[0]?.[0]?.[0] || lavoura.longitude
         
         if (!lat || !lon) {
-          throw new Error('Coordenadas do talhão não disponíveis')
+          throw new Error('Coordenadas do lavoura não disponíveis')
         }
 
         const response = await fetch(
@@ -50,7 +50,7 @@ export default function CombinedGraphs({ talhao, sensores }) {
     if (activeMainTab === 'previsao') {
       fetchWeatherData()
     }
-  }, [talhao, activeMainTab])
+  }, [lavoura, activeMainTab])
 
   // Tipos de sensor e agrupamento
   const tiposSensorPresentes = [...new Set(sensores.map(s => s.tipo || 'pH'))]
@@ -345,13 +345,13 @@ export default function CombinedGraphs({ talhao, sensores }) {
 
             {/* ===== Botões de Ação ===== */}
             <div className="flex gap-3 col-span-2">
-              <Link href={`/protegido/monitoramento/${talhao.id}/sensores`}>
+              <Link href={`/protegido/monitoramento/${lavoura.id}/sensores`}>
                 <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
                   <Settings className="w-4 h-4" />
                   Gerenciar Sensores
                 </button>
               </Link>
-              <Link href={`/protegido/monitoramento/${talhao.id}/sensores/adicionar`}>
+              <Link href={`/protegido/monitoramento/${lavoura.id}/sensores/adicionar`}>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
                   <Plus className="w-4 h-4" />
                   Adicionar Sensor

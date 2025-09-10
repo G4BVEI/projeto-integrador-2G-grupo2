@@ -36,30 +36,30 @@ export default function AdicionarSensor() {
     latitude: '',
     longitude: ''
   });
-  const [talhao, setTalhao] = useState(null);
+  const [lavoura, setLavoura] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const params = useParams();
   const router = useRouter();
   const supabase = createClient();
 
-  // Buscar dados do talhão
+  // Buscar dados do lavoura
   useEffect(() => {
-    async function fetchTalhao() {
+    async function fetchLavoura() {
       try {
         const { data, error } = await supabase
-          .from('talhoes')
+          .from('lavouras')
           .select('*')
           .eq('id', params.id)
           .single();
 
         if (error) throw error;
-        setTalhao(data);
+        setLavoura(data);
       } catch (err) {
-        console.error('Erro ao buscar talhão:', err);
-        toast.error('Erro ao carregar dados do talhão');
+        console.error('Erro ao buscar lavoura:', err);
+        toast.error('Erro ao carregar dados do lavoura');
       }
     }
-    fetchTalhao();
+    fetchLavoura();
   }, [params.id]);
 
   // Atualizar unidade automaticamente quando o tipo mudar
@@ -108,7 +108,7 @@ export default function AdicionarSensor() {
           unidade: formData.unidade,
           parametros: '',
           localizacao_json: localizacaoJson,
-          talhao_id: params.id
+          lavoura_id: params.id
         })
       });
 
@@ -129,7 +129,7 @@ export default function AdicionarSensor() {
     }
   };
 
-  if (!talhao) return (
+  if (!lavoura) return (
   <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
     <div className="text-center">
       <div className="flex items-center justify-center">
@@ -150,9 +150,9 @@ export default function AdicionarSensor() {
           Adicionar Sensor
         </h1>
         <p className="text-gray-600 mt-2">
-          Talhão: <span className="font-semibold text-green-700">{talhao.nome}</span>
-          {talhao.tipo_cultura && ` • ${talhao.tipo_cultura}`}
-          {talhao.area && ` • ${talhao.area} ha`}
+          Lavoura: <span className="font-semibold text-green-700">{lavoura.nome}</span>
+          {lavoura.tipo_cultura && ` • ${lavoura.tipo_cultura}`}
+          {lavoura.area && ` • ${lavoura.area} ha`}
         </p>
       </div>
 
@@ -259,11 +259,11 @@ export default function AdicionarSensor() {
           <div className="h-96 rounded-lg overflow-hidden border border-gray-200 mb-4">
             <MapPointEditor
               fields={[{
-                id: talhao.id,
-                nome: talhao.nome,
-                coords: talhao.localizacao_json?.coordinates?.[0]?.map(c => [c[1], c[0]]) || []
+                id: lavoura.id,
+                nome: lavoura.nome,
+                coords: lavoura.localizacao_json?.coordinates?.[0]?.map(c => [c[1], c[0]]) || []
               }]}
-              selectedIds={[talhao.id]}
+              selectedIds={[lavoura.id]}
               initialPoint={formData.latitude && formData.longitude
                 ? [Number(formData.latitude), Number(formData.longitude)]
                 : null}

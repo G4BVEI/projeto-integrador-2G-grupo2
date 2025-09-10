@@ -3,7 +3,7 @@
   import { useEffect, useRef, useState } from 'react'
   import { useRouter } from 'next/navigation'
 
-  const AllTalhoesMap = ({ talhoes = [] }) => {
+  const AllLavourasMap = ({ lavouras = [] }) => {
     const mapRef = useRef(null)
     const router = useRouter()
     const mapInitialized = useRef(false)
@@ -12,12 +12,12 @@
 
     useEffect(() => {
       // Configurar a função global de redirecionamento
-      window.talhaoRedirect = (id) => {
+      window.lavouraRedirect = (id) => {
         router.push(`/protegido/monitoramento/${id}`)
       }
 
       // Inicializar o mapa apenas uma vez
-      if (mapInitialized.current || talhoes.length === 0) return
+      if (mapInitialized.current || lavouras.length === 0) return
 
       const initializeMap = async () => {
         try {
@@ -34,7 +34,7 @@
           })
 
           // Inicializar mapa
-          const map = L.map('all-talhoes-map').setView([-15.788, -47.879], 4)
+          const map = L.map('all-lavouras-map').setView([-15.788, -47.879], 4)
           
           // Criar camadas de tiles
           tileLayersRef.current.openstreetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -50,15 +50,15 @@
           // Adicionar camada inicial
           tileLayersRef.current[currentTileLayer].addTo(map)
 
-          // Adicionar cada talhão ao mapa
+          // Adicionar cada lavoura ao mapa
           const bounds = L.latLngBounds()
-          let hasVisibleTalhoes = false
+          let hasVisibleLavouras = false
 
-          talhoes.forEach(talhao => {
-            if (!talhao.localizacao_json || !talhao.localizacao_json.coordinates) return
+          lavouras.forEach(lavoura => {
+            if (!lavoura.localizacao_json || !lavoura.localizacao_json.coordinates) return
             
             try {
-              const coords = talhao.localizacao_json.coordinates[0]
+              const coords = lavoura.localizacao_json.coordinates[0]
                 .map(coord => [coord[1], coord[0]]) // Converter [lng, lat] para [lat, lng]
               
               // Criar polígono
@@ -69,7 +69,7 @@
               }).addTo(map)
 
               // Tooltip com nome ao passar o mouse
-              polygon.bindTooltip(talhao.nome, { 
+              polygon.bindTooltip(lavoura.nome, { 
                 permanent: false, 
                 direction: 'center',
                 className: 'map-tooltip'
@@ -79,12 +79,12 @@
               const popupContent = document.createElement('div')
               popupContent.className = 'p-2'
               popupContent.innerHTML = `
-                <h3 class="font-bold text-lg">${talhao.nome}</h3>
-                <p class="text-sm">${talhao.tipo_cultura || 'Tipo não especificado'}</p>
-                <p class="text-sm">${talhao.area || 0} hectares</p>
+                <h3 class="font-bold text-lg">${lavoura.nome}</h3>
+                <p class="text-sm">${lavoura.tipo_cultura || 'Tipo não especificado'}</p>
+                <p class="text-sm">${lavoura.area || 0} hectares</p>
                 <button 
                   class="mt-2 px-3 py-1 bg-green-600 text-white rounded text-sm w-full detalhes-btn"
-                  data-id="${talhao.id}"
+                  data-id="${lavoura.id}"
                 >
                   Ver detalhes
                 </button>
@@ -99,14 +99,14 @@
                 const button = document.querySelector('.detalhes-btn')
                 if (button) {
                   button.addEventListener('click', () => {
-                    router.push(`/protegido/monitoramento/${talhao.id}`)
+                    router.push(`/protegido/monitoramento/${lavoura.id}`)
                   })
                 }
               })
 
-              // Expandir bounds para incluir este talhão
+              // Expandir bounds para incluir este lavoura
               bounds.extend(polygon.getBounds())
-              hasVisibleTalhoes = true
+              hasVisibleLavouras = true
 
               // Adicionar marcador no ponto mais alto
               const highestPoint = findHighestPoint(coords)
@@ -137,12 +137,12 @@
                 })
               }
             } catch (error) {
-              console.error('Erro ao renderizar talhão:', talhao.id, error)
+              console.error('Erro ao renderizar :', lavoura.id, error)
             }
           })
 
-          // Ajustar visualização para mostrar todos os talhões
-          if (hasVisibleTalhoes) {
+          // Ajustar visualização para mostrar todos os lavouras
+          if (hasVisibleLavouras) {
             map.fitBounds(bounds, { padding: [50, 50] })
           }
 
@@ -160,9 +160,9 @@
           mapRef.current.remove()
           mapRef.current = null
         }
-        delete window.talhaoRedirect
+        delete window.lavouraRedirect
       }
-    }, [talhoes, router])
+    }, [lavouras, router])
 
     // Effect para mudança de camada de tiles
     useEffect(() => {
@@ -200,12 +200,12 @@
       return highestPoint
     }
 
-    if (talhoes.length === 0) {
+    if (lavouras.length === 0) {
       return (
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Meus Talhões</h2>
+          <h2 className="text-xl font-semibold mb-4">Minhas Lavouras</h2>
           <div className="h-96 bg-gray-100 rounded flex items-center justify-center">
-            <p className="text-gray-500">Nenhum talhão encontrado</p>
+            <p className="text-gray-500">Nenhuma lavoura encontrado</p>
           </div>
         </div>
       )
@@ -213,9 +213,9 @@
 
     return (
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Meus Talhões</h2>
+        <h2 className="text-xl font-semibold mb-4">Meus Lavouras</h2>
         <div className="relative">
-          <div id="all-talhoes-map" className="h-96 rounded"></div>
+          <div id="all-lavouras-map" className="h-96 rounded"></div>
           <div className="absolute top-2 right-2 z-[1000] bg-white p-2 rounded shadow">
             <select 
               value={currentTileLayer} 
@@ -228,10 +228,10 @@
           </div>
         </div>
         <p className="text-sm text-gray-500 mt-2">
-          Passe o mouse sobre um talhão para ver o nome. Clique para ver detalhes.
+          Passe o mouse sobre uma lavoura para ver o nome. Clique para ver detalhes.
         </p>
       </div>
     )
   }
 
-  export default AllTalhoesMap
+  export default AllLavourasMap

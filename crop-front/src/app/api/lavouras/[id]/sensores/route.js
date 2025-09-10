@@ -16,16 +16,16 @@ export async function POST(request, { params }) {
       );
     }
 
-    // 2. Validar se o talhão pertence ao usuário
-    const { data: talhao, error: talhaoError } = await supabase
-      .from('talhoes')
+    // 2. Validar se o lavoura pertence ao usuário
+    const { data: lavoura, error: lavouraError } = await supabase
+      .from('lavouras')
       .select('id, user_id')
       .eq('id', id)
       .single();
 
-    if (talhaoError || !talhao || talhao.user_id !== user.id) {
+    if (lavouraError || !lavoura || lavoura.user_id !== user.id) {
       return NextResponse.json(
-        { error: 'Talhão não encontrado ou não pertence ao usuário' },
+        { error: 'Lavoura não encontrado ou não pertence ao usuário' },
         { status: 404 }
       );
     }
@@ -44,7 +44,7 @@ export async function POST(request, { params }) {
     const { data, error } = await supabase
       .from('sensores')
       .insert({
-        talhao_id: id,
+        lavoura_id: id,
         nome: body.nome,
         tipo: body.tipo,
         unidade: body.unidade,

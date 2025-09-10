@@ -30,10 +30,10 @@ const MapView = dynamic(() => import("@/components/maps/MapView"), {
   ssr: false,
 });
 
-export default function DashboardTalhao() {
+export default function DashboardLavoura() {
   const params = useParams();
   const supabase = createClient();
-  const [talhao, setTalhao] = useState(null);
+  const [lavoura, setLavoura] = useState(null);
   const [sensores, setSensores] = useState([]);
   const [points, setPoints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,18 +82,18 @@ export default function DashboardTalhao() {
     try {
       setLoading(true);
 
-      // Talhão
-      const { data: talhaoData, error: talhaoError } = await supabase
-        .from("talhoes")
+      // Lavoura
+      const { data: lavouraData, error: lavouraError } = await supabase
+        .from("lavouras")
         .select("*")
         .eq("id", params.id)
         .single();
-      if (talhaoError) throw talhaoError;
-      setTalhao(talhaoData);
+      if (lavouraError) throw lavouraError;
+      setLavoura(lavouraData);
 
-      // Pontos do talhão
-      if (talhaoData.localizacao_json?.coordinates) {
-        const coords = talhaoData.localizacao_json.coordinates[0];
+      // Pontos do lavoura
+      if (lavouraData.localizacao_json?.coordinates) {
+        const coords = lavouraData.localizacao_json.coordinates[0];
         const formatted = coords.map((c) => ({ lat: c[1], lng: c[0] }));
         if (
           formatted.length > 1 &&
@@ -108,7 +108,7 @@ export default function DashboardTalhao() {
       const { data: sensoresData, error: sensoresError } = await supabase
         .from("sensores")
         .select("*")
-        .eq("talhao_id", params.id)
+        .eq("lavoura_id", params.id)
         .order("criado_em", { ascending: false });
       if (sensoresError) throw sensoresError;
 
@@ -163,11 +163,11 @@ export default function DashboardTalhao() {
       </div>
     );
 
-  if (!talhao)
+  if (!lavoura)
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-gray-500">
-          <p className="text-lg font-semibold">Talhão não encontrado</p>
+          <p className="text-lg font-semibold">Lavoura não encontrado</p>
         </div>
       </div>
     );
@@ -182,19 +182,19 @@ export default function DashboardTalhao() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
           <Sprout className="text-green-600" />
-          {talhao.nome}
+          {lavoura.nome}
         </h1>
         <p className="text-gray-600 mt-1">Monitoramento em tempo real</p>
       </div>
       <div className="space-y-6">
-        {/* Informações do Talhão + Mapa */}
+        {/* Informações do Lavoura + Mapa */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Informações do Talhão */}
+          {/* Informações do Lavoura */}
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                 <Sprout className="w-5 h-5 text-green-600" />
-                Informações do Talhão
+                Informações do Lavoura
               </h2>
               <div
                 className="w-3 h-3 bg-green-400 rounded-full animate-pulse"
@@ -205,37 +205,37 @@ export default function DashboardTalhao() {
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="font-medium">Cultura</span>
                 <span className="text-gray-600">
-                  {talhao.tipo_cultura || "Não informado"}
+                  {lavoura.tipo_cultura || "Não informado"}
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="font-medium">Sistema de Irrigação</span>
                 <span className="text-gray-600">
-                  {talhao.sistema_irrigacao || "Não informado"}
+                  {lavoura.sistema_irrigacao || "Não informado"}
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="font-medium">Data de Plantio</span>
                 <span className="text-gray-600">
-                  {talhao.data_plantio || "Não informada"}
+                  {lavoura.data_plantio || "Não informada"}
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-100">
                 <span className="font-medium">Área Total</span>
-                <span className="text-gray-600">{talhao.area || 0} ha</span>
+                <span className="text-gray-600">{lavoura.area || 0} ha</span>
               </div>
               <div className="pt-2">
                 <span className="font-medium block mb-1">Descrição</span>
                 <p className="text-gray-600 text-sm">
-                  {talhao.descricao
-                    ? talhao.descricao
+                  {lavoura.descricao
+                    ? lavoura.descricao
                     : "Sem descrição provida"}
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-1 gap-3">
               <Link
-                href={`/protegido/monitoramento/${talhao.id}/editar`}
+                href={`/protegido/monitoramento/${lavoura.id}/editar`}
                 className="sm:col-span-2"
               >
                 <button
@@ -244,10 +244,10 @@ export default function DashboardTalhao() {
       hover:bg-green-500 transition-all shadow-md hover:shadow-lg"
                 >
                   <Edit2 className="w-4 h-4" />
-                  <span className="font-medium">Editar Talhão</span>
+                  <span className="font-medium">Editar Lavoura</span>
                 </button>
               </Link>
-              <Link href={`/protegido/monitoramento/${talhao.id}/sensores`} className="col-span-2">
+              <Link href={`/protegido/monitoramento/${lavoura.id}/sensores`} className="col-span-2">
                 <button
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 
       bg-green-500 text-white rounded-lg 
@@ -274,14 +274,14 @@ export default function DashboardTalhao() {
               <MapView
                 fields={[
                   {
-                    id: talhao.id,
-                    name: talhao.nome,
-                    description: talhao.descricao,
-                    type: "talhao",
+                    id: lavoura.id,
+                    name: lavoura.nome,
+                    description: lavoura.descricao,
+                    type: "lavoura",
                     coords: points.map((p) => [p.lat, p.lng]),
                   },
                 ]}
-                selectedIds={[talhao.id]}
+                selectedIds={[lavoura.id]}
                 sensorPoints={sensoresComLocalizacao.map((s) => ({
                   ...s,
                   popupContent: `
@@ -304,14 +304,14 @@ export default function DashboardTalhao() {
               />
             </div>
             <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
-              <span>Coordenadas do talhão</span>
+              <span>Coordenadas do lavoura</span>
               <span>{points.length} pontos demarcados</span>
             </div>
           </div>
         </div>
         {/* Gráficos Combinados */}
         <BestGraph sensores={sensores} />
-        <DedicatedGraph talhao={talhao} />
+        <DedicatedGraph lavoura={lavoura} />
         {/* Lista de Sensores */}
       </div>
     </div>

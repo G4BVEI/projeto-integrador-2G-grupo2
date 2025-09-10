@@ -211,10 +211,10 @@ export default function CropSenseLanding() {
                 <MapPin className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold text-green-900 mb-3">
-                Gestão de Talhões
+                Gestão de Lavouras
               </h3>
               <p className="text-green-700">
-                Cadastre fazendas e divida em talhões com localização via mapas
+                Cadastre fazendas e divida em lavouras com localização via mapas
                 interativos
               </p>
             </div>
@@ -300,7 +300,7 @@ export default function CropSenseLanding() {
                 Cadastro
               </h3>
               <p className="text-green-700">
-                Crie sua conta e cadastre fazendas e talhões via mapa
+                Crie sua conta e cadastre fazendas e lavouras via mapa
               </p>
             </div>
             <div className="text-center">

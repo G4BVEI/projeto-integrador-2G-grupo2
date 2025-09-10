@@ -19,7 +19,7 @@ const MapEditor = dynamic(
   }
 );
 
-export default function AdicionarTalhao() {
+export default function AdicionarLavoura() {
   const [points, setPoints] = useState([]);
   const [formData, setFormData] = useState({
     nome: '',
@@ -148,11 +148,11 @@ export default function AdicionarTalhao() {
       // 6. Tratar resposta
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || 'Erro ao cadastrar talhão')
+        throw new Error(errorData.error || 'Erro ao cadastrar lavoura')
       }
 
       const data = await response.json()
-      toast.success(`Talhão "${data.nome}" cadastrado com sucesso!`)
+      toast.success(`Lavoura "${data.nome}" cadastrado com sucesso!`)
       
       // Redirecionar para a página de adicionar sensores
       router.push(`/protegido/monitoramento/${data.id}/sensores`);
@@ -169,7 +169,7 @@ export default function AdicionarTalhao() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Adicionar Talhão</h1>
+      <h1 className="text-2xl font-bold mb-6">Adicionar Lavoura</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Section */}
@@ -178,7 +178,7 @@ export default function AdicionarTalhao() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Nome do Talhão*
+                  Nome do Lavoura*
                 </label>
                 <input
                   type="text"
@@ -352,7 +352,7 @@ export default function AdicionarTalhao() {
                 isSubmitting || points.filter((p) => p.lat && p.lng).length < 3
               }
             >
-              {isSubmitting ? "Salvando..." : "Salvar Talhão"}
+              {isSubmitting ? "Salvando..." : "Salvar Lavoura"}
             </button>
           </form>
         </div>
@@ -366,7 +366,7 @@ export default function AdicionarTalhao() {
                 id: "new-field",
                 name: formData.nome,
                 description: formData.descricao,
-                type: "talhao",
+                type: "lavoura",
                 coords: points
                   .filter((p) => p.lat && p.lng)
                   .map((p) => [Number(p.lat), Number(p.lng)]),
