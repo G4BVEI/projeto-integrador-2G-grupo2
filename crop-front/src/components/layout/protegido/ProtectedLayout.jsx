@@ -43,8 +43,8 @@ const searchIndex = [
   },
   {
     path: "/protegido/monitoramento/[id]",
-    title: "Detalhes do Lavoura",
-    description: "Detalhes e métricas do lavoura",
+    title: "Detalhes da Lavoura",
+    description: "Detalhes e métricas da lavoura",
     category: "Monitoramento",
     requiresContext: true,
     contextPrompt: "Qual lavoura deseja visualizar?",
@@ -53,7 +53,7 @@ const searchIndex = [
   {
     path: "/protegido/monitoramento/[id]/editar",
     title: "Editar Lavoura",
-    description: "Editar informações do lavoura",
+    description: "Editar informações da lavoura",
     category: "Monitoramento",
     requiresContext: true,
     contextPrompt: "Qual lavoura deseja editar?",
@@ -61,8 +61,8 @@ const searchIndex = [
   },
   {
     path: "/protegido/monitoramento/[id]/sensores",
-    title: "Sensores do Lavoura",
-    description: "Gerenciar sensores do lavoura",
+    title: "Sensores da Lavoura",
+    description: "Gerenciar sensores da lavoura",
     category: "Monitoramento",
     requiresContext: true,
     contextPrompt: "Sensores de qual lavoura?",
@@ -71,7 +71,7 @@ const searchIndex = [
   {
     path: "/protegido/monitoramento/[id]/sensores/adicionar",
     title: "Adicionar Sensor",
-    description: "Adicionar novo sensor ao lavoura",
+    description: "Adicionar novo sensor à lavoura",
     category: "Monitoramento",
     requiresContext: true,
     contextPrompt: "Adicionar sensor em qual lavoura?",
@@ -479,7 +479,7 @@ function GlobalSearch({ isMobile = false }) {
                     ))}
                     {contextOptions.length === 0 && !loading && (
                       <div className="text-center text-gray-500 py-4">
-                        {contextLevel === 0 ? "Nenhum lavoura encontrado" : "Nenhum sensor encontrado"}
+                        {contextLevel === 0 ? "Nenhuma lavoura encontrado" : "Nenhum sensor encontrado"}
                       </div>
                     )}
                   </div>

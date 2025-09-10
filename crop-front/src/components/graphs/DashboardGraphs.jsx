@@ -15,7 +15,7 @@ export default function WeatherDashboard({ lavouras }) {
   const [showFilter, setShowFilter] = useState(false)
   const [activeTab, setActiveTab] = useState('temperature')
 
-  // Inicializar todos os lavouras como selecionados
+  // Inicializar todos as lavouras como selecionados
   useEffect(() => {
     if (lavouras && lavouras.length > 0) {
       const initialSelection = {}
@@ -26,7 +26,7 @@ export default function WeatherDashboard({ lavouras }) {
     }
   }, [lavouras])
 
-  // Selecionar/desmarcar todos os lavouras
+  // Selecionar/desmarcar todos as lavouras
   const toggleAllLavouras = (selectAll) => {
     const newSelection = {}
     lavouras.forEach(lavoura => {
@@ -35,7 +35,7 @@ export default function WeatherDashboard({ lavouras }) {
     setSelectedLavouras(newSelection)
   }
 
-  // Alternar seleção de um lavoura específico
+  // Alternar seleção de uma lavoura específico
   const toggleLavoura = (lavouraId) => {
     setSelectedLavouras(prev => ({
       ...prev,
@@ -305,7 +305,7 @@ export default function WeatherDashboard({ lavouras }) {
 
       <p className="text-sm text-gray-500 mb-3">
         {noneSelected 
-          ? "Selecione pelo menos um lavoura" 
+          ? "Selecione pelo menos uma lavoura" 
           : `Mostrando ${selectedLavourasList.length} de ${lavouras.length} lavouras`
         }
       </p>

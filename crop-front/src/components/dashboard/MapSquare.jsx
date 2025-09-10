@@ -25,7 +25,7 @@ const MapSquare = ({ markers, center, zoom }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Carregar todos os lavouras
+    // Carregar todos as lavouras
     const fetchLavouras = async () => {
       try {
         const response = await fetch('/api/lavouras')
@@ -84,7 +84,7 @@ const MapSquare = ({ markers, center, zoom }) => {
         return
       }
 
-      // Adicionar polígonos dos lavouras
+      // Adicionar polígonos das lavouras
       const allBounds = []
       
       lavouras.forEach(lavoura => {
@@ -144,7 +144,7 @@ const MapSquare = ({ markers, center, zoom }) => {
         }
       })
 
-      // Ajustar visualização para mostrar todos os lavouras
+      // Ajustar visualização para mostrar todos as lavouras
       if (allBounds.length > 0) {
         const bounds = L.latLngBounds(allBounds)
         map.fitBounds(bounds, { padding: [20, 20] })

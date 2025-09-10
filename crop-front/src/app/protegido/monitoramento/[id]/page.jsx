@@ -91,7 +91,7 @@ export default function DashboardLavoura() {
       if (lavouraError) throw lavouraError;
       setLavoura(lavouraData);
 
-      // Pontos do lavoura
+      // Pontos da lavoura
       if (lavouraData.localizacao_json?.coordinates) {
         const coords = lavouraData.localizacao_json.coordinates[0];
         const formatted = coords.map((c) => ({ lat: c[1], lng: c[0] }));
@@ -167,7 +167,7 @@ export default function DashboardLavoura() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-gray-500">
-          <p className="text-lg font-semibold">Lavoura não encontrado</p>
+          <p className="text-lg font-semibold">Lavoura não encontrada</p>
         </div>
       </div>
     );
@@ -187,14 +187,14 @@ export default function DashboardLavoura() {
         <p className="text-gray-600 mt-1">Monitoramento em tempo real</p>
       </div>
       <div className="space-y-6">
-        {/* Informações do Lavoura + Mapa */}
+        {/* Informações da Lavoura + Mapa */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Informações do Lavoura */}
+          {/* Informações da Lavoura */}
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                 <Sprout className="w-5 h-5 text-green-600" />
-                Informações do Lavoura
+                Informações da Lavoura
               </h2>
               <div
                 className="w-3 h-3 bg-green-400 rounded-full animate-pulse"
@@ -304,7 +304,7 @@ export default function DashboardLavoura() {
               />
             </div>
             <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
-              <span>Coordenadas do lavoura</span>
+              <span>Coordenadas da lavoura</span>
               <span>{points.length} pontos demarcados</span>
             </div>
           </div>

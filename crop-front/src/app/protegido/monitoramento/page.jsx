@@ -81,7 +81,7 @@ function Monitoramento() {
                     </li>
               ))
             ) : (
-                <li>Nenhum lavoura adicionado ainda</li>
+                <li>Nenhuma lavoura adicionado ainda</li>
             )}
         </ul>
     </div>

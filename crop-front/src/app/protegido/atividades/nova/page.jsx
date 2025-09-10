@@ -20,7 +20,7 @@ export default function NovaAtividade() {
     lavoura_id: "",
   });
 
-  // Buscar os lavouras no Supabase
+  // Buscar as lavouras no Supabase
   useEffect(() => {
     async function fetchLavouras() {
       const { data, error } = await supabase.from("lavouras").select("*");
@@ -170,7 +170,7 @@ export default function NovaAtividade() {
                 disabled={loading}
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
               >
-                <option value="">Selecione o lavoura</option>
+                <option value="">Selecione a lavoura</option>
                 {lavouras.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.nome} - {t.cultura}

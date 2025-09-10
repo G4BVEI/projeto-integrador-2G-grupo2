@@ -22,7 +22,7 @@ export default function DedicatedGraph({ lavoura }) {
         const lon = lavoura.localizacao_json?.coordinates?.[0]?.[0]?.[0] || lavoura.longitude
         
         if (!lat || !lon) {
-          throw new Error('Coordenadas do lavoura não disponíveis')
+          throw new Error('Coordenadas da lavoura não disponíveis')
         }
 
         const response = await fetch(
@@ -50,7 +50,7 @@ export default function DedicatedGraph({ lavoura }) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="text-center text-gray-500">
-          Nenhum lavoura selecionado
+          Nenhuma lavoura selecionado
         </div>
       </div>
     )

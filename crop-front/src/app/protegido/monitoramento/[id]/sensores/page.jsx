@@ -112,7 +112,7 @@ function SensoresLavoura() {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Sensores do Lavoura</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Sensores da Lavoura</h1>
         {lavoura && (
           <p className="text-gray-600 mt-2">
             {lavoura.nome} • {lavoura.tipo_cultura || 'Sem cultura definida'} • {lavoura.area || 0} ha

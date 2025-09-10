@@ -26,7 +26,7 @@ export default function CombinedGraphs({ lavoura, sensores }) {
         const lon = lavoura.localizacao_json?.coordinates?.[0]?.[0]?.[0] || lavoura.longitude
         
         if (!lat || !lon) {
-          throw new Error('Coordenadas do lavoura não disponíveis')
+          throw new Error('Coordenadas da lavoura não disponíveis')
         }
 
         const response = await fetch(

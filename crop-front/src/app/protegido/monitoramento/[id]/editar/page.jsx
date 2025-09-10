@@ -35,7 +35,7 @@ export default function EditarLavoura() {
   const supabase = createClient();
   const router = useRouter();
 
-  // Carregar dados do lavoura
+  // Carregar dados da lavoura
   useEffect(() => {
     const fetchLavoura = async () => {
       try {
@@ -172,7 +172,7 @@ export default function EditarLavoura() {
             <div className="space-y-4">
               {/* Nome */}
               <div>
-                <label className="block text-sm font-medium mb-1">Nome do Lavoura*</label>
+                <label className="block text-sm font-medium mb-1">Nome da Lavoura*</label>
                 <input
                   type="text"
                   name="nome"

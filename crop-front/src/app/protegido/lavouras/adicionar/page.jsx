@@ -178,7 +178,7 @@ export default function AdicionarLavoura() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Nome do Lavoura*
+                  Nome da Lavoura*
                 </label>
                 <input
                   type="text"

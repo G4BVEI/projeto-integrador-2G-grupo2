@@ -42,7 +42,7 @@ export default function AdicionarSensor() {
   const router = useRouter();
   const supabase = createClient();
 
-  // Buscar dados do lavoura
+  // Buscar dados da lavoura
   useEffect(() => {
     async function fetchLavoura() {
       try {
@@ -56,7 +56,7 @@ export default function AdicionarSensor() {
         setLavoura(data);
       } catch (err) {
         console.error('Erro ao buscar lavoura:', err);
-        toast.error('Erro ao carregar dados do lavoura');
+        toast.error('Erro ao carregar dados da lavoura');
       }
     }
     fetchLavoura();

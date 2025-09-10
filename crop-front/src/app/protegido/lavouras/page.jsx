@@ -114,7 +114,7 @@ function ListaLavouras() {
             ) : (
               <tr>
                 <td colSpan="6" className="px-4 py-3 text-center text-gray-500">
-                  Nenhum lavoura cadastrado ainda
+                  Nenhuma lavoura cadastrado ainda
                 </td>
               </tr>
             )}
