@@ -19,6 +19,7 @@ const MapEditor = dynamic(
   }
 );
 
+
 export default function EditarLavoura() {
   const { id } = useParams();
   const [points, setPoints] = useState([]);
@@ -34,8 +35,31 @@ export default function EditarLavoura() {
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
   const router = useRouter();
+  const [sementes, setSementes] = useState([]);
 
-  // Carregar dados da lavoura
+  
+  // Carregar dados do lavoura
+  useEffect(() => {
+        async function fetchSementes() {
+          try {
+
+    
+            const { data, error } = await supabase
+              .from('sementes')
+              .select('*')
+    
+            if (error) throw error;
+    
+            setSementes(data || []);
+          } catch (err) {
+            setError(err.message);
+            console.error('Error fetching sementes:', err);
+          } finally {
+            setLoading(false);
+          } 
+        }    fetchSementes();
+  }, []);
+
   useEffect(() => {
     const fetchLavoura = async () => {
       try {
@@ -160,6 +184,7 @@ export default function EditarLavoura() {
   };
 
   if (isLoading) return <div className="p-6">Carregando...</div>;
+  
 
   return (
     <div className="p-6">
@@ -172,7 +197,7 @@ export default function EditarLavoura() {
             <div className="space-y-4">
               {/* Nome */}
               <div>
-                <label className="block text-sm font-medium mb-1">Nome da Lavoura*</label>
+                <label className="block text-sm font-medium mb-1">Nome do Lavoura*</label>
                 <input
                   type="text"
                   name="nome"
@@ -194,13 +219,11 @@ export default function EditarLavoura() {
                   required
                 >
                   <option value="">Selecione...</option>
-                  <option value="Soja">Soja</option>
-                  <option value="Milho">Milho</option>
-                  <option value="Trigo">Trigo</option>
-                  <option value="Cevada">Cevada</option>
-                  <option value="Café">Café</option>
-                  <option value="Cana-de-açúcar">Cana-de-açúcar</option>
-                  <option value="Algodão">Algodão</option>
+                  {
+                  sementes.map((sementes) => (
+                    <option key={sementes.tipo}value={sementes.tipo}>{sementes.tipo}</option>
+                    ))
+                  }
                 </select>
               </div>
 
